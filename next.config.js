@@ -1,5 +1,5 @@
-// File: next.config.mjs
-import { join } from 'path'
+// File: next.config.js
+const path = require('path')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -10,4 +10,4 @@ const nextConfig = {
   },
 }
 
-export default nextConfig
+module.exports = nextConfig
