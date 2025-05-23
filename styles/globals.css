@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Nur Klassen – keine @keyframes! */
+.animate-glitter {
+  animation: glitter 1.8s ease-in-out infinite;
+}
+
+.animate-bounce-real-a {
+  animation: bounce-real-a 3.2s infinite;
+  transform-origin: bottom center;
+}
+
+.animate-bounce-real-b {
+  animation: bounce-real-b 3.4s infinite;
+  transform-origin: bottom center;
+}
+
+.animate-wiggle-slow {
+  animation: wiggle 4s ease-in-out infinite;
+}

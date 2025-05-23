@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")   // Pooler URL for runtime
+  directUrl = env("DIRECT_URL")     // Direct Postgres URL for migrations
+}
+
+model NewsletterCandidate {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  createdAt   DateTime  @default(now())
+  confirmedAt DateTime?
+}
+
+// (Optional) your existing models, e.g.:
+// model Bommel {
+//   id           Int      @id @default(autoincrement())
+//   nickname     String
+//   name         String
+//   fluffLevel   Int
+//   type         String
+//   birthday     DateTime
+//   email        String?
+//   about        String?
+//   location     String
+//   postalCode   String
+//   imagePath    String
+//   bommlerNumber String
+// }
+
