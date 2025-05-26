@@ -43,15 +43,29 @@ export default async function handler(req, res) {
       ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/bommel-images/${bommel.image_path}`
       : `${req.headers.origin}/Bommel1Register.png`
 
+    console.log('🧪 imageUrl:', imageUrl)
+    console.log('🧪 Bommel data:', bommel)
+    console.log('🧪 Zodiac:', zodiac)
+
     const framePath = path.join(process.cwd(), 'assets', 'sharepic', 'quartett-bg.png')
     const frameBufPromise = fs.readFile(framePath)
 
-    const rawImageBuffer = await fetch(imageUrl).then(r => r.arrayBuffer())
+    let rawImageBuffer
+    try {
+      const res = await fetch(imageUrl)
+      if (!res.ok) throw new Error('Image fetch failed')
+      rawImageBuffer = await res.arrayBuffer()
+    } catch (err) {
+      console.error('❌ Failed to fetch image:', imageUrl, err)
+      rawImageBuffer = Buffer.alloc(0)
+    }
+
     const imgBufPromise = sharp(Buffer.from(rawImageBuffer)).resize({ width: 512 }).toBuffer()
     const [frameBuf, imgBuf] = await Promise.all([frameBufPromise, imgBufPromise])
 
     const frameUri = `data:image/png;base64,${frameBuf.toString('base64')}`
     const imgUri = `data:image/png;base64,${imgBuf.toString('base64')}`
+    console.log('🧪 imgUri prefix:', imgUri?.substring?.(0, 100) || 'no image')
 
     const shiftDownPx = config.canvas.height * config.shiftDown
     const shiftUpPx = config.canvas.height * config.shiftUp

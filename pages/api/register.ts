@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { createClient } from '@supabase/supabase-js'
 import path from 'path'
 import nodemailer from 'nodemailer'
+import sharp from 'sharp'
 
 export const config = {
   api: { bodyParser: false },
@@ -71,7 +72,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const base64data = image_base64.includes(',')
       ? image_base64.split(',').pop()!
       : image_base64
-    const buffer = Buffer.from(base64data, 'base64')
+    const originalBuffer = Buffer.from(base64data, 'base64')
+
+    // 🔧 Bild verkleinern und als WebP speichern
+    const compressedBuffer = await sharp(originalBuffer)
+      .resize({ width: 1000, withoutEnlargement: true })
+      .webp({ quality: 70 })
+      .toBuffer()
 
     const { count, error: countError } = await supabase
       .from('bommler')
@@ -80,12 +87,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const nextNumber = String((count ?? 0) + 1).padStart(4, '0')
     const bommler_number = `BOM-${nextNumber}`
 
-    const ext = path.extname(image_name) || '.png'
-    const filename = `${bommler_number}-${Date.now()}${ext}`
+    const filename = `${bommler_number}-${Date.now()}.webp`
     const { error: uploadError } = await supabase
       .storage
       .from('bommel-images')
-      .upload(filename, buffer, { contentType: 'image/png', upsert: false })
+      .upload(filename, compressedBuffer, {
+        contentType: 'image/webp',
+        upsert: false,
+      })
     if (uploadError) throw uploadError
 
     let coords: [number, number] | null = null
@@ -142,7 +151,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const confirmUrl = `http://${process.env.NEXT_PUBLIC_HOST}/api/newsletter/confirm?email=${encodeURIComponent(rest.email)}`
 
         await transporter.sendMail({
-          from: '"Bommel & Bebetta" <no-reply@kasserver.com>',
+          from: `"Bommel & Bebetta" <${process.env.SMTP_USER}@kasserver.com>`,
           to: rest.email,
           subject: 'Please confirm your newsletter signup',
           html: `
