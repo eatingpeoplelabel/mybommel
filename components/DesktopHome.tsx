@@ -1,5 +1,5 @@
 // components/DesktopHome.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -14,6 +14,7 @@ export default function DesktopHome() {
   const [errorMessage, setErrorMessage] = useState('')
   const [scale, setScale] = useState(1)
   const router = useRouter()
+  const navRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     async function fetchCount() {
@@ -36,6 +37,16 @@ export default function DesktopHome() {
     return () => window.removeEventListener('resize', updateScale)
   }, [])
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    if (menuOpen) document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [menuOpen])
+
   return (
     <>
       <Head>
@@ -43,40 +54,43 @@ export default function DesktopHome() {
         <meta name="description" content="Join the fluffiest community of bommlers!" />
       </Head>
 
-      <div className="relative w-screen h-screen overflow-hidden">
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="absolute top-4 left-4 z-30 focus:outline-none"
-          style={{ width: 128, height: 128 }}
-          aria-label="Toggle menu"
-        >
-          <Image src="/menu-button.webp" alt="Menu" width={128} height={128} className="object-contain" />
-        </button>
-
+      <div className="fixed inset-0 bg-memphis bg-cover bg-center overflow-hidden">
         <div style={{ width: 1920, height: 1080, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
-          <main className="relative w-[1920px] h-[1080px] bg-memphis bg-cover bg-center overflow-hidden flex flex-col justify-end p-4">
-            {menuOpen && (
-              <nav className="absolute top-4 left-40 z-20 bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-lg p-4">
-                <ul className="space-y-2 text-gray-800">
-                  {[
-                    ['/', 'Home'],
-                    ['/register', 'Register Your Bommel'],
-                    ['/gallery', 'Bommel‑Gallerie'],
-                    ['/workshop', 'Bommel Workshop'],
-                    ['/how-to-bommel', 'How‑To‑Bommel'],
-                    ['/zodiac', 'Bommel‑Horoscope'],
-                    ['/faq', 'FABQ'],
-                    ['/contact', 'Contact']
-                  ].map(([href, label]) => (
-                    <li key={href}>
-                      <Link href={href} legacyBehavior>
-                        <a className="block px-4 py-2 hover:bg-pink-100 rounded-md transition">{label}</a>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            )}
+          <main className="relative w-[1920px] h-[1080px] overflow-hidden flex flex-col justify-end p-4">
+            <div className="absolute top-4 left-4 z-50">
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                style={{ width: 128, height: 128 }}
+                aria-label="Toggle menu"
+              >
+                <Image src="/menu-button.webp" alt="Menu" width={128} height={128} className="object-contain" />
+              </button>
+              {menuOpen && (
+                <nav
+                  ref={navRef}
+                  className="absolute top-0 left-[140px] z-50 bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-lg p-4"
+                >
+                  <ul className="space-y-2 text-gray-800">
+                    {[
+                      ['/', 'Home'],
+                      ['/register', 'Register Your Bommel'],
+                      ['/gallery', 'Bommel‑Gallerie'],
+                      ['/workshop', 'Bommel Workshop'],
+                      ['/how-to-bommel', 'How‑To‑Bommel'],
+                      ['/zodiac', 'Bommel‑Horoscope'],
+                      ['/faq', 'FABQ'],
+                      ['/contact', 'Contact']
+                    ].map(([href, label]) => (
+                      <li key={href}>
+                        <Link href={href} legacyBehavior>
+                          <a className="block px-4 py-2 hover:bg-pink-100 rounded-md transition">{label}</a>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              )}
+            </div>
 
             <div className="absolute top-[1%] left-[19%] z-10">
               <Image
@@ -137,7 +151,6 @@ export default function DesktopHome() {
               <Image src="/bommel-god-icon.webp" alt="Ask the Bommel God" width={280} height={280} className="w-full h-full animate-snitch drop-shadow-[0_0_25px_rgba(255,215,0,0.6)]" />
             </button>
 
-            {/* Holy Code Modal */}
             {showGodModal && (
               <div className="fixed inset-0 z-50 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center p-4">
                 <div className="bg-white rounded-xl p-8 max-w-md w-full text-center shadow-2xl relative">
@@ -178,33 +191,33 @@ export default function DesktopHome() {
                 </div>
               </div>
             )}
+
+            <footer className="absolute bottom-0 left-0 w-full bg-indigo-900 bg-opacity-80 text-gray-200 py-1">
+              <div className="mx-auto max-w-5xl flex flex-row items-center justify-start text-lg">
+                <p className="whitespace-nowrap pl-4">
+                  © 2025 Grand Fluffdom of Bommlers. All rights reserved.
+                </p>
+                <div className="flex flex-row flex-nowrap justify-center gap-4 ml-16">
+                  <Link href="https://soundcloud.com/bebetta" legacyBehavior>
+                    <a className="hover:text-gray-100 whitespace-nowrap">SoundCloud</a>
+                  </Link>
+                  <Link href="https://bebetta.de/" legacyBehavior>
+                    <a className="hover:text-gray-100 whitespace-nowrap">Website</a>
+                  </Link>
+                  <a href="https://www.instagram.com/bebetta_official" target="_blank" rel="noopener" className="hover:text-gray-100 whitespace-nowrap">
+                    Instagram
+                  </a>
+                  <Link href="/contact" legacyBehavior>
+                    <a className="hover:text-gray-100 whitespace-nowrap">Contact</a>
+                  </Link>
+                  <Link href="/legal" legacyBehavior>
+                    <a className="hover:text-gray-100 whitespace-nowrap">Legal &amp; Fluffformation</a>
+                  </Link>
+                </div>
+              </div>
+            </footer>
           </main>
         </div>
-
-        <footer className="absolute bottom-0 left-0 w-full bg-indigo-900 bg-opacity-80 text-gray-200 py-1">
-          <div className="mx-auto max-w-5xl flex flex-row items-center justify-start text-lg">
-            <p className="whitespace-nowrap pl-4">
-              © 2025 Grand Fluffdom of Bommlers. All rights reserved.
-            </p>
-            <div className="flex flex-row flex-nowrap justify-center gap-4 ml-16">
-              <Link href="https://soundcloud.com/bebetta" legacyBehavior>
-                <a className="hover:text-gray-100 whitespace-nowrap">SoundCloud</a>
-              </Link>
-              <Link href="https://bebetta.de/" legacyBehavior>
-                <a className="hover:text-gray-100 whitespace-nowrap">Website</a>
-              </Link>
-              <a href="https://www.instagram.com/bebetta_official" target="_blank" rel="noopener" className="hover:text-gray-100 whitespace-nowrap">
-                Instagram
-              </a>
-              <Link href="/contact" legacyBehavior>
-                <a className="hover:text-gray-100 whitespace-nowrap">Contact</a>
-              </Link>
-              <Link href="/legal" legacyBehavior>
-                <a className="hover:text-gray-100 whitespace-nowrap">Legal &amp; Fluffformation</a>
-              </Link>
-            </div>
-          </div>
-        </footer>
       </div>
     </>
   )
