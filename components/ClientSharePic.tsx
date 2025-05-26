@@ -5,10 +5,13 @@ import html2canvas from 'html2canvas'
 export default function ClientSharePic({ bommel }: { bommel: any }) {
   const ref = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    // Optional: auto-scroll into view
-    ref.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [])
+  const fuzzDensity = Math.floor(Math.random() * 101)
+  const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
+  const bounceFactor = Math.floor(Math.random() * 10) + 1
+  const fluffAttack = Math.floor(Math.random() * 10) + 1
+  const fluffStars = typeof bommel.fluff_level === 'string' || typeof bommel.fluff_level === 'number'
+    ? '★'.repeat(Number(bommel.fluff_level))
+    : '—'
 
   const handleDownload = async () => {
     if (!ref.current) return
@@ -24,78 +27,70 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
     link.click()
   }
 
-  const fluffStars = typeof bommel.fluff_level === 'string' || typeof bommel.fluff_level === 'number'
-    ? '★'.repeat(Number(bommel.fluff_level))
-    : '—'
-
   return (
-    <div className="mt-6 flex flex-col items-center">
-      <div
-        id="sharepic"
-        ref={ref}
-        className="relative w-[360px] h-[640px] rounded-xl shadow-xl overflow-hidden text-[14px] font-montserrat"
-        style={{ backgroundImage: "url('/sharepic/quartett-bg.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }}
-      >
-        {/* Avatar */}
-        <div
-          className="absolute rounded-full border-4 border-white overflow-hidden"
-          style={{ top: '20px', left: '70px', width: '220px', height: '220px' }}
+    <div className="mt-10 flex flex-col items-center">
+      <div ref={ref} className="bg-white">
+        <svg
+          width="720"
+          height="1280"
+          viewBox="0 0 1080 1920"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ fontFamily: 'Montserrat, sans-serif' }}
         >
-          <img
-            src={bommel.imageUrl}
-            alt="Bommel"
-            className="object-cover w-full h-full"
-          />
-        </div>
-
-        {/* Badge */}
-        <div
-          className="absolute flex items-center justify-center rounded-full text-white text-[20px] font-bold"
-          style={{ top: '255px', left: '80px', width: '200px', height: '40px', backgroundColor: '#8e24aa' }}
-        >
-          No. {bommel.bommler_number}
-        </div>
-
-        {/* Title */}
-        <div
-          className="absolute flex items-center justify-center rounded-full border-4 border-[#8e24aa] bg-white/90 font-bangers text-[22px] text-[#8e24aa]"
-          style={{ top: '310px', left: '30px', width: '300px', height: '50px' }}
-        >
-          I AM AN OFFICIAL BOMMLER
-        </div>
-
-        {/* Attribute Panel */}
-        <div
-          className="absolute flex flex-col gap-1 bg-white/90 rounded-xl p-3 text-black"
-          style={{ top: '380px', left: '30px', width: '300px' }}
-        >
-          <div className="flex justify-between">
-            <div>
-              <div><b>Name:</b> {bommel.name}</div>
-              <div><b>Type:</b> {bommel.type}</div>
-              <div><b>Birthday:</b> {bommel.birthday}</div>
-              <div><b>Zodiac:</b> {bommel.zodiac}</div>
-              <div><b>Location:</b> {bommel.location || 'Unknown'}</div>
-            </div>
-            <div>
-              <div><b>Fluff Level:</b> {fluffStars}</div>
-              <div><b>Density:</b> {Math.floor(Math.random() * 101)}%</div>
-              <div><b>Dreaminess:</b> {'☁️'.repeat(Math.floor(Math.random() * 5) + 1)}</div>
-              <div><b>Bounce:</b> {Math.floor(Math.random() * 10) + 1}</div>
-              <div><b>Attack:</b> {Math.floor(Math.random() * 10) + 1}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* CTA */}
-        <div
-          className="absolute text-center text-white px-4 rounded-xl"
-          style={{ bottom: '20px', left: '30px', width: '300px', height: '60px', backgroundColor: '#ff69b4' }}
-        >
-          <div className="pt-1 text-[14px]">Ready to fluff the world?</div>
-          <div className="font-bold text-[16px] text-yellow-300">mybommel.com</div>
-          <div className="text-[12px]">by Bebetta with Love</div>
-        </div>
+          <image href="/sharepic/quartett-bg.webp" width="1080" height="1920" />
+          <g transform="translate(0,288)">
+            <defs>
+              <clipPath id="clip">
+                <circle cx="540" cy="270" r="250" />
+              </clipPath>
+            </defs>
+            <circle cx="540" cy="270" r="254" fill="none" stroke="#fff" strokeWidth="4" />
+            <image
+              href={bommel.imageUrl}
+              x="290"
+              y="20"
+              width="500"
+              height="500"
+              clipPath="url(#clip)"
+            />
+            <rect x="140" y="570" width="800" height="70" rx="35" fill="#ffffffcc" stroke="#8e24aa" strokeWidth="4" />
+            <text x="540" y="620" textAnchor="middle" fontFamily="Bangers, sans-serif" fontSize="50" fill="#8e24aa">
+              I AM AN OFFICIAL BOMMLER
+            </text>
+            <rect x="390" y="425" width="300" height="54" rx="27" fill="#8e24aa" />
+            <text
+              x="540"
+              y="460"
+              textAnchor="middle"
+              fontSize="37"
+              fontFamily="Montserrat, sans-serif"
+              fill="#fff"
+            >
+              No. {bommel.bommler_number}
+            </text>
+            <rect x="135" y="750" width="810" height="265" rx="10" fill="#ffffffdd" />
+            <line x1="540" y1="770" x2="540" y2="995" stroke="#ccc" strokeWidth="2" strokeDasharray="4,4" />
+            <text x="155" y="795" fontSize="30" fill="#333">Name: {bommel.name}</text>
+            <text x="155" y="840" fontSize="30" fill="#333">Type: {bommel.type}</text>
+            <text x="155" y="885" fontSize="30" fill="#333">Birthday: {bommel.birthday}</text>
+            <text x="155" y="930" fontSize="30" fill="#333">Zodiac: {bommel.zodiac}</text>
+            <text x="155" y="975" fontSize="30" fill="#333">Location: {bommel.location || 'Unknown'}</text>
+            <text x="575" y="795" fontSize="30" fill="#333">Fluff Level: {fluffStars}</text>
+            <text x="575" y="840" fontSize="30" fill="#333">Fuzz Density: {fuzzDensity}%</text>
+            <text x="575" y="885" fontSize="30" fill="#333">Dreaminess: {dreaminessEmoji}</text>
+            <text x="575" y="930" fontSize="30" fill="#333">Bounce Factor: {bounceFactor}</text>
+            <text x="575" y="975" fontSize="30" fill="#333">Fluff Attack: {fluffAttack}</text>
+          </g>
+          <g transform="translate(0,0)">
+            <rect x="220" y="1380" width="640" height="140" rx="20" fill="#ff69b4" />
+            <text x="540" y="1430" textAnchor="middle" fontSize="30" fill="#fff">
+              Ready to fluff the world?
+            </text>
+            <text x="540" y="1490" textAnchor="middle" fontSize="30" fill="#ffff00">
+              <tspan fontWeight="700">mybommel.com</tspan> by Bebetta with Love
+            </text>
+          </g>
+        </svg>
       </div>
 
       <button
