@@ -42,11 +42,13 @@ export default function GalleryDesktop() {
       }
 
       const items: Bommel[] = data.map(item => {
-        const parts = item.image_path.split('/')
-        const filename = parts[parts.length - 1]
-        const { data: storageData } = supabase.storage.from('bommel-images').getPublicUrl(filename)
-        const publicUrl = storageData.publicUrl
+        const { data: storageData } = supabase.storage
+          .from('bommel-images')
+          .getPublicUrl(item.image_path)
+
+        const publicUrl = storageData?.publicUrl || '/fallback.webp'
         const zodiac_sign = getBommelZodiacEn(new Date(item.birthday)).name
+
         return {
           id: item.id,
           name: item.name,
@@ -112,17 +114,17 @@ export default function GalleryDesktop() {
             Bommel World Map
           </p>
         </Link>
-        
+
         <Link
-  href="/"
-  className="fixed top-4 left-4 z-50"
->
-  <img
-    src="/back-to-home.webp"
-    alt="Back to Home"
-    className="w-[80px] h-[80px] drop-shadow-xl hover:scale-105 transition"
-  />
-</Link>
+          href="/"
+          className="fixed top-4 left-4 z-50"
+        >
+          <img
+            src="/back-to-home.webp"
+            alt="Back to Home"
+            className="w-[80px] h-[80px] drop-shadow-xl hover:scale-105 transition"
+          />
+        </Link>
 
         <div className="flex flex-col items-center">
           <div className="w-[80%] max-w-[600px]">
@@ -200,7 +202,7 @@ export default function GalleryDesktop() {
         {/* Approved Bommels */}
         <h2 className="text-lg sm:text-xl font-bold text-purple-800 mt-4 mb-2">🧶 Approved Bommels</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
-          {approved.map(b => (
+          {filteredApproved.map(b => (
             <div
               key={b.id}
               className="relative bg-white bg-opacity-80 rounded-xl p-4 shadow-lg cursor-pointer hover:scale-105 transition"
@@ -211,7 +213,7 @@ export default function GalleryDesktop() {
               </p>
               <div className="relative aspect-square overflow-hidden rounded-full w-full">
                 <Image
-                  src={b.image_url}
+                  src={encodeURI(b.image_url)}
                   alt={b.name}
                   width={500}
                   height={500}
@@ -262,7 +264,7 @@ export default function GalleryDesktop() {
           <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 px-4">
             <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto text-center space-y-4">
               <Image
-                src={selected.image_url}
+                src={encodeURI(selected.image_url)}
                 alt={selected.name}
                 width={300}
                 height={300}
