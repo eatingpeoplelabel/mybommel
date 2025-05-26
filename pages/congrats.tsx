@@ -123,15 +123,14 @@ export default function Congrats() {
             📄 Download Certificate
           </Link>
 
-          <h2 className="text-xl font-bold text-purple-700 mt-10">📸 Your Insta-ready Sharepic:</h2>
-<p className="text-sm text-gray-600 mb-2 text-center">Straight from the Fluff Forge!</p>
-<a
-  href={`/api/share-image?id=${id}`}
-  download
-  className="mt-2 inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-full shadow-lg"
->
-  📸 Download Sharepic
-</a>
+          <h2 className="mt-10 text-xl font-bold text-purple-700">📸 Your Insta-ready Sharepic:</h2>
+      <a
+        href={`/api/share-image?id=${id}`}
+        download
+        className="mt-4 inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition"
+      >
+        📸 Download Your Sharepic
+      </a>
 
 
 

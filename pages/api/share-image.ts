@@ -1,3 +1,4 @@
+// pages/api/share-image.ts
 import { Resvg } from '@resvg/resvg-js'
 import { createClient } from '@supabase/supabase-js'
 import sharp from 'sharp'
@@ -10,22 +11,12 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-const config = {
-  canvas: { width: 1080, height: 1920 },
-  shiftDown: 0.15,
-  shiftUp: 0,
-  avatar: { x: 290, y: 20, size: 500, border: 4 },
-  title: { x: 540, y: 570, width: 800, height: 70, fontSize: 50 },
-  badge: { x: 390, y: 425, width: 300, height: 54, fontSize: 37 },
-  attrPanel: { x: 135, y: 750, width: 810, height: 265, fontSize: 30, lineHeight: 45 },
-  cta: { x: 220, y: 1380, width: 640, height: 140, fontSize: 30 }
-}
-
 export default async function handler(req, res) {
   try {
-    const { id, preview } = req.query
+    const { id } = req.query
     if (!id) return res.status(400).send('Missing Bommel ID')
 
+    // 1) Daten holen
     const { data: bommel, error } = await supabase
       .from('bommler')
       .select('*')
@@ -33,112 +24,90 @@ export default async function handler(req, res) {
       .single()
     if (error || !bommel) return res.status(404).send('Bommel not found')
 
-    console.log('✅ bommel:', JSON.stringify(bommel, null, 2))
-
     const zodiac = getBommelZodiacEn(new Date(bommel.birthday))
     const fuzzDensity = Math.floor(Math.random() * 101)
-    const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
+    const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random()*5)]
     const bounceFactor = Math.floor(Math.random() * 10) + 1
     const fluffAttack = Math.floor(Math.random() * 10) + 1
+    const fluffStars = typeof bommel.fluff_level === 'number'
+      ? '★'.repeat(bommel.fluff_level)
+      : '—'
 
+    // 2) Hintergrund-Frame (PNG → Base64)
+    const framePath = path.join(process.cwd(), 'assets/sharepic/quartett-bg.png')
+    const frameBuf = await fs.readFile(framePath)
+    const frameUri = `data:image/png;base64,${frameBuf.toString('base64')}`
+
+    // 3) Avatar laden (remote → Buffer → sharp)
     const imageUrl = bommel.image_path
       ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/bommel-images/${bommel.image_path}`
       : `${req.headers.origin}/Bommel1Register.png`
-
-    const framePath = path.join(process.cwd(), 'assets', 'sharepic', 'quartett-bg.png')
-    const bangersFontPath = path.join(process.cwd(), 'fonts', 'Bangers-Regular.ttf')
-    const montserratFontPath = path.join(process.cwd(), 'fonts', 'Montserrat-VariableFont_wght.ttf')
-
-    const [frameBuf] = await Promise.all([
-      fs.readFile(framePath),
-      fs.access(bangersFontPath),
-      fs.access(montserratFontPath),
-    ])
-
-    let rawImageBuffer
+    let rawAvatar = Buffer.alloc(0)
     try {
-      const res = await fetch(imageUrl)
-      if (!res.ok) throw new Error('Image fetch failed')
-      rawImageBuffer = await res.arrayBuffer()
-    } catch (err) {
-      console.error('❌ Failed to fetch image:', imageUrl, err)
-      rawImageBuffer = Buffer.alloc(0)
-    }
+      const r = await fetch(imageUrl)
+      if (r.ok) rawAvatar = Buffer.from(await r.arrayBuffer())
+    } catch { /* ignore */ }
+    const avatarBuf = await sharp(rawAvatar).resize(500,500).png().toBuffer()
+    const avatarUri = `data:image/png;base64,${avatarBuf.toString('base64')}`
 
-    const imgBuf = await sharp(Buffer.from(rawImageBuffer)).resize({ width: 512 }).toBuffer()
-
-    const frameUri = `data:image/png;base64,${frameBuf.toString('base64')}`
-    const useBase64Image = preview !== 'svg'
-const imgUri = imgBuf.length > 0 ? `data:image/png;base64,${imgBuf.toString('base64')}` : '';
-
-    const shiftDownPx = config.canvas.height * config.shiftDown
-    const shiftUpPx = config.canvas.height * config.shiftUp
-
-    const fluffStars = typeof bommel.fluff_level === 'string' || typeof bommel.fluff_level === 'number'
-      ? '★'.repeat(Number(bommel.fluff_level))
-      : '—'
-
+    // 4) SVG generieren (Arial statt Custom-Fonts)
+    const w=1080, h=1920, cx=540, cy=270, r=250
     const svg = `
-<svg width="${config.canvas.width}" height="${config.canvas.height}" xmlns="http://www.w3.org/2000/svg">
-  <image href="${frameUri}" width="${config.canvas.width}" height="${config.canvas.height}"/>
-  <g transform="translate(0,${shiftDownPx})">
-    <defs>
-      <clipPath id="clip"><circle cx="${config.avatar.x + config.avatar.size/2}" cy="${config.avatar.y + config.avatar.size/2}" r="${config.avatar.size/2}"/></clipPath>
-    </defs>
-    <circle cx="${config.avatar.x + config.avatar.size/2}" cy="${config.avatar.y + config.avatar.size/2}" r="${config.avatar.size/2 + config.avatar.border}" fill="none" stroke="#fff" stroke-width="${config.avatar.border}"/>
-    ${useBase64Image
-      ? `<image href="${imgUri}" x="${config.avatar.x}" y="${config.avatar.y}" width="${config.avatar.size}" height="${config.avatar.size}" clip-path="url(#clip)"/>`
-      : `<image href="${imageUrl}" x="${config.avatar.x}" y="${config.avatar.y}" width="${config.avatar.size}" height="${config.avatar.size}" clip-path="url(#clip)"/>`
-    }
-    <rect x="${config.title.x - config.title.width/2}" y="${config.title.y}" width="${config.title.width}" height="${config.title.height}" rx="${config.title.height/2}" fill="#ffffffcc" stroke="#8e24aa" stroke-width="4"/>
-    <text x="${config.title.x}" y="${config.title.y + config.title.height/2 + config.title.fontSize/3}" text-anchor="middle" font-family="Bangers, Arial, sans-serif" font-size="${config.title.fontSize}" fill="#8e24aa">I AM AN OFFICIAL BOMMLER</text>
-    <rect x="${config.badge.x}" y="${config.badge.y}" width="${config.badge.width}" height="${config.badge.height}" rx="${config.badge.height/2}" fill="#8e24aa"/>
-    <text x="${config.badge.x + config.badge.width/2}" y="${config.badge.y + config.badge.height/2 + config.badge.fontSize/3}" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="${config.badge.fontSize}" fill="#fff">No. ${bommel.bommler_number}</text>
-    <rect x="${config.attrPanel.x}" y="${config.attrPanel.y}" width="${config.attrPanel.width}" height="${config.attrPanel.height}" rx="10" fill="#ffffffdd"/>
-    <line x1="${config.attrPanel.x + config.attrPanel.width/2}" y1="${config.attrPanel.y + 20}" x2="${config.attrPanel.x + config.attrPanel.width/2}" y2="${config.attrPanel.y + config.attrPanel.height - 20}" stroke="#ccc" stroke-width="2" stroke-dasharray="4,4"/>
-    <text x="${config.attrPanel.x + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight}" font-family="Montserrat" font-size="${config.attrPanel.fontSize}" fill="#333">Name: ${bommel.name}</text>
-    <text x="${config.attrPanel.x + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 2}" font-family="Montserrat" font-size="${config.attrPanel.fontSize}" fill="#333">Type: ${bommel.type}</text>
-    <text x="${config.attrPanel.x + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 3}" font-family="Montserrat" font-size="${config.attrPanel.fontSize}" fill="#333">Birthday: ${bommel.birthday}</text>
-    <text x="${config.attrPanel.x + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 4}" font-family="Montserrat" font-size="${config.attrPanel.fontSize}" fill="#333">Zodiac: ${zodiac.name}</text>
-    <text x="${config.attrPanel.x + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 5}" font-family="Montserrat" font-size="${config.attrPanel.fontSize}" fill="#333">Location: ${bommel.location || 'Unknown'}</text>
-    <text x="${config.attrPanel.x + config.attrPanel.width/2 + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight}" font-family="Montserrat" font-size="${config.attrPanel.fontSize}" fill="#333">Fluff Level: ${fluffStars}</text>
-    <text x="${config.attrPanel.x + config.attrPanel.width/2 + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 2}" font-family="Montserrat" font-size="${config.attrPanel.fontSize}" fill="#333">Fuzz Density: ${fuzzDensity}%</text>
-    <text x="${config.attrPanel.x + config.attrPanel.width/2 + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 3}" font-family="Montserrat" font-size="${config.attrPanel.fontSize}" fill="#333">Dreaminess: ${dreaminessEmoji}</text>
-    <text x="${config.attrPanel.x + config.attrPanel.width/2 + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 4}" font-family="Montserrat" font-size="${config.attrPanel.fontSize}" fill="#333">Bounce Factor: ${bounceFactor}</text>
-    <text x="${config.attrPanel.x + config.attrPanel.width/2 + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 5}" font-family="Montserrat" font-size="${config.attrPanel.fontSize}" fill="#333">Fluff Attack: ${fluffAttack}</text>
+<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
+  <image href="${frameUri}" width="${w}" height="${h}"/>
+  <g transform="translate(0,288)">
+    <defs><clipPath id="clip"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath></defs>
+    <circle cx="${cx}" cy="${cy}" r="${r+4}" fill="none" stroke="#fff" stroke-width="4"/>
+    <image href="${avatarUri}" x="290" y="20" width="500" height="500" clip-path="url(#clip)"/>
+    <rect x="390" y="425" width="300" height="54" rx="27" fill="#8e24aa"/>
+    <text x="${cx}" y="460" text-anchor="middle"
+          font-family="Arial, sans-serif" font-weight="700" font-size="36" fill="#fff">
+      No. ${bommel.bommler_number}
+    </text>
+    <rect x="140" y="570" width="800" height="70" rx="35" fill="#fff8" stroke="#8e24aa" stroke-width="4"/>
+    <text x="${cx}" y="620" text-anchor="middle"
+          font-family="Arial Black, Arial, sans-serif" font-size="52" fill="#8e24aa">
+      I AM AN OFFICIAL BOMMLER
+    </text>
+    <!-- Attribute-Panel -->
+    <rect x="135" y="750" width="810" height="265" rx="10" fill="#ffffffdd"/>
+    <line x1="540" y1="770" x2="540" y2="995" stroke="#ccc" stroke-width="2" stroke-dasharray="4,4"/>
+    <text x="155" y="795" font-family="Arial, sans-serif" font-weight="700" font-size="32" fill="#333">Name: ${bommel.name}</text>
+    <text x="155" y="840" font-family="Arial, sans-serif" font-size="32" fill="#333">Type: ${bommel.type}</text>
+    <text x="155" y="885" font-family="Arial, sans-serif" font-size="32" fill="#333">Birthday: ${bommel.birthday}</text>
+    <text x="155" y="930" font-family="Arial, sans-serif" font-size="32" fill="#333">Zodiac: ${zodiac.name}</text>
+    <text x="155" y="975" font-family="Arial, sans-serif" font-size="32" fill="#333">Location: ${bommel.location || 'Unknown'}</text>
+    <text x="575" y="795" font-family="Arial, sans-serif" font-size="32" fill="#333">Fluff Level: ${fluffStars}</text>
+    <text x="575" y="840" font-family="Arial, sans-serif" font-size="32" fill="#333">Fuzz Density: ${fuzzDensity}%</text>
+    <text x="575" y="885" font-family="Arial, sans-serif" font-size="32" fill="#333">Dreaminess: ${dreaminessEmoji}</text>
+    <text x="575" y="930" font-family="Arial, sans-serif" font-size="32" fill="#333">Bounce Factor: ${bounceFactor}</text>
+    <text x="575" y="975" font-family="Arial, sans-serif" font-size="32" fill="#333">Fluff Attack: ${fluffAttack}</text>
   </g>
-  <g transform="translate(0,${shiftUpPx})">
-    <rect x="${config.cta.x}" y="${config.cta.y}" width="${config.cta.width}" height="${config.cta.height}" rx="20" fill="#ff69b4"/>
-    <text x="${config.canvas.width/2}" y="${config.cta.y + config.cta.height/2 - config.cta.fontSize}" text-anchor="middle" font-family="Montserrat" font-size="${config.cta.fontSize}" fill="#fff">Ready to fluff the world?</text>
-    <text x="${config.canvas.width/2}" y="${config.cta.y + config.cta.height/2 + config.cta.fontSize}" text-anchor="middle" font-family="Montserrat" font-size="${config.cta.fontSize}" fill="#ffff00"><tspan font-weight="700">mybommel.com</tspan> by Bebetta with Love</text>
-  </g>
+  <!-- CTA unten -->
+  <rect x="220" y="1380" width="640" height="140" rx="20" fill="#ff69b4"/>
+  <text x="${cx}" y="1430" text-anchor="middle"
+        font-family="Arial Black, Arial, sans-serif" font-size="36" fill="#fff">
+    Ready to fluff the world?
+  </text>
+  <text x="${cx}" y="1490" text-anchor="middle"
+        font-family="Arial, sans-serif" font-size="36" fill="#ffff00">
+    <tspan font-weight="700">mybommel.com</tspan> by Bebetta with Love
+  </text>
 </svg>`
 
-    if (preview === 'svg') {
-      res.setHeader('Content-Type', 'image/svg+xml')
-      return res.send(svg)
-    }
-
-    const resvgInstance = new Resvg(svg, {
-      fitTo: { mode: 'width', value: 720 },
-      font: {
-        loadSystemFonts: false,
-        fontFiles: [
-          path.join(process.cwd(), 'fonts', 'Bangers-Regular.ttf'),
-          path.join(process.cwd(), 'fonts', 'Montserrat-VariableFont_wght.ttf'),
-        ],
-      },
+    // 5) Rendern als PNG direkt in 1080×1920:
+    const resvg = new Resvg(svg, {
+      fitTo: { mode: 'width', value: 1080 },
+      font: { loadSystemFonts: true }
     })
-
-    const png = resvgInstance.render().asPng()
+    const png = resvg.render().asPng()
 
     res.setHeader('Content-Type', 'image/png')
-    res.setHeader('Content-Disposition', 'inline; filename=bommel-story.png')
-    res.setHeader('Cache-Control', 'public, max-age=3600, immutable')
-    res.send(png)
+    res.setHeader('Content-Disposition', `attachment; filename=bommel-${bommel.bommler_number}.png`)
+    return res.send(png)
 
-  } catch (error) {
-    console.error(error)
+  } catch (e) {
+    console.error(e)
     res.status(500).send('Server error')
   }
 }
