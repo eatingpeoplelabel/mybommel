@@ -1,5 +1,5 @@
 // components/ClientSharePic.tsx
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import html2canvas from 'html2canvas'
 import { QUARTETT_BG_BASE64 } from '@/lib/quartettBg'
 
@@ -7,13 +7,12 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
   const ref = useRef<HTMLDivElement>(null)
 
   const fuzzDensity = Math.floor(Math.random() * 101)
-  const dreaminessEmoji = ['☁️', '☁️☁️', '☁️☁️☁️', '☁️☁️☁️☁️', '☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
+  const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
   const bounceFactor = Math.floor(Math.random() * 10) + 1
   const fluffAttack = Math.floor(Math.random() * 10) + 1
-  const fluffStars =
-    typeof bommel.fluff_level === 'string' || typeof bommel.fluff_level === 'number'
-      ? '★'.repeat(Number(bommel.fluff_level))
-      : '—'
+  const fluffStars = typeof bommel.fluff_level === 'string' || typeof bommel.fluff_level === 'number'
+    ? '★'.repeat(Number(bommel.fluff_level))
+    : '—'
 
   const handleDownload = async () => {
     if (!ref.current) return
@@ -30,12 +29,13 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
   }
 
   return (
-    <div className="mt-4 mb-10 flex flex-col items-center">
-      <div ref={ref} className="w-[540px] aspect-[9/16] relative">
+    <div className="flex flex-col items-center">
+      <div ref={ref} className="w-[360px] aspect-[9/16]">
         <svg
+          width="720"
+          height="1280"
           viewBox="0 0 1080 1920"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-full"
           style={{ fontFamily: 'Montserrat, sans-serif' }}
         >
           <image href={QUARTETT_BG_BASE64} width="1080" height="1920" />
@@ -54,10 +54,6 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
               height="500"
               clipPath="url(#clip)"
             />
-            <rect x="140" y="570" width="800" height="70" rx="35" fill="#ffffffcc" stroke="#8e24aa" strokeWidth="4" />
-            <text x="540" y="620" textAnchor="middle" fontFamily="Bangers, sans-serif" fontSize="50" fill="#8e24aa">
-              I AM AN OFFICIAL BOMMLER
-            </text>
             <rect x="390" y="425" width="300" height="54" rx="27" fill="#8e24aa" />
             <text
               x="540"
@@ -68,6 +64,10 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
               fill="#fff"
             >
               No. {bommel.bommler_number}
+            </text>
+            <rect x="140" y="570" width="800" height="70" rx="35" fill="#ffffffcc" stroke="#8e24aa" strokeWidth="4" />
+            <text x="540" y="620" textAnchor="middle" fontFamily="Bangers, sans-serif" fontSize="50" fill="#8e24aa">
+              I AM AN OFFICIAL BOMMLER
             </text>
             <rect x="135" y="750" width="810" height="265" rx="10" fill="#ffffffdd" />
             <line x1="540" y1="770" x2="540" y2="995" stroke="#ccc" strokeWidth="2" strokeDasharray="4,4" />

@@ -98,7 +98,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
      .moveDown(0.3)
 
   // Seal
-  const sealPath = path.resolve('./public/seal.webp')
+  const sealPath = path.resolve('./public/seal.png')
   const sealSize = 150
   const sealX = doc.page.width / 2 - sealSize / 2
   const sealY = doc.page.height - margin - sealSize - 65
