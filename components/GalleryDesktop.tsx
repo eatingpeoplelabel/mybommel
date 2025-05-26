@@ -1,3 +1,4 @@
+// components/GalleryDesktop.tsx
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -138,19 +139,69 @@ export default function GalleryDesktop() {
 
         {/* Filter Tool */}
         <div className="flex flex-wrap gap-6 justify-center items-center mb-8 bg-white bg-opacity-60 p-4 rounded-xl shadow">
-          {/* Filter Controls (unchanged) */}
-          {/* ... */}
+          <div>
+            <label className="block text-sm font-medium text-purple-700 mb-1">Type:</label>
+            <select
+              value={filterType}
+              onChange={e => setFilterType(e.target.value)}
+              className="px-3 py-1 rounded-md border border-purple-300 bg-white text-sm"
+            >
+              <option value="">All</option>
+              {uniqueTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-purple-700 mb-1">Zodiac:</label>
+            <select
+              value={filterZodiac}
+              onChange={e => setFilterZodiac(e.target.value)}
+              className="px-3 py-1 rounded-md border border-purple-300 bg-white text-sm"
+            >
+              <option value="">All</option>
+              {uniqueZodiacs.map(z => (
+                <option key={z} value={z}>{z}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-purple-700 mb-1">Fluff Level:</label>
+            <select
+              value={filterFluff}
+              onChange={e => setFilterFluff(e.target.value)}
+              className="px-3 py-1 rounded-md border border-purple-300 bg-white text-sm"
+            >
+              <option value="">All</option>
+              {uniqueFluffLevels.map(level => (
+                <option key={level} value={level.toString()}>{level}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-purple-700 mb-1">Location:</label>
+            <select
+              value={filterLocation}
+              onChange={e => setFilterLocation(e.target.value)}
+              className="px-3 py-1 rounded-md border border-purple-300 bg-white text-sm"
+            >
+              <option value="">All</option>
+              {uniqueLocations.map(loc => (
+                <option key={loc} value={loc}>{loc}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        {/* If nothing to show */}
+        {/* Keine Ergebnisse Hinweis */}
         {filteredApproved.length === 0 && (
           <p className="text-center text-red-500 mt-8">
-            ❌ No approved Bommels found. Check Supabase or filter settings.
+            ❌ No matching Bommels found. Try adjusting your filters!
           </p>
         )}
 
-        {/* Approved Bommels */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
+        {/* Approved Bommels Grid: Jetzt mit 5 Spalten */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-10">
           {filteredApproved.map(b => (
             <div
               key={b.id}
