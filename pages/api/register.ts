@@ -148,7 +148,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           tls: { rejectUnauthorized: false, servername: 'kasserver.com' },
         })
 
-        const confirmUrl = `http://${process.env.NEXT_PUBLIC_HOST}/api/newsletter/confirm?email=${encodeURIComponent(rest.email)}`
+        const confirmUrl = `${process.env.NEXT_PUBLIC_HOST}/api/newsletter/confirm?email=${encodeURIComponent(rest.email)}`
 
         await transporter.sendMail({
           from: `"Bommel & Bebetta" <${process.env.SMTP_USER}>`,
