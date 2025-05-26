@@ -124,15 +124,12 @@ export default function Congrats() {
           </Link>
 
           <h2 className="text-xl font-bold text-purple-700 mt-10">📸 Your Insta-ready Sharepic:</h2>
-          <div className="relative z-0 max-w-[540px] w-full mx-auto">
-  <ClientSharePic
-    bommel={{
-      ...bommel,
-      imageUrl: imageUrl,
-      zodiac: zodiac?.name || 'Unknown',
-    }}
-  />
-</div>
+<Link
+  href={`/sharepic?id=${id}`}
+  className="bg-indigo-500 hover:bg-indigo-400 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition inline-block"
+>
+  👉 Open Sharepic Page
+</Link>
 
           <div className="pt-6 text-sm text-center text-purple-800 bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 shadow-inner">
             <p className="font-semibold mb-1">🌟 A whisper from beyond the fluff...</p>
