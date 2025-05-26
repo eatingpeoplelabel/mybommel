@@ -43,7 +43,7 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
 
   return (
     <div className="mt-10 flex flex-col items-center">
-      <div ref={ref} className="bg-white">
+      <div ref={ref} className="bg-white w-[540px] h-[960px]">
         <svg
           width="720"
           height="1280"
