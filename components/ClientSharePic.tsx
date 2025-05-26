@@ -1,9 +1,12 @@
 // components/ClientSharePic.tsx
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import html2canvas from 'html2canvas'
+
+import { QUARTETT_BG_BASE64 } from '@/lib/quartettBg'
 
 export default function ClientSharePic({ bommel }: { bommel: any }) {
   const ref = useRef<HTMLDivElement>(null)
+  const [imageData, setImageData] = useState<string>('')
 
   const fuzzDensity = Math.floor(Math.random() * 101)
   const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
@@ -12,6 +15,17 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
   const fluffStars = typeof bommel.fluff_level === 'string' || typeof bommel.fluff_level === 'number'
     ? '★'.repeat(Number(bommel.fluff_level))
     : '—'
+
+  useEffect(() => {
+    fetch(bommel.imageUrl)
+      .then(res => res.blob())
+      .then(blob => {
+        const reader = new FileReader()
+        reader.onloadend = () => setImageData(reader.result as string)
+        reader.readAsDataURL(blob)
+      })
+      .catch(() => setImageData(''))
+  }, [bommel.imageUrl])
 
   const handleDownload = async () => {
     if (!ref.current) return
@@ -37,7 +51,7 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
           xmlns="http://www.w3.org/2000/svg"
           style={{ fontFamily: 'Montserrat, sans-serif' }}
         >
-          <image href="/sharepic/quartett-bg.webp" width="1080" height="1920" />
+          <image href={QUARTETT_BG_BASE64} width="1080" height="1920" />
           <g transform="translate(0,288)">
             <defs>
               <clipPath id="clip">
@@ -46,7 +60,7 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
             </defs>
             <circle cx="540" cy="270" r="254" fill="none" stroke="#fff" strokeWidth="4" />
             <image
-              href={bommel.imageUrl}
+              href={imageData || bommel.imageUrl}
               x="290"
               y="20"
               width="500"
