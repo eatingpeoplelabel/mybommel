@@ -1,12 +1,37 @@
-// pages/register.tsx
+'use client'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import imageCompression from 'browser-image-compression'
+import { supabase } from '@/lib/supabaseClient'
 
-// Full list of countries + fantasy countries
+// Full list of countries
 const countries = [
-  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bommelhausen", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Côte d’Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Dorado", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fantasia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Middle-earth", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Narnia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Planet Bommel", "Poland", "Portugal", "Qatar", "Republic of the Congo", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Westeros", "Yemen", "Zambia", "Zimbabwe"
+  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia",
+  "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium",
+  "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria",
+  "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad",
+  "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Côte d’Ivoire", "Croatia", "Cuba", "Cyprus",
+  "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
+  "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia",
+  "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada",
+  "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India",
+  "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan",
+  "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia",
+  "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali",
+  "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco",
+  "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands",
+  "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman",
+  "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal",
+  "Qatar", "Republic of the Congo", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia",
+  "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia",
+  "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands",
+  "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname",
+  "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo",
+  "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine",
+  "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu",
+  "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
 ]
 
 const bommelTypes = [
@@ -28,19 +53,6 @@ type FormData = {
   bot_detector_3000?: string
 }
 
-const playPing = (e: React.MouseEvent<HTMLDivElement>, url: string) => {
-  const audio = new Audio(url)
-  audio.play()
-  const container = e.currentTarget as HTMLDivElement
-  const ripple = document.createElement('span')
-  ripple.className = 'absolute w-24 h-24 bg-gradient-to-r from-pink-400 to-purple-400 opacity-50 rounded-full pointer-events-none animate-ping'
-  ripple.style.top = '50%'
-  ripple.style.left = '50%'
-  ripple.style.transform = 'translate(-50%, -50%)'
-  container.appendChild(ripple)
-  setTimeout(() => ripple.remove(), 500)
-}
-
 export default function Register() {
   const { register, handleSubmit, formState: { isSubmitting } } = useForm<FormData>()
   const [previewData, setPreviewData] = useState<FormData | null>(null)
@@ -53,16 +65,30 @@ export default function Register() {
 
   const onConfirm = async () => {
     if (!previewData) return
+    setIsUploading(true)
+    setUploadError(null)
     try {
-      setIsUploading(true)
-      const file = previewData.image[0]
-      const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => resolve((reader.result as string).split(',')[1])
-        reader.onerror = err => reject(err)
+      const originalFile = previewData.image[0]
+
+      const compressedFile = await imageCompression(originalFile, {
+        maxSizeMB: 1, // Zielgröße < 1MB
+        maxWidthOrHeight: 1000,
+        useWebWorker: true
       })
-      const image_base64 = await toBase64(file)
+
+      const fileExt = compressedFile.name.split('.').pop()
+      const fileName = `${previewData.name}-${Date.now()}.${fileExt}`
+      const filePath = `bommel-images/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('bommel-images')
+        .upload(filePath, compressedFile, {
+          cacheControl: '3600',
+          upsert: false,
+        })
+
+      if (uploadError) throw uploadError
+
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -77,15 +103,16 @@ export default function Register() {
           about: previewData.about,
           country: previewData.country,
           postal_code: previewData.postalCode,
-          image_base64,
-          image_name: `${previewData.name}-${Date.now()}.webp`
+          image_path: filePath
         })
       })
+
       if (!res.ok) throw new Error('Upload failed')
       const { id } = await res.json()
       router.push(`/congrats?id=${id}`)
     } catch (err: any) {
-      setUploadError(err.message)
+      console.error(err)
+      setUploadError(err.message || 'Something went wrong.')
       setPreviewData(null)
       setIsUploading(false)
     }
@@ -124,7 +151,6 @@ export default function Register() {
           </div>
           <div className="flex flex-col">
             <label className="font-semibold">Email (optional)</label>
-            <span className="text-sm text-gray-600 mb-1">Newsletter & giveaways</span>
             <input type="email" className="w-full" placeholder="Enter your email" {...register('email')} />
           </div>
           <div className="flex flex-col">
