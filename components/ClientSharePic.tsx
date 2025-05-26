@@ -1,31 +1,19 @@
 // components/ClientSharePic.tsx
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import html2canvas from 'html2canvas'
-
 import { QUARTETT_BG_BASE64 } from '@/lib/quartettBg'
 
 export default function ClientSharePic({ bommel }: { bommel: any }) {
   const ref = useRef<HTMLDivElement>(null)
-  const [imageData, setImageData] = useState<string>('')
 
   const fuzzDensity = Math.floor(Math.random() * 101)
-  const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
+  const dreaminessEmoji = ['☁️', '☁️☁️', '☁️☁️☁️', '☁️☁️☁️☁️', '☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
   const bounceFactor = Math.floor(Math.random() * 10) + 1
   const fluffAttack = Math.floor(Math.random() * 10) + 1
-  const fluffStars = typeof bommel.fluff_level === 'string' || typeof bommel.fluff_level === 'number'
-    ? '★'.repeat(Number(bommel.fluff_level))
-    : '—'
-
-  useEffect(() => {
-    fetch(bommel.imageUrl)
-      .then(res => res.blob())
-      .then(blob => {
-        const reader = new FileReader()
-        reader.onloadend = () => setImageData(reader.result as string)
-        reader.readAsDataURL(blob)
-      })
-      .catch(() => setImageData(''))
-  }, [bommel.imageUrl])
+  const fluffStars =
+    typeof bommel.fluff_level === 'string' || typeof bommel.fluff_level === 'number'
+      ? '★'.repeat(Number(bommel.fluff_level))
+      : '—'
 
   const handleDownload = async () => {
     if (!ref.current) return
@@ -42,13 +30,12 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
   }
 
   return (
-    <div className="mt-10 flex flex-col items-center">
-      <div ref={ref} className="bg-white w-[540px] h-[960px]">
+    <div className="mt-4 mb-10 flex flex-col items-center">
+      <div ref={ref} className="w-[540px] aspect-[9/16] relative">
         <svg
-          width="720"
-          height="1280"
           viewBox="0 0 1080 1920"
           xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-full"
           style={{ fontFamily: 'Montserrat, sans-serif' }}
         >
           <image href={QUARTETT_BG_BASE64} width="1080" height="1920" />
@@ -60,7 +47,7 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
             </defs>
             <circle cx="540" cy="270" r="254" fill="none" stroke="#fff" strokeWidth="4" />
             <image
-              href={imageData || bommel.imageUrl}
+              href={bommel.imageUrl}
               x="290"
               y="20"
               width="500"

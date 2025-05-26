@@ -69,7 +69,7 @@ export default async function handler(req, res) {
 
     const frameUri = `data:image/png;base64,${frameBuf.toString('base64')}`
     const useBase64Image = preview !== 'svg'
-    const imgUri = imgBuf.length > 0 ? `data:image/png;base64,${imgBuf.toString('base64')}` : '';
+const imgUri = imgBuf.length > 0 ? `data:image/png;base64,${imgBuf.toString('base64')}` : '';
 
     const shiftDownPx = config.canvas.height * config.shiftDown
     const shiftUpPx = config.canvas.height * config.shiftUp

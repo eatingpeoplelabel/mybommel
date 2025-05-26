@@ -124,7 +124,7 @@ export default function Congrats() {
           </Link>
 
           <h2 className="text-xl font-bold text-purple-700 mt-10">📸 Your Insta-ready Sharepic:</h2>
-          <div className="max-w-[540px] w-full mx-auto">
+          <div className="relative z-0 max-w-[540px] w-full mx-auto">
   <ClientSharePic
     bommel={{
       ...bommel,
