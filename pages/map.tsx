@@ -20,7 +20,7 @@ export default function MapPage() {
         {/* Back to Home Icon Button */}
         <Link href="/" className="absolute top-4 left-4 z-50">
           <Image
-            src="/back-to-home.png"
+            src="/back-to-home.webp"
             alt="Back to Home"
             width={120}
             height={40}
@@ -31,7 +31,7 @@ export default function MapPage() {
         {/* Header */}
         <header className="flex flex-col items-center mb-8 pt-16">
           <Image
-            src="/bommel-register-header.png"
+            src="/bommel-register-header.webp"
             alt="Bommel World Map"
             width={400}
             height={100}

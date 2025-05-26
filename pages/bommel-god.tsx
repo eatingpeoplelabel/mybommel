@@ -48,7 +48,7 @@ const BommelGodPage: React.FC = () => {
       {/* Back to Home Button */}
       <button onClick={handleBack} className="fixed top-4 left-4 z-50">
         <Image
-          src="/back-to-home.png"
+          src="/back-to-home.webps"
           alt="Back to Home"
           width={96}
           height={96}

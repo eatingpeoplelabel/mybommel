@@ -50,7 +50,7 @@ export default function DesktopHome() {
           style={{ width: 128, height: 128 }}
           aria-label="Toggle menu"
         >
-          <Image src="/menu-button.png" alt="Menu" width={128} height={128} className="object-contain" />
+          <Image src="/menu-button.webp" alt="Menu" width={128} height={128} className="object-contain" />
         </button>
 
         <div style={{ width: 1920, height: 1080, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
@@ -80,7 +80,7 @@ export default function DesktopHome() {
 
             <div className="absolute top-[1%] left-[19%] z-10">
               <Image
-                src="/be-a-bommler.png"
+                src="/be-a-bommler.webp"
                 alt="Be A Bommler"
                 width={800}
                 height={200}
@@ -103,7 +103,7 @@ export default function DesktopHome() {
                   </text>
                 </svg>
                 <div className="relative w-48 h-48 -mt-24">
-                  <Image src="/A_high-resolution_digital_image_of_a_circular_pom-.png" alt="Bommel Counter Frame" fill className="object-contain" />
+                  <Image src="/A_high-resolution_digital_image_of_a_circular_pom-.webp" alt="Bommel Counter Frame" fill className="object-contain" />
                   <span className="absolute inset-0 flex items-center justify-center text-5xl font-extrabold text-purple-700">{count}</span>
                 </div>
               </a>
@@ -111,7 +111,7 @@ export default function DesktopHome() {
 
             <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
               <Image
-                src="/Remove background project-3.png"
+                src="/Remove background project-3.webp"
                 alt="Große Rote Bommel"
                 width={1600}
                 height={900}
@@ -121,7 +121,7 @@ export default function DesktopHome() {
 
             <Link href="/register" legacyBehavior>
               <a className="absolute top-[50%] left-[65%] transform -translate-x-1/2 pointer-events-auto">
-                <Image src="/Adobe Express - file(1).png" alt="Register Your Bommel" width={300} height={300} className="object-contain" />
+                <Image src="/Adobe Express - file(1).webp" alt="Register Your Bommel" width={300} height={300} className="object-contain" />
               </a>
             </Link>
 
@@ -130,11 +130,11 @@ export default function DesktopHome() {
             </a>
 
             <div className="absolute bottom-0 left-[8%] z-0 flex items-end pl-4 pointer-events-auto">
-              <Image src="/Bebetta by Ina Peters 9.png" alt="Ina Peters mit bunter Bommel" width={800} height={800} className="object-contain animate-wiggle-slow" />
+              <Image src="/Bebetta by Ina Peters 9.webp" alt="Ina Peters mit bunter Bommel" width={800} height={800} className="object-contain animate-wiggle-slow" />
             </div>
 
             <button onClick={() => setShowGodModal(true)} className="absolute bottom-[22vh] right-[13vw] z-20 w-72 h-72" aria-label="Enter Bommel God Realm">
-              <Image src="/bommel-god-icon.png" alt="Ask the Bommel God" width={280} height={280} className="w-full h-full animate-snitch drop-shadow-[0_0_25px_rgba(255,215,0,0.6)]" />
+              <Image src="/bommel-god-icon.webp" alt="Ask the Bommel God" width={280} height={280} className="w-full h-full animate-snitch drop-shadow-[0_0_25px_rgba(255,215,0,0.6)]" />
             </button>
 
             {/* Holy Code Modal */}

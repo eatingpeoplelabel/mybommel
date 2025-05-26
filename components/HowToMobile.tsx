@@ -5,14 +5,14 @@ export default function HowToMobile() {
   return (
     <div
       className="min-h-screen bg-cover bg-center px-4 pt-8 pb-16 flex flex-col items-center"
-      style={{ backgroundImage: "url('/how-to-bommel-bg.png')" }}
+      style={{ backgroundImage: "url('/how-to-bommel-bg.webp')" }}
     >
       <Head>
         <title>How to Bommel</title>
       </Head>
 
       <img
-        src="/header-how-to-bommel.png"
+        src="/header-how-to-bommel.webp"
         alt="How to Bommel Header"
         className="w-72 drop-shadow-lg mb-4"
       />

@@ -3,10 +3,10 @@ import React from 'react'
 export default function QuartettBommelCard({ bommel, zodiac }) {
   const imageUrl = bommel.image_path
     ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/bommel-images/${bommel.image_path}`
-    : '/Bommel1Register.png'
+    : '/Bommel1Register.webp'
 
   return (
-    <div className="relative w-[1080px] h-[1920px] mx-auto bg-cover bg-center" style={{ backgroundImage: "url('/quartett-deco-bg.png')" }}>
+    <div className="relative w-[1080px] h-[1920px] mx-auto bg-cover bg-center" style={{ backgroundImage: "url('/quartett-deco-bg.webp')" }}>
       {/* Bommel image top center */}
       <div className="absolute top-[200px] left-1/2 transform -translate-x-1/2 w-[400px] h-[400px] rounded-full overflow-hidden border-8 border-white shadow-lg">
         <img src={imageUrl} alt="Your Bommel" className="w-full h-full object-cover" />

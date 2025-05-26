@@ -125,7 +125,7 @@ export default function ZodiacDesktop() {
         onClick={handleImmediateBack}
         className="fixed top-4 left-4 z-[9999] cursor-pointer"
       >
-        <img src="/back-to-home.png" alt="Back to Home" className="w-20 h-auto" />
+        <img src="/back-to-home.webp" alt="Back to Home" className="w-20 h-auto" />
       </button>
 
       {isAborting && (

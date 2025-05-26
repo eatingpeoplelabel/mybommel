@@ -5,7 +5,7 @@ export default function HowToDesktop() {
   return (
     <div
       className="relative min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: "url('/how-to-bommel-bg.png')" }}
+      style={{ backgroundImage: "url('/how-to-bommel-bg.webp')" }}
     >
       <Head>
         <title>How to Bommel</title>
@@ -16,7 +16,7 @@ export default function HowToDesktop() {
         className="fixed top-4 left-4 z-50"
       >
         <img
-          src="/back-to-home.png"
+          src="/back-to-home.webp"
           alt="Back to Home"
           className="w-24 h-auto cursor-pointer"
         />
@@ -27,7 +27,7 @@ export default function HowToDesktop() {
         style={{ top: '2%', left: '65%', transform: 'translate(-50%, 0)' }}
       >
         <img
-          src="/header-how-to-bommel.png"
+          src="/header-how-to-bommel.webp"
           alt="How to Bommel Header"
           className="w-auto max-w-xs scale-130 drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)]"
         />
@@ -38,7 +38,7 @@ export default function HowToDesktop() {
         style={{ bottom: '-5%', left: '5%' }}
       >
         <img
-          src="/Bebettawirftbommel.png"
+          src="/Bebettawirftbommel.webp"
           alt="Bebetta wirft Bommel"
           className="w-[500px] h-auto animate-wiggle-slow"
         />
@@ -49,7 +49,7 @@ export default function HowToDesktop() {
         style={{ bottom: '58%', left: '5%' }}
       >
         <img
-          src="/bommeliam.png"
+          src="/bommeliam.webp"
           alt="I bommel, therefore I am."
           className="w-64 h-auto scale-50 drop-shadow-[0_8px_10px_rgba(0,0,0,0.6)]"
         />

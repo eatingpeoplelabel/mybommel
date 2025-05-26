@@ -77,13 +77,13 @@ Still brave enough to continue?`
 
   const imageUrl = bommel?.image_path
     ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/bommel-images/${bommel.image_path}`
-    : '/Bommel1Register.png'
+    : '/Bommel1Register.webp'
 
   return (
     <>
       <a href="/" onClick={confirmLeave} className="fixed top-4 left-4 z-50">
         <img
-          src="/back-to-home.png"
+          src="/back-to-home.webp"
           alt="Back to Home"
           className="w-24 h-auto cursor-pointer"
         />
@@ -95,7 +95,7 @@ Still brave enough to continue?`
 
         <div className="mx-auto w-full max-w-5xl h-[20rem] relative z-10 flex justify-center mb-[-3rem]">
           <img
-            src="/congratulations-fluffy-3d.png"
+            src="/congratulations-fluffy-3d.webp"
             alt="Congratulations!"
             className="w-full h-full object-contain animate-float cursor-pointer hover:scale-110 transition-transform duration-300 drop-shadow-2xl"
           />
@@ -107,7 +107,7 @@ Still brave enough to continue?`
             onClick={handleBallClick}
           >
             <img
-              src="/crystal-ball.png"
+              src="/crystal-ball.webp"
               alt="Crystal Ball"
               className={`w-full h-full transition-transform duration-500 ${
                 showHoroscope ? 'transform -translate-x-6 -translate-y-6 scale-110' : ''
@@ -195,7 +195,7 @@ Still brave enough to continue?`
             onClick={handlePlopClick}
           >
             <img
-              src="/Bommel1Aufplopp.png"
+              src="/Bommel1Aufplopp.webp"
               alt="Happy Bommel"
               className="w-full h-full object-contain"
             />

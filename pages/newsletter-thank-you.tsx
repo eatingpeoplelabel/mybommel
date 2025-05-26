@@ -6,15 +6,15 @@ export default function ThankYou() {
     <main className="relative min-h-screen bg-register bg-cover bg-center flex items-start justify-center pt-8 p-6 overflow-hidden">
       {/* Back to home button */}
       <Link href="/" className="fixed top-4 left-4 z-30">
-        <img src="/back-to-home.png" alt="Back to Home" className="w-24 h-auto cursor-pointer" />
+        <img src="/back-to-home.webp" alt="Back to Home" className="w-24 h-auto cursor-pointer" />
       </Link>
 
       {/* Decorative Bommels */}
       <div className="absolute top-16 left-8 w-48 h-48 animate-bounce-real-a">
-        <img src="/Bommel1Register.png" alt="Bommel Left" className="w-full h-full object-contain" />
+        <img src="/Bommel1Register.webp" alt="Bommel Left" className="w-full h-full object-contain" />
       </div>
       <div className="absolute top-16 right-8 w-48 h-48 animate-bounce-real-b">
-        <img src="/Bommel2Register.png" alt="Bommel Right" className="w-full h-full object-contain" />
+        <img src="/Bommel2Register.webp" alt="Bommel Right" className="w-full h-full object-contain" />
       </div>
 
       {/* Confirmation Box */}

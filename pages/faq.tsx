@@ -68,7 +68,7 @@ export default function FAQ() {
         {!isMobile && (
           <button onClick={handleBack} className="fixed top-4 left-4 z-50">
             <Image
-              src="/back-to-home.png"
+              src="/back-to-home.webp"
               alt="Back to Home"
               width={96}
               height={96}

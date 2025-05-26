@@ -77,7 +77,7 @@ export default function Register() {
           country: previewData.country,
           postal_code: previewData.postalCode,
           image_base64,
-          image_name: `${previewData.name}-${Date.now()}.png`
+          image_name: `${previewData.name}-${Date.now()}.webp`
         })
       })
       if (!res.ok) throw new Error('Upload failed')
@@ -93,15 +93,15 @@ export default function Register() {
     <main className="relative min-h-screen bg-register bg-cover bg-center flex items-start justify-center pt-8 px-6 overflow-hidden">
       {/* Back Button */}
       <Link href="/" className="fixed top-4 left-4 z-30">
-        <img src="/back-to-home.png" alt="Back to Home" className="w-24 h-auto cursor-pointer" />
+        <img src="/back-to-home.webp" alt="Back to Home" className="w-24 h-auto cursor-pointer" />
       </Link>
 
       {/* Decorative Bommels behind form */}
       <div onClick={e => playPing(e, '/bommel-a.mp3')} className="absolute top-16 left-8 w-80 h-80 animate-bounce-real-a cursor-pointer z-0">
-        <img src="/Bommel1Register.png" alt="Bommel Left" className="w-full h-full object-contain" />
+        <img src="/Bommel1Register.webp" alt="Bommel Left" className="w-full h-full object-contain" />
       </div>
       <div onClick={e => playPing(e, '/bommel-b.mp3')} className="absolute top-16 right-8 w-80 h-80 animate-bounce-real-b cursor-pointer z-0">
-        <img src="/Bommel2Register.png" alt="Bommel Right" className="w-full h-full object-contain" />
+        <img src="/Bommel2Register.webp" alt="Bommel Right" className="w-full h-full object-contain" />
       </div>
 
       {/* Registration Form */}

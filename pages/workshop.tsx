@@ -28,7 +28,7 @@ export default function Workshop() {
         {!isMobile && (
           <Link href="/" className="fixed top-4 left-4 z-50">
             <img
-              src="/back-to-home.png"
+              src="/back-to-home.webp"
               alt="Back to Home"
               className="w-24 h-auto cursor-pointer"
             />

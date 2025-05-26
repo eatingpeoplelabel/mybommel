@@ -41,7 +41,7 @@ export default function Contact() {
         {!isMobile && (
           <button onClick={handleBack} className="fixed top-4 left-4 z-50">
             <Image
-              src="/back-to-home.png"
+              src="/back-to-home.webp"
               alt="Back to Home"
               width={96}
               height={96}
@@ -78,7 +78,7 @@ export default function Contact() {
           }`}
         >
           <Image
-            src="/Connect.png"
+            src="/Connect.webp"
             alt="Bebetta connecting"
             layout="fill"
             objectFit="contain"

@@ -84,7 +84,7 @@ export default function GalleryMobile() {
         <div className="flex flex-col items-center">
           <div className="w-full max-w-xs">
             <Image
-              src="/bommel-register-header.png"
+              src="/bommel-register-header.webp"
               alt="Bommel Register"
               width={0}
               height={0}

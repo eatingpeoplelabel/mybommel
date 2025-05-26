@@ -102,7 +102,7 @@ export default function GalleryDesktop() {
           className="absolute top-4 right-4 z-50 hidden sm:flex flex-col items-center animate-bounce"
         >
           <Image
-            src="/worldmap.png"
+            src="/worldmap.webp"
             alt="World Map"
             width={150}
             height={150}
@@ -118,7 +118,7 @@ export default function GalleryDesktop() {
   className="fixed top-4 left-4 z-50"
 >
   <img
-    src="/back-to-home.png"
+    src="/back-to-home.webp"
     alt="Back to Home"
     className="w-[80px] h-[80px] drop-shadow-xl hover:scale-105 transition"
   />
@@ -127,7 +127,7 @@ export default function GalleryDesktop() {
         <div className="flex flex-col items-center">
           <div className="w-[80%] max-w-[600px]">
             <Image
-              src="/bommel-register-header.png"
+              src="/bommel-register-header.webp"
               alt="Bommel Register"
               width={0}
               height={0}
@@ -243,7 +243,7 @@ export default function GalleryDesktop() {
                   </p>
                   <div className="relative aspect-square overflow-hidden rounded-full w-full flex items-center justify-center bg-purple-100">
                     <Image
-                      src="/ReviewBommel.png"
+                      src="/ReviewBommel.webp"
                       alt="In Review"
                       width={150}
                       height={150}

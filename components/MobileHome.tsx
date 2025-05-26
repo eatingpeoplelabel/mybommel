@@ -65,7 +65,7 @@ export default function MobileHome() {
 
       {/* Logo */}
       <div className="mt-4 mb-2 w-full flex justify-center">
-        <Image src="/be-a-bommler.png" alt="Be A Bommler" width={320} height={80} className="object-contain" />
+        <Image src="/be-a-bommler.webp" alt="Be A Bommler" width={320} height={80} className="object-contain" />
       </div>
 
       {/* Main Buttons */}
@@ -84,7 +84,7 @@ export default function MobileHome() {
 
         {/* Bommel God Icon */}
         <button onClick={() => setShowGodModal(true)} className="w-32 h-32 mt-2 relative" aria-label="Enter Bommel God Realm">
-          <Image src="/bommel-god-icon.png" alt="Ask the Bommel God" fill className="object-contain" />
+          <Image src="/bommel-god-icon.webp" alt="Ask the Bommel God" fill className="object-contain" />
         </button>
 
         {/* Registered count */}
