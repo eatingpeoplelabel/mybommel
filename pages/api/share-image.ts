@@ -130,8 +130,15 @@ export default async function handler(req, res) {
     }
 
     const resvgInstance = new Resvg(svg, {
-      fitTo: { mode: 'width', value: 720 }
-    })
+  fitTo: { mode: 'width', value: 720 },
+  font: {
+    loadSystemFonts: false,
+    fontFiles: [
+      path.join(process.cwd(), 'fonts', 'Bangers-Regular.ttf'),
+      path.join(process.cwd(), 'fonts', 'Montserrat-VariableFont_wght.ttf'),
+    ],
+  },
+})
 
     const png = resvgInstance.render().asPng()
 
