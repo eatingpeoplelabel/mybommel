@@ -1,3 +1,4 @@
+// pages/register.tsx
 'use client'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -5,6 +6,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import imageCompression from 'browser-image-compression'
 import { supabase } from '@/lib/supabaseClient'
+import MobileCameraCapture from '@/components/MobileCameraCapture'
 
 // Full list of countries
 const countries = [
@@ -54,26 +56,27 @@ type FormData = {
 }
 
 export default function Register() {
-  const { register, handleSubmit, formState: { isSubmitting } } = useForm<FormData>()
-  const [previewData, setPreviewData] = useState<FormData | null>(null)
-  const [uploadError, setUploadError] = useState<string | null>(null)
+  const { register, handleSubmit, formState: { isSubmitting }, setValue, watch } = useForm()
+  const [previewData, setPreviewData] = useState(null)
+  const [uploadError, setUploadError] = useState(null)
   const [isUploading, setIsUploading] = useState(false)
+  const [showCamera, setShowCamera] = useState(false)
   const router = useRouter()
 
-  const onReview = (data: FormData) => setPreviewData(data)
+  const onReview = (data) => setPreviewData(data)
   const onCancel = () => setPreviewData(null)
 
   const onConfirm = async () => {
     if (!previewData) return
-    setIsUploading(true)
-    setUploadError(null)
     try {
-      const originalFile = previewData.image[0]
+      setIsUploading(true)
+      setUploadError(null)
 
-      const compressedFile = await imageCompression(originalFile, {
-        maxSizeMB: 1, // Zielgröße < 1MB
+      const file = previewData.image[0]
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 1,
         maxWidthOrHeight: 1000,
-        useWebWorker: true
+        useWebWorker: true,
       })
 
       const fileExt = compressedFile.name.split('.').pop()
@@ -110,7 +113,7 @@ export default function Register() {
       if (!res.ok) throw new Error('Upload failed')
       const { id } = await res.json()
       router.push(`/congrats?id=${id}`)
-    } catch (err: any) {
+    } catch (err) {
       console.error(err)
       setUploadError(err.message || 'Something went wrong.')
       setPreviewData(null)
@@ -124,16 +127,46 @@ export default function Register() {
         <img src="/back-to-home.webp" alt="Back to Home" className="w-24 h-auto cursor-pointer" />
       </Link>
 
+      {showCamera && (
+        <MobileCameraCapture
+          onCapture={(file) => {
+            const fileList = {
+              0: file,
+              length: 1,
+              item: () => file,
+            }
+            setValue('image', fileList)
+            setShowCamera(false)
+          }}
+        />
+      )}
+
       <div className="relative z-10 bg-white/60 backdrop-blur-lg rounded-2xl shadow-lg max-w-xl w-full p-8 space-y-6 border border-white/40 mt-16">
         <h1 className="text-4xl font-extrabold text-center">🚀 I'm a Bommler!</h1>
         <form onSubmit={handleSubmit(onReview)} className="space-y-4">
           <input type="text" {...register('bot_detector_3000')} className="hidden" />
           <input className="w-full" placeholder="Your Nickname" {...register('nickname', { required: true })} />
           <input className="w-full" placeholder="Your Bommel's Name" {...register('name', { required: true })} />
+
           <div className="flex flex-col">
             <label className="font-semibold">Upload a picture of your Bommel</label>
-            <input type="file" accept="image/*" className="w-full" {...register('image' as const, { required: true })} />
+            <div className="flex gap-2 mt-2">
+              <input
+                type="file"
+                accept="image/*"
+                className="w-full"
+                {...register('image', { required: true })}
+              />
+              <button
+                type="button"
+                onClick={() => setShowCamera(true)}
+                className="bg-purple-500 text-white px-4 py-2 rounded-full shadow hover:bg-purple-400"
+              >
+                📷 Use Camera
+              </button>
+            </div>
           </div>
+
           <div className="flex flex-col">
             <label className="font-semibold">Fluff Factor</label>
             <span className="text-sm text-gray-600 mb-1">1 (mild) – 5 (ultra-fluff)</span>
@@ -141,22 +174,28 @@ export default function Register() {
               {[...Array(5)].map((_, i) => <option key={i} value={`${i+1}`}>{'🌟'.repeat(i+1)}</option>)}
             </select>
           </div>
+
           <select className="w-full" {...register('type')}>
             <option value="">Select a Bommel type</option>
             {bommelTypes.map(t => <option key={t} value={t}>{t}</option>)}
           </select>
+
           <div className="flex flex-col">
             <label className="font-semibold">Birthday of your Bommler</label>
             <input type="date" className="w-full" {...register('birthday', { required: true })} />
           </div>
+
           <div className="flex flex-col">
             <label className="font-semibold">Email (optional)</label>
+            <span className="text-sm text-gray-600 mb-1">Newsletter & giveaways</span>
             <input type="email" className="w-full" placeholder="Enter your email" {...register('email')} />
           </div>
+
           <div className="flex flex-col">
             <label className="font-semibold">About Your Bommler</label>
             <textarea className="w-full" placeholder="Share your Bommel story..." {...register('about')} />
           </div>
+
           <div className="flex flex-col">
             <label className="font-semibold">Where does your Bommler live?</label>
             <select className="w-full" {...register('country', { required: true })}>
@@ -164,53 +203,45 @@ export default function Register() {
               {countries.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
+
           <input className="w-full" placeholder="Postal Code" {...register('postalCode', { required: true })} />
+
           <button type="submit" disabled={isSubmitting} className="w-full bg-pink-400 hover:bg-pink-300 text-white font-bold py-3 rounded-full transition">
             Register your Bommel
           </button>
         </form>
-      </div>
 
-      {previewData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60 backdrop-blur-sm">
-          <div className="bg-gradient-to-br from-pink-100 via-white to-purple-100 border-4 border-purple-300 rounded-3xl shadow-2xl max-w-md w-full p-6 space-y-5 text-purple-800">
-            <h2 className="text-2xl font-extrabold text-center mb-4">💖 Your Bommel Summary 💖</h2>
-            <div className="flex flex-col items-center text-center space-y-2">
-              <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-md bg-white">
-                <img
-                  src={URL.createObjectURL(previewData.image[0])}
-                  alt="Bommel Preview"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <p className="text-xl font-bold">{previewData.name}</p>
-              <p className="text-sm italic">aka {previewData.nickname}</p>
+        {previewData && (
+          <div className="mt-6 bg-white p-4 rounded-xl shadow text-sm">
+            <p className="font-bold mb-2">Preview:</p>
+            <ul className="space-y-1">
+              <li><strong>Name:</strong> {previewData.name}</li>
+              <li><strong>Nickname:</strong> {previewData.nickname}</li>
+              <li><strong>Fluff:</strong> {previewData.fluffLevel}</li>
+              <li><strong>Type:</strong> {previewData.type}</li>
+            </ul>
+            <div className="mt-4 flex gap-4">
+              <button
+                onClick={onCancel}
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-full font-semibold"
+              >← Back</button>
+              <button
+                onClick={onConfirm}
+                className="px-4 py-2 bg-pink-500 text-white hover:bg-pink-600 rounded-full font-bold"
+              >✅ Confirm & Register your Bommel</button>
             </div>
-            <div className="bg-white bg-opacity-80 rounded-xl p-4 shadow-inner space-y-2 text-sm">
-              <p><strong>Fluff Level:</strong> {previewData.fluffLevel} / 5</p>
-              <p><strong>Type:</strong> {previewData.type}</p>
-              <p><strong>Birthday:</strong> {previewData.birthday}</p>
-              {previewData.email && <p><strong>Email:</strong> {previewData.email}</p>}
-              <p><strong>Country:</strong> {previewData.country}</p>
-              <p><strong>Postal Code:</strong> {previewData.postalCode}</p>
-              {previewData.about && <p><strong>Story:</strong> {previewData.about}</p>}
-            </div>
-            {uploadError && <p className="text-red-500 text-center">{uploadError}</p>}
-            <div className="flex justify-between pt-4">
-              <button onClick={onCancel} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-full font-semibold">← Back</button>
-              <button onClick={onConfirm} className="px-4 py-2 bg-pink-500 text-white hover:bg-pink-600 rounded-full font-bold">✅ Confirm & Register your Bommel</button>
-            </div>
+            {uploadError && <p className="text-red-500 mt-2">{uploadError}</p>}
           </div>
-        </div>
-      )}
+        )}
 
-      {isUploading && (
-        <div className="fixed inset-0 bg-white z-50 flex items-center justify-center text-center p-8">
-          <p className="text-xl font-medium animate-pulse max-w-md">
-            Please hold on… your Bommel is being gently fluffed and ceremonially knighted. 🧶👑
-          </p>
-        </div>
-      )}
+        {isUploading && (
+          <div className="fixed inset-0 bg-white z-50 flex items-center justify-center text-center p-8">
+            <p className="text-xl font-medium animate-pulse max-w-md">
+              Please hold on… your Bommel is being gently fluffed and ceremonially knighted. 🧶👑
+            </p>
+          </div>
+        )}
+      </div>
     </main>
   )
 }
