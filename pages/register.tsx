@@ -64,7 +64,8 @@ export default function Register() {
     trigger,
     watch,
   } = useForm<FormData>()
-    const [previewData, setPreviewData] = useState(null)
+  const [previewData, setPreviewData] = useState<FormData | null>(null)
+  const [photoName, setPhotoName] = useState<string | null>(null)
   const [uploadError, setUploadError] = useState(null)
   const [isUploading, setIsUploading] = useState(false)
   const [showCamera, setShowCamera] = useState(false)
@@ -146,16 +147,17 @@ export default function Register() {
       setValue('image', fileList)
       await trigger('image')
 
-      // Vorschau-Daten aktualisieren, damit der Upload funktioniert
       setPreviewData({
         ...watch(),
         image: fileList,
       })
 
+      setPhotoName(file.name)
       setShowCamera(false)
     }}
   />
 )}
+
 
       <div className="relative z-10 bg-white/60 backdrop-blur-lg rounded-2xl shadow-lg max-w-xl w-full p-8 space-y-6 border border-white/40 mt-16">
         <h1 className="text-4xl font-extrabold text-center">🚀 I'm a Bommler!</h1>
@@ -180,6 +182,18 @@ export default function Register() {
               >
                 📷 Use Camera
               </button>
+              <button
+  type="button"
+  onClick={() => setShowCamera(true)}
+  className="bg-purple-500 text-white px-4 py-2 rounded-full shadow hover:bg-purple-400"
+>
+  📷 Use Camera
+</button>
+{photoName && (
+  <p className="text-sm text-green-700 mt-1">
+    📷 Foto hinterlegt: <strong>{photoName}</strong>
+  </p>
+)}
             </div>
           </div>
 
