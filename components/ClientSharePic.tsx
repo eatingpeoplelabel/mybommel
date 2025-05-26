@@ -5,8 +5,7 @@ import { QUARTETT_BG_BASE64 } from '@/lib/quartettBg'
 
 export default function ClientSharePic({ bommel }: { bommel: any }) {
   const ref = useRef<HTMLDivElement>(null)
-  const imgRef = useRef<HTMLImageElement>(null)
-  const [isReady, setIsReady] = useState(false)
+  const [imageDataUrl, setImageDataUrl] = useState<string | null>(null)
 
   const fuzzDensity = Math.floor(Math.random() * 101)
   const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
@@ -17,16 +16,20 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
     : '—'
 
   useEffect(() => {
-    if (!imgRef.current) return
-    if (imgRef.current.complete) {
-      setIsReady(true)
-    } else {
-      imgRef.current.onload = () => setIsReady(true)
-    }
+    if (!bommel.imageUrl) return
+    fetch(bommel.imageUrl)
+      .then(res => res.blob())
+      .then(blob => {
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          setImageDataUrl(reader.result as string)
+        }
+        reader.readAsDataURL(blob)
+      })
   }, [bommel.imageUrl])
 
   const handleDownload = async () => {
-    if (!ref.current || !isReady) return
+    if (!ref.current) return
     const canvas = await html2canvas(ref.current, {
       scale: 2,
       useCORS: true,
@@ -41,10 +44,10 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
 
   return (
     <div className="flex flex-col items-center">
-      <div ref={ref} className="w-[360px] aspect-[9/16] relative">
+      <div ref={ref} className="mx-auto max-w-[360px] w-full aspect-[9/16]">
         <svg
-          width="720"
-          height="1280"
+          width="1080"
+          height="1920"
           viewBox="0 0 1080 1920"
           xmlns="http://www.w3.org/2000/svg"
           style={{ fontFamily: 'Montserrat, sans-serif' }}
@@ -57,15 +60,16 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
               </clipPath>
             </defs>
             <circle cx="540" cy="270" r="254" fill="none" stroke="#fff" strokeWidth="4" />
-            <image
-              href={bommel.imageUrl}
-              x="290"
-              y="20"
-              width="500"
-              height="500"
-              clipPath="url(#clip)"
-              crossOrigin="anonymous"
-            />
+            {imageDataUrl && (
+              <image
+                href={imageDataUrl}
+                x="290"
+                y="20"
+                width="500"
+                height="500"
+                clipPath="url(#clip)"
+              />
+            )}
             <rect x="390" y="425" width="300" height="54" rx="27" fill="#8e24aa" />
             <text
               x="540"
@@ -104,20 +108,11 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
             </text>
           </g>
         </svg>
-
-        {/* Hidden preload for image readiness */}
-        <img
-          ref={imgRef}
-          src={bommel.imageUrl}
-          alt="preload"
-          className="hidden"
-          crossOrigin="anonymous"
-        />
       </div>
 
       <button
         onClick={handleDownload}
-        className="mt-4 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full shadow"
+        className="mt-2 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full shadow"
       >
         📸 Download Sharepic
       </button>
