@@ -1,24 +1,22 @@
-import { useEffect, useState } from 'react'
+// components/ClientSharePicExact.tsx
+import { useEffect, useRef } from 'react'
 import html2canvas from 'html2canvas'
-import Image from 'next/image'
 
 export default function ClientSharePic({ bommel }: { bommel: any }) {
-  const [isMobile, setIsMobile] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setIsMobile(/iPhone|Android/i.test(navigator.userAgent))
+    // Optional: auto-scroll into view
+    ref.current?.scrollIntoView({ behavior: 'smooth' })
   }, [])
 
-  const handleCapture = async () => {
-    const element = document.getElementById('sharepic')
-    if (!element) return
-
-    const canvas = await html2canvas(element, {
+  const handleDownload = async () => {
+    if (!ref.current) return
+    const canvas = await html2canvas(ref.current, {
       scale: 2,
       useCORS: true,
       backgroundColor: null,
     })
-
     const dataUrl = canvas.toDataURL('image/png')
     const link = document.createElement('a')
     link.href = dataUrl
@@ -26,36 +24,22 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
     link.click()
   }
 
-  const handleMobileShare = async () => {
-    await handleCapture()
-    setTimeout(() => {
-      window.location.href = 'instagram://story-camera'
-    }, 1200)
-  }
-
   const fluffStars = typeof bommel.fluff_level === 'string' || typeof bommel.fluff_level === 'number'
     ? '★'.repeat(Number(bommel.fluff_level))
     : '—'
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="mt-6 flex flex-col items-center">
       <div
         id="sharepic"
-        className="relative w-[360px] h-[640px] overflow-hidden rounded-lg shadow-lg font-montserrat text-black"
+        ref={ref}
+        className="relative w-[360px] h-[640px] rounded-xl shadow-xl overflow-hidden text-[14px] font-montserrat"
+        style={{ backgroundImage: "url('/sharepic/quartett-bg.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
-        {/* Background Frame */}
-        <Image
-          src="/sharepic/quartett-bg.png"
-          alt="background"
-          fill
-          className="object-cover"
-          priority
-        />
-
         {/* Avatar */}
         <div
-          className="absolute border-4 border-white rounded-full overflow-hidden"
-          style={{ top: 20, left: 60, width: 240, height: 240 }}
+          className="absolute rounded-full border-4 border-white overflow-hidden"
+          style={{ top: '20px', left: '70px', width: '220px', height: '220px' }}
         >
           <img
             src={bommel.imageUrl}
@@ -64,70 +48,62 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
           />
         </div>
 
-        {/* Title */}
-        <div className="absolute top-[280px] left-[30px] w-[300px] h-[50px] bg-white/80 border-2 border-purple-700 rounded-full flex items-center justify-center">
-          <span className="font-bangers text-xl text-purple-700 text-center">
-            I AM AN OFFICIAL BOMMLER
-          </span>
+        {/* Badge */}
+        <div
+          className="absolute flex items-center justify-center rounded-full text-white text-[20px] font-bold"
+          style={{ top: '255px', left: '80px', width: '200px', height: '40px', backgroundColor: '#8e24aa' }}
+        >
+          No. {bommel.bommler_number}
         </div>
 
-        {/* Number Badge */}
-        <div className="absolute top-[345px] left-[80px] w-[200px] h-[38px] bg-purple-700 rounded-full flex items-center justify-center">
-          <span className="text-white font-semibold text-lg">
-            No. {bommel.bommler_number}
-          </span>
+        {/* Title */}
+        <div
+          className="absolute flex items-center justify-center rounded-full border-4 border-[#8e24aa] bg-white/90 font-bangers text-[22px] text-[#8e24aa]"
+          style={{ top: '310px', left: '30px', width: '300px', height: '50px' }}
+        >
+          I AM AN OFFICIAL BOMMLER
         </div>
 
         {/* Attribute Panel */}
-        <div className="absolute top-[400px] left-[30px] w-[300px] h-[180px] bg-white/90 rounded-xl p-2 text-xs leading-5">
+        <div
+          className="absolute flex flex-col gap-1 bg-white/90 rounded-xl p-3 text-black"
+          style={{ top: '380px', left: '30px', width: '300px' }}
+        >
           <div className="flex justify-between">
             <div>
-              <div><strong>Name:</strong> {bommel.name}</div>
-              <div><strong>Type:</strong> {bommel.type}</div>
-              <div><strong>Birthday:</strong> {bommel.birthday}</div>
-              <div><strong>Zodiac:</strong> {bommel.zodiac}</div>
-              <div><strong>Location:</strong> {bommel.location || 'Unknown'}</div>
+              <div><b>Name:</b> {bommel.name}</div>
+              <div><b>Type:</b> {bommel.type}</div>
+              <div><b>Birthday:</b> {bommel.birthday}</div>
+              <div><b>Zodiac:</b> {bommel.zodiac}</div>
+              <div><b>Location:</b> {bommel.location || 'Unknown'}</div>
             </div>
             <div>
-              <div><strong>Fluff Level:</strong> {fluffStars}</div>
-              <div><strong>Density:</strong> {Math.floor(Math.random() * 101)}%</div>
-              <div><strong>Dreaminess:</strong> {['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random()*5)]}</div>
-              <div><strong>Bounce:</strong> {Math.floor(Math.random()*10)+1}</div>
-              <div><strong>Attack:</strong> {Math.floor(Math.random()*10)+1}</div>
+              <div><b>Fluff Level:</b> {fluffStars}</div>
+              <div><b>Density:</b> {Math.floor(Math.random() * 101)}%</div>
+              <div><b>Dreaminess:</b> {'☁️'.repeat(Math.floor(Math.random() * 5) + 1)}</div>
+              <div><b>Bounce:</b> {Math.floor(Math.random() * 10) + 1}</div>
+              <div><b>Attack:</b> {Math.floor(Math.random() * 10) + 1}</div>
             </div>
           </div>
         </div>
 
         {/* CTA */}
-        <div className="absolute bottom-[30px] left-[30px] w-[300px] h-[60px] bg-pink-500 rounded-xl flex flex-col justify-center items-center text-white text-center px-2 text-sm">
-          <div>Ready to fluff the world?</div>
-          <div className="text-yellow-300 font-bold">mybommel.com</div>
-          <div className="text-xs">by Bebetta with Love</div>
+        <div
+          className="absolute text-center text-white px-4 rounded-xl"
+          style={{ bottom: '20px', left: '30px', width: '300px', height: '60px', backgroundColor: '#ff69b4' }}
+        >
+          <div className="pt-1 text-[14px]">Ready to fluff the world?</div>
+          <div className="font-bold text-[16px] text-yellow-300">mybommel.com</div>
+          <div className="text-[12px]">by Bebetta with Love</div>
         </div>
       </div>
 
-      {/* Buttons */}
-      {isMobile ? (
-        <>
-          <button
-            onClick={handleMobileShare}
-            className="mt-6 px-4 py-2 bg-pink-500 text-white rounded-full shadow hover:bg-pink-600"
-          >
-            📸 Share to Instagram Story
-          </button>
-          <p className="text-xs text-center text-gray-600 mt-2">
-            💡 After saving, open Instagram and upload this image to your story.
-            Don’t forget to tag <span className="text-pink-600 font-semibold">@bebetta_official</span> 💖
-          </p>
-        </>
-      ) : (
-        <button
-          onClick={handleCapture}
-          className="mt-6 px-4 py-2 bg-indigo-500 text-white rounded-full shadow hover:bg-indigo-600"
-        >
-          📸 Download PNG
-        </button>
-      )}
+      <button
+        onClick={handleDownload}
+        className="mt-4 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full shadow"
+      >
+        📸 Download Sharepic
+      </button>
     </div>
   )
 }

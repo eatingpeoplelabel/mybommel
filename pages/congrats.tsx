@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
 import { getBommelZodiacEn } from '@/lib/zodiac-en'
-import ClientSharePic from '@/components/ClientSharePic'
+import ClientSharePic from '@/components/ClientSharePicExact'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
