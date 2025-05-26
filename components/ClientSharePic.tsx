@@ -1,4 +1,4 @@
-// components/ClientSharePicExact.tsx
+// components/ClientSharePic.tsx
 import { useEffect, useRef } from 'react'
 import html2canvas from 'html2canvas'
 
