@@ -45,16 +45,12 @@ export default async function handler(req, res) {
       ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/bommel-images/${bommel.image_path}`
       : `${req.headers.origin}/Bommel1Register.png`
 
-    console.log('🧪 imageUrl:', imageUrl)
-
     const framePath = path.join(process.cwd(), 'assets', 'sharepic', 'quartett-bg.png')
-    const bangersFontPath = path.join(process.cwd(), 'public', 'fonts', 'Bangers-Regular.ttf')
-    const montserratFontPath = path.join(process.cwd(), 'public', 'fonts', 'Montserrat-VariableFont_wght.ttf')
+    const bangersFontPath = path.join(process.cwd(), 'fonts', 'Bangers-Regular.ttf')
+    const montserratFontPath = path.join(process.cwd(), 'fonts', 'Montserrat-VariableFont_wght.ttf')
 
-    const [frameBuf, bangersFont, montserratFont] = await Promise.all([
+    const [frameBuf] = await Promise.all([
       fs.readFile(framePath),
-      fs.readFile(bangersFontPath),
-      fs.readFile(montserratFontPath),
     ])
 
     let rawImageBuffer
@@ -71,8 +67,6 @@ export default async function handler(req, res) {
 
     const frameUri = `data:image/png;base64,${frameBuf.toString('base64')}`
     const imgUri = imgBuf.length > 0 ? `data:image/png;base64,${imgBuf.toString('base64')}` : ''
-    const bangersBase64 = bangersFont.toString('base64')
-    const montserratBase64 = montserratFont.toString('base64')
 
     const shiftDownPx = config.canvas.height * config.shiftDown
     const shiftUpPx = config.canvas.height * config.shiftUp
@@ -83,16 +77,6 @@ export default async function handler(req, res) {
 
     const svg = `
 <svg width="${config.canvas.width}" height="${config.canvas.height}" xmlns="http://www.w3.org/2000/svg">
-  <style>
-    @font-face {
-      font-family: 'Bangers';
-      src: url("data:font/ttf;base64,${bangersBase64}") format("truetype");
-    }
-    @font-face {
-      font-family: 'Montserrat';
-      src: url("data:font/ttf;base64,${montserratBase64}") format("truetype");
-    }
-  </style>
   <image href="${frameUri}" width="${config.canvas.width}" height="${config.canvas.height}"/>
   <g transform="translate(0,${shiftDownPx})">
     <defs>
@@ -130,15 +114,15 @@ export default async function handler(req, res) {
     }
 
     const resvgInstance = new Resvg(svg, {
-  fitTo: { mode: 'width', value: 720 },
-  font: {
-    loadSystemFonts: false,
-    fontFiles: [
-      path.join(process.cwd(), 'fonts', 'Bangers-Regular.ttf'),
-      path.join(process.cwd(), 'fonts', 'Montserrat-VariableFont_wght.ttf'),
-    ],
-  },
-})
+      fitTo: { mode: 'width', value: 720 },
+      font: {
+        loadSystemFonts: false,
+        fontFiles: [
+          path.join(process.cwd(), 'fonts', 'Bangers-Regular.ttf'),
+          path.join(process.cwd(), 'fonts', 'Montserrat-VariableFont_wght.ttf'),
+        ],
+      },
+    })
 
     const png = resvgInstance.render().asPng()
 
