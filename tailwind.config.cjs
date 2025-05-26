@@ -6,6 +6,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        bangers: ['Bangers', 'cursive'],
+        montserrat: ['Montserrat', 'sans-serif'],
+      },
       rotate: {
         '0': '0deg',
         '6': '6deg',
@@ -25,7 +29,7 @@ module.exports = {
         howToBommel: "url('/how-to-bommel-bg.webp')",
         godbg: "url('/god-bg.webp')",
         register: "url('/register-bg.webp')",
-      },      
+      },
       keyframes: {
         magicpulse: {
           '0%, 100%': { transform: 'scale(1)' },

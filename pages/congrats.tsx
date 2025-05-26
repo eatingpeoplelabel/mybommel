@@ -18,8 +18,6 @@ export default function Congrats() {
   const [zodiac, setZodiac] = useState<any | null>(null)
   const [showHoroscope, setShowHoroscope] = useState(false)
   const [bommelVisible, setBommelVisible] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  const [showMobileModal, setShowMobileModal] = useState(false)
 
   const audioRef = useRef<HTMLAudioElement>(null)
   const popAudioRef = useRef<HTMLAudioElement>(null)
@@ -48,10 +46,6 @@ export default function Congrats() {
     return () => clearTimeout(timer)
   }, [])
 
-  useEffect(() => {
-    setIsMobile(/iPhone|Android/i.test(navigator.userAgent))
-  }, [])
-
   const handleBallClick = () => {
     audioRef.current?.play().catch(() => {})
     setShowHoroscope(prev => !prev)
@@ -63,15 +57,7 @@ export default function Congrats() {
 
   const confirmLeave = (e: React.MouseEvent) => {
     const leave = confirm(
-      `✨ WAIT! Before you leave the Fluffdom... ✨
-
-🧶 Have you downloaded your majestic certificate?
-📸 Saved your glorious Insta Story image?
-👁 Memorized the secret code to summon the Bommel God?
-
-Leaving unprepared may result in mild existential fuzziness... 🌀
-
-Still brave enough to continue?`
+      `✨ WAIT! Before you leave the Fluffdom... ✨\n\n🧶 Have you downloaded your majestic certificate?\n📸 Saved your glorious Insta Story image?\n👁 Memorized the secret code to summon the Bommel God?\n\nLeaving unprepared may result in mild existential fuzziness... 🌀\n\nStill brave enough to continue?`
     )
     if (!leave) e.preventDefault()
   }
@@ -130,33 +116,23 @@ Still brave enough to continue?`
             </p>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <Link
-              href={`/api/certificate?id=${id}`}
-              className="bg-pink-500 hover:bg-pink-400 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition"
-            >
-              📄 Download Certificate
-            </Link>
-            {isMobile ? (
-              <button
-                onClick={() => setShowMobileModal(true)}
-                className="bg-indigo-500 hover:bg-indigo-400 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition"
-              >
-                📸 Share to Insta Story
-              </button>
-            ) : (
-              <a
-                href={`/api/share-image?id=${id}`}
-                download
-                className="bg-indigo-500 hover:bg-indigo-400 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition"
-              >
-                📸 Download Story Image
-              </a>
-            )}
-          </div>
+          <Link
+            href={`/api/certificate?id=${id}`}
+            className="bg-pink-500 hover:bg-pink-400 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition inline-block"
+          >
+            📄 Download Certificate
+          </Link>
 
-          {/* BOMMELGOTT HINWEIS */}
-          <div className="pt-4 text-sm text-center text-purple-800 bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 shadow-inner">
+          <h2 className="text-xl font-bold text-purple-700 mt-10">📸 Your Insta-ready Sharepic:</h2>
+          <ClientSharePic
+            bommel={{
+              ...bommel,
+              imageUrl: imageUrl,
+              zodiac: zodiac?.name || 'Unknown',
+            }}
+          />
+
+          <div className="pt-6 text-sm text-center text-purple-800 bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 shadow-inner">
             <p className="font-semibold mb-1">🌟 A whisper from beyond the fluff...</p>
             <p className="text-xs text-gray-600 mb-2 italic">The ancient code to summon the Bommel God:</p>
             <p className="font-mono text-xl font-bold text-pink-600 tracking-widest bg-pink-100 inline-block px-4 py-2 rounded-lg shadow-sm mb-2">
@@ -199,57 +175,6 @@ Still brave enough to continue?`
               src="/aufplopp.webp"
               alt="Happy Bommel"
               className="w-full h-full object-contain"
-            />
-          </div>
-        )}
-
-        {isMobile && showMobileModal && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center px-4">
-            <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 text-center relative">
-              <button
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl"
-                onClick={() => setShowMobileModal(false)}
-              >
-                ×
-              </button>
-              <img
-                src={`/api/share-image?id=${id}`}
-                alt="Your Bommel Story"
-                className="w-full rounded-lg mb-4"
-              />
-              <p className="text-sm mb-2 text-gray-700">
-                📲 Save this image and post it to your Instagram Story!
-              </p>
-              <p className="text-sm text-pink-600 font-semibold mb-4">
-                Don’t forget to tag <span className="underline">@bebetta_official</span> so we can share your fluff! 💖
-              </p>
-              <div className="flex gap-2 justify-center">
-                <a
-                  href={`/api/share-image?id=${id}`}
-                  download
-                  className="bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-semibold py-2 px-4 rounded-full shadow"
-                >
-                  ⬇️ Save Image
-                </a>
-                <a
-                  href="instagram://app"
-                  className="bg-pink-500 hover:bg-pink-400 text-white text-sm font-semibold py-2 px-4 rounded-full shadow"
-                >
-                  📷 Open Instagram
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {bommel && (
-          <div className="mt-10">
-            <ClientSharePic
-              bommel={{
-                ...bommel,
-                imageUrl: imageUrl,
-                zodiac: zodiac?.name || 'Unknown',
-              }}
             />
           </div>
         )}
