@@ -56,8 +56,15 @@ type FormData = {
 }
 
 export default function Register() {
-  const { register, handleSubmit, formState: { isSubmitting }, setValue, watch } = useForm()
-  const [previewData, setPreviewData] = useState(null)
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+    setValue,
+    trigger,
+    watch,
+  } = useForm<FormData>()
+    const [previewData, setPreviewData] = useState(null)
   const [uploadError, setUploadError] = useState(null)
   const [isUploading, setIsUploading] = useState(false)
   const [showCamera, setShowCamera] = useState(false)
@@ -128,18 +135,27 @@ export default function Register() {
       </Link>
 
       {showCamera && (
-        <MobileCameraCapture
-          onCapture={(file) => {
-            const fileList = {
-              0: file,
-              length: 1,
-              item: () => file,
-            }
-            setValue('image', fileList)
-            setShowCamera(false)
-          }}
-        />
-      )}
+  <MobileCameraCapture
+    onCapture={async (file) => {
+      const fileList: FileList = {
+        0: file,
+        length: 1,
+        item: () => file,
+      } as unknown as FileList
+
+      setValue('image', fileList)
+      await trigger('image')
+
+      // Vorschau-Daten aktualisieren, damit der Upload funktioniert
+      setPreviewData({
+        ...watch(),
+        image: fileList,
+      })
+
+      setShowCamera(false)
+    }}
+  />
+)}
 
       <div className="relative z-10 bg-white/60 backdrop-blur-lg rounded-2xl shadow-lg max-w-xl w-full p-8 space-y-6 border border-white/40 mt-16">
         <h1 className="text-4xl font-extrabold text-center">🚀 I'm a Bommler!</h1>
