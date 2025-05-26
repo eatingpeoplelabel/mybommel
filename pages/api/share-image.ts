@@ -33,6 +33,8 @@ export default async function handler(req, res) {
       .single()
     if (error || !bommel) return res.status(404).send('Bommel not found')
 
+    console.log('✅ bommel:', JSON.stringify(bommel, null, 2))
+
     const zodiac = getBommelZodiacEn(new Date(bommel.birthday))
     const fuzzDensity = Math.floor(Math.random() * 101)
     const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
@@ -44,8 +46,6 @@ export default async function handler(req, res) {
       : `${req.headers.origin}/Bommel1Register.png`
 
     console.log('🧪 imageUrl:', imageUrl)
-    console.log('🧪 Bommel data:', bommel)
-    console.log('🧪 Zodiac:', zodiac)
 
     const framePath = path.join(process.cwd(), 'assets', 'sharepic', 'quartett-bg.png')
     const frameBufPromise = fs.readFile(framePath)
@@ -64,11 +64,15 @@ export default async function handler(req, res) {
     const [frameBuf, imgBuf] = await Promise.all([frameBufPromise, imgBufPromise])
 
     const frameUri = `data:image/png;base64,${frameBuf.toString('base64')}`
-    const imgUri = `data:image/png;base64,${imgBuf.toString('base64')}`
+    const imgUri = imgBuf.length > 0 ? `data:image/png;base64,${imgBuf.toString('base64')}` : ''
     console.log('🧪 imgUri prefix:', imgUri?.substring?.(0, 100) || 'no image')
 
     const shiftDownPx = config.canvas.height * config.shiftDown
     const shiftUpPx = config.canvas.height * config.shiftUp
+
+    const fluffStars = typeof bommel.fluff_level === 'string' || typeof bommel.fluff_level === 'number'
+      ? '★'.repeat(Number(bommel.fluff_level))
+      : '—'
 
     const svg = `
 <svg width="${config.canvas.width}" height="${config.canvas.height}" xmlns="http://www.w3.org/2000/svg">
@@ -90,7 +94,7 @@ export default async function handler(req, res) {
     <text x="${config.attrPanel.x + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 3}" font-family="Montserrat, sans-serif" font-size="${config.attrPanel.fontSize}" fill="#333">Birthday: ${bommel.birthday}</text>
     <text x="${config.attrPanel.x + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 4}" font-family="Montserrat, sans-serif" font-size="${config.attrPanel.fontSize}" fill="#333">Zodiac: ${zodiac.name}</text>
     <text x="${config.attrPanel.x + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 5}" font-family="Montserrat, sans-serif" font-size="${config.attrPanel.fontSize}" fill="#333">Location: ${bommel.location || 'Unknown'}</text>
-    <text x="${config.attrPanel.x + config.attrPanel.width/2 + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight}" font-family="Montserrat, sans-serif" font-size="${config.attrPanel.fontSize}" fill="#333">Fluff Level: ${'★'.repeat(bommel.fluff_level)}</text>
+    <text x="${config.attrPanel.x + config.attrPanel.width/2 + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight}" font-family="Montserrat, sans-serif" font-size="${config.attrPanel.fontSize}" fill="#333">Fluff Level: ${fluffStars}</text>
     <text x="${config.attrPanel.x + config.attrPanel.width/2 + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 2}" font-family="Montserrat, sans-serif" font-size="${config.attrPanel.fontSize}" fill="#333">Fuzz Density: ${fuzzDensity}%</text>
     <text x="${config.attrPanel.x + config.attrPanel.width/2 + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 3}" font-family="Montserrat, sans-serif" font-size="${config.attrPanel.fontSize}" fill="#333">Dreaminess: ${dreaminessEmoji}</text>
     <text x="${config.attrPanel.x + config.attrPanel.width/2 + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight * 4}" font-family="Montserrat, sans-serif" font-size="${config.attrPanel.fontSize}" fill="#333">Bounce Factor: ${bounceFactor}</text>
