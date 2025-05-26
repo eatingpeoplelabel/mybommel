@@ -58,12 +58,13 @@ export default function DesktopHome() {
         <div
           className="relative"
           style={{
+            minHeight: '100vh',
             width: 1920,
-            height: 1080,
             transform: `scale(${scale})`,
             transformOrigin: 'top left',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            justifyContent: 'space-between'
           }}
         >
           <main className="relative w-full h-full overflow-hidden flex-grow flex flex-col justify-end p-4">
