@@ -34,6 +34,12 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
       scale: 2,
       useCORS: true,
       backgroundColor: null,
+      width: 1080,
+      height: 1920,
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: 1080,
+      windowHeight: 1920
     })
     const dataUrl = canvas.toDataURL('image/png')
     const link = document.createElement('a')
@@ -43,8 +49,12 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <div ref={ref} className="mx-auto max-w-[360px] w-full aspect-[9/16]">
+    <div className="min-h-screen w-full bg-white flex flex-col items-center justify-center py-10">
+      <div
+        ref={ref}
+        className="w-[1080px] h-[1920px] scale-[0.4] origin-top shadow-xl"
+        style={{ overflow: 'hidden' }}
+      >
         <svg
           width="1080"
           height="1920"
@@ -112,7 +122,7 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
 
       <button
         onClick={handleDownload}
-        className="mt-2 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full shadow"
+        className="mt-4 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full shadow"
       >
         📸 Download Sharepic
       </button>
