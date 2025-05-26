@@ -1,7 +1,7 @@
 import { Resvg } from '@resvg/resvg-js'
 import { createClient } from '@supabase/supabase-js'
 import sharp from 'sharp'
-import fs from 'fs'
+import fs from 'fs/promises'
 import path from 'path'
 import { getBommelZodiacEn } from '@/lib/zodiac-en'
 
@@ -33,20 +33,19 @@ export default async function handler(req, res) {
       .single()
     if (error || !bommel) return res.status(404).send('Bommel not found')
 
-    // Berechne astrologische und zufällige Attribute
     const zodiac = getBommelZodiacEn(new Date(bommel.birthday))
     const fuzzDensity = Math.floor(Math.random() * 101)
     const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
     const bounceFactor = Math.floor(Math.random() * 10) + 1
     const fluffAttack = Math.floor(Math.random() * 10) + 1
 
-    // Bildpfade
     const imageUrl = bommel.image_path
       ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/bommel-images/${bommel.image_path}`
       : `${req.headers.origin}/Bommel1Register.png`
 
-    // Lade Frame und Bommelbild parallel
-    const frameBufPromise = fs.promises.readFile(path.join(process.cwd(), 'public', 'quartett-bg.png'))
+    const framePath = path.join(process.cwd(), 'assets', 'sharepic', 'quartett-bg.png')
+    const frameBufPromise = fs.readFile(framePath)
+
     const rawImageBuffer = await fetch(imageUrl).then(r => r.arrayBuffer())
     const imgBufPromise = sharp(Buffer.from(rawImageBuffer)).resize({ width: 512 }).toBuffer()
     const [frameBuf, imgBuf] = await Promise.all([frameBufPromise, imgBufPromise])
@@ -57,7 +56,6 @@ export default async function handler(req, res) {
     const shiftDownPx = config.canvas.height * config.shiftDown
     const shiftUpPx = config.canvas.height * config.shiftUp
 
-    // SVG generieren
     const svg = `
 <svg width="${config.canvas.width}" height="${config.canvas.height}" xmlns="http://www.w3.org/2000/svg">
   <image href="${frameUri}" width="${config.canvas.width}" height="${config.canvas.height}"/>
@@ -97,7 +95,7 @@ export default async function handler(req, res) {
     }
 
     const resvgInstance = new Resvg(svg, {
-      fitTo: { mode: 'width', value: 720 }  // skalierter PNG Output
+      fitTo: { mode: 'width', value: 720 }
     })
 
     const png = resvgInstance.render().asPng()
