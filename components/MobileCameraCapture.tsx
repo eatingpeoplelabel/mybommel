@@ -28,6 +28,11 @@ export default function MobileCameraCapture({ onCapture }: { onCapture: (file: F
     }
   }, [])
 
+  const stopStream = () => {
+    stream?.getTracks().forEach((track) => track.stop())
+    setStream(null)
+  }
+
   const handleCapture = () => {
     if (!videoRef.current || !canvasRef.current) return
     const video = videoRef.current
@@ -53,7 +58,10 @@ export default function MobileCameraCapture({ onCapture }: { onCapture: (file: F
   }
 
   const handleUsePhoto = () => {
-    if (capturedFile) onCapture(capturedFile)
+    if (capturedFile) {
+      stopStream()
+      onCapture(capturedFile)
+    }
   }
 
   return (
