@@ -20,12 +20,12 @@ module.exports = {
         '-30': '-30deg',
       },
       backgroundImage: {
-        memphis: "url('/memphis-background.png')",
-        zodiac: "url('/zodiac-bg.png')",
-        howToBommel: "url('/how-to-bommel-bg.png')",
-        godbg: "url('/god-bg.png')",
-        register: "url('/register-bg.png')",
-      },
+        memphis: "url('/memphis-background.webp')",
+        zodiac: "url('/zodiac-bg.webp')",
+        howToBommel: "url('/how-to-bommel-bg.webp')",
+        godbg: "url('/god-bg.webp')",
+        register: "url('/register-bg.webp')",
+      },      
       keyframes: {
         magicpulse: {
           '0%, 100%': { transform: 'scale(1)' },
