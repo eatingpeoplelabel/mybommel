@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
 import { getBommelZodiacEn } from '@/lib/zodiac-en'
+import ClientSharePic from '@/components/ClientSharePic'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -238,6 +239,18 @@ Still brave enough to continue?`
                 </a>
               </div>
             </div>
+          </div>
+        )}
+
+        {bommel && (
+          <div className="mt-10">
+            <ClientSharePic
+              bommel={{
+                ...bommel,
+                imageUrl: imageUrl,
+                zodiac: zodiac?.name || 'Unknown',
+              }}
+            />
           </div>
         )}
       </main>
