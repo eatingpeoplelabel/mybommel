@@ -12,7 +12,6 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-// Geocoding helper
 async function geocode(postal: string, country: string): Promise<[number, number] | null> {
   const url = `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(postal)}&country=${encodeURIComponent(country)}&format=json&limit=1`
   try {
@@ -45,7 +44,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // 🔧 Manuell Body einlesen, da bodyParser: false
     const buffers = []
     for await (const chunk of req) {
       buffers.push(chunk)
@@ -119,6 +117,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (rest.email) {
       try {
+        console.log("🟡 Trying to send newsletter confirmation to:", rest.email)
+        console.log("SMTP Config:", {
+          host: process.env.SMTP_HOST,
+          port: process.env.SMTP_PORT,
+          user: process.env.SMTP_USER,
+        })
+
         await supabase
           .from('newsletter_candidate')
           .upsert({ email: rest.email }, { onConflict: 'email' })
@@ -127,7 +132,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           host: process.env.SMTP_HOST,
           port: Number(process.env.SMTP_PORT),
           secure: Number(process.env.SMTP_PORT) === 465,
-          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
           tls: { rejectUnauthorized: false, servername: 'kasserver.com' },
         })
 
@@ -144,8 +152,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             <p>Welcome aboard the Bommelution! 🚀</p>
           `,
         })
-      } catch (newsletterErr) {
-        console.error('❌ Newsletter error (non-blocking):', newsletterErr)
+
+        console.log("✅ Newsletter confirmation email sent to:", rest.email)
+      } catch (newsletterErr: any) {
+        console.error('❌ Newsletter error (non-blocking):', newsletterErr.message)
+        console.error('Full error:', newsletterErr)
       }
     }
 

@@ -9,6 +9,11 @@ const countries = [
   "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bommelhausen", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Côte d’Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Dorado", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fantasia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Middle-earth", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Narnia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Planet Bommel", "Poland", "Portugal", "Qatar", "Republic of the Congo", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Westeros", "Yemen", "Zambia", "Zimbabwe"
 ]
 
+const bommelTypes = [
+  "Fluffinator", "Disco Bommel", "Snuggle Puff", "Turbo Bommel", "Cuddle Cloud",
+  "Hyper Fluff", "Mega Bommel", "Quantum Puff", "Rainbow Snuggler", "Galactic Bommel", "Zen Puff"
+]
+
 type FormData = {
   nickname: string
   name: string
@@ -23,12 +28,6 @@ type FormData = {
   bot_detector_3000?: string
 }
 
-const bommelTypes = [
-  "Fluffinator", "Disco Bommel", "Snuggle Puff", "Turbo Bommel", "Cuddle Cloud",
-  "Hyper Fluff", "Mega Bommel", "Quantum Puff", "Rainbow Snuggler", "Galactic Bommel", "Zen Puff"
-]
-
-// Play ping sound + ripple effect
 const playPing = (e: React.MouseEvent<HTMLDivElement>, url: string) => {
   const audio = new Audio(url)
   audio.play()
@@ -46,6 +45,7 @@ export default function Register() {
   const { register, handleSubmit, formState: { isSubmitting } } = useForm<FormData>()
   const [previewData, setPreviewData] = useState<FormData | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
   const router = useRouter()
 
   const onReview = (data: FormData) => setPreviewData(data)
@@ -54,6 +54,7 @@ export default function Register() {
   const onConfirm = async () => {
     if (!previewData) return
     try {
+      setIsUploading(true)
       const file = previewData.image[0]
       const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
         const reader = new FileReader()
@@ -86,32 +87,20 @@ export default function Register() {
     } catch (err: any) {
       setUploadError(err.message)
       setPreviewData(null)
+      setIsUploading(false)
     }
   }
 
   return (
     <main className="relative min-h-screen bg-register bg-cover bg-center flex items-start justify-center pt-8 px-6 overflow-hidden">
-      {/* Back Button */}
       <Link href="/" className="fixed top-4 left-4 z-30">
         <img src="/back-to-home.webp" alt="Back to Home" className="w-24 h-auto cursor-pointer" />
       </Link>
 
-      {/* Decorative Bommels behind form */}
-      <div onClick={e => playPing(e, '/bommel-a.mp3')} className="absolute top-16 left-8 w-80 h-80 animate-bounce-real-a cursor-pointer z-0">
-        <img src="/Bommel1Register.webp" alt="Bommel Left" className="w-full h-full object-contain" />
-      </div>
-      <div onClick={e => playPing(e, '/bommel-b.mp3')} className="absolute top-16 right-8 w-80 h-80 animate-bounce-real-b cursor-pointer z-0">
-        <img src="/Bommel2Register.webp" alt="Bommel Right" className="w-full h-full object-contain" />
-      </div>
-
-      {/* Registration Form */}
       <div className="relative z-10 bg-white/60 backdrop-blur-lg rounded-2xl shadow-lg max-w-xl w-full p-8 space-y-6 border border-white/40 mt-16">
         <h1 className="text-4xl font-extrabold text-center">🚀 I'm a Bommler!</h1>
         <form onSubmit={handleSubmit(onReview)} className="space-y-4">
           <input type="text" {...register('bot_detector_3000')} className="hidden" />
-          <div className="text-center text-purple-700 font-medium bg-white/50 rounded-xl p-4 shadow-sm">
-            Register your Bommel for free ✨<br />Become an official Bommler with your unique number and a majestic certificate 📜<br /><span className="font-bold">Join the Bommelution</span> today!
-          </div>
           <input className="w-full" placeholder="Your Nickname" {...register('nickname', { required: true })} />
           <input className="w-full" placeholder="Your Bommel's Name" {...register('name', { required: true })} />
           <div className="flex flex-col">
@@ -156,7 +145,6 @@ export default function Register() {
         </form>
       </div>
 
-      {/* Fluffy Summary Overlay */}
       {previewData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60 backdrop-blur-sm">
           <div className="bg-gradient-to-br from-pink-100 via-white to-purple-100 border-4 border-purple-300 rounded-3xl shadow-2xl max-w-md w-full p-6 space-y-5 text-purple-800">
@@ -187,6 +175,14 @@ export default function Register() {
               <button onClick={onConfirm} className="px-4 py-2 bg-pink-500 text-white hover:bg-pink-600 rounded-full font-bold">✅ Confirm & Register your Bommel</button>
             </div>
           </div>
+        </div>
+      )}
+
+      {isUploading && (
+        <div className="fixed inset-0 bg-white z-50 flex items-center justify-center text-center p-8">
+          <p className="text-xl font-medium animate-pulse max-w-md">
+            Please hold on… your Bommel is being gently fluffed and ceremonially knighted. 🧶👑
+          </p>
         </div>
       )}
     </main>
