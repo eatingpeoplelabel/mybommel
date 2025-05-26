@@ -55,8 +55,18 @@ export default function DesktopHome() {
       </Head>
 
       <div className="fixed inset-0 bg-memphis bg-cover bg-center overflow-hidden">
-        <div style={{ width: 1920, height: 1080, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
-          <main className="relative w-[1920px] h-[1080px] overflow-hidden flex flex-col justify-end p-4">
+        <div
+          className="relative"
+          style={{
+            width: 1920,
+            height: 1080,
+            transform: `scale(${scale})`,
+            transformOrigin: 'top left',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          <main className="relative w-full h-full overflow-hidden flex-grow flex flex-col justify-end p-4">
             <div className="absolute top-4 left-4 z-50">
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
@@ -191,32 +201,32 @@ export default function DesktopHome() {
                 </div>
               </div>
             )}
-
-            <footer className="absolute bottom-0 left-0 w-full bg-indigo-900 bg-opacity-80 text-gray-200 py-1">
-              <div className="mx-auto max-w-5xl flex flex-row items-center justify-start text-lg">
-                <p className="whitespace-nowrap pl-4">
-                  © 2025 Grand Fluffdom of Bommlers. All rights reserved.
-                </p>
-                <div className="flex flex-row flex-nowrap justify-center gap-4 ml-16">
-                  <Link href="https://soundcloud.com/bebetta" legacyBehavior>
-                    <a className="hover:text-gray-100 whitespace-nowrap">SoundCloud</a>
-                  </Link>
-                  <Link href="https://bebetta.de/" legacyBehavior>
-                    <a className="hover:text-gray-100 whitespace-nowrap">Website</a>
-                  </Link>
-                  <a href="https://www.instagram.com/bebetta_official" target="_blank" rel="noopener" className="hover:text-gray-100 whitespace-nowrap">
-                    Instagram
-                  </a>
-                  <Link href="/contact" legacyBehavior>
-                    <a className="hover:text-gray-100 whitespace-nowrap">Contact</a>
-                  </Link>
-                  <Link href="/legal" legacyBehavior>
-                    <a className="hover:text-gray-100 whitespace-nowrap">Legal &amp; Fluffformation</a>
-                  </Link>
-                </div>
-              </div>
-            </footer>
           </main>
+
+          <footer className="w-full bg-indigo-900 bg-opacity-80 text-gray-200 py-1">
+            <div className="mx-auto max-w-5xl flex flex-row items-center justify-start text-lg">
+              <p className="whitespace-nowrap pl-4">
+                © 2025 Grand Fluffdom of Bommlers. All rights reserved.
+              </p>
+              <div className="flex flex-row flex-nowrap justify-center gap-4 ml-16">
+                <Link href="https://soundcloud.com/bebetta" legacyBehavior>
+                  <a className="hover:text-gray-100 whitespace-nowrap">SoundCloud</a>
+                </Link>
+                <Link href="https://bebetta.de/" legacyBehavior>
+                  <a className="hover:text-gray-100 whitespace-nowrap">Website</a>
+                </Link>
+                <a href="https://www.instagram.com/bebetta_official" target="_blank" rel="noopener" className="hover:text-gray-100 whitespace-nowrap">
+                  Instagram
+                </a>
+                <Link href="/contact" legacyBehavior>
+                  <a className="hover:text-gray-100 whitespace-nowrap">Contact</a>
+                </Link>
+                <Link href="/legal" legacyBehavior>
+                  <a className="hover:text-gray-100 whitespace-nowrap">Legal &amp; Fluffformation</a>
+                </Link>
+              </div>
+            </div>
+          </footer>
         </div>
       </div>
     </>
