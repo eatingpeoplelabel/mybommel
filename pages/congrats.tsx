@@ -195,7 +195,7 @@ Still brave enough to continue?`
             onClick={handlePlopClick}
           >
             <img
-              src="/Bommel1Aufplopp.webp"
+              src="/aufplopp.webp"
               alt="Happy Bommel"
               className="w-full h-full object-contain"
             />
