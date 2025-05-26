@@ -11,11 +11,11 @@ export default function MobileCameraCapture({ onCapture }: { onCapture: (file: F
   useEffect(() => {
     async function startCamera() {
       try {
-        const mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        const mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false })
+        setStream(mediaStream)
         if (videoRef.current) {
           videoRef.current.srcObject = mediaStream
           videoRef.current.play()
-          setStream(mediaStream)
         }
       } catch (error) {
         console.error('Camera access error:', error)
@@ -26,7 +26,7 @@ export default function MobileCameraCapture({ onCapture }: { onCapture: (file: F
     return () => {
       stream?.getTracks().forEach((track) => track.stop())
     }
-  }, [stream])
+  }, [])
 
   const handleCapture = () => {
     if (!videoRef.current || !canvasRef.current) return
@@ -60,14 +60,15 @@ export default function MobileCameraCapture({ onCapture }: { onCapture: (file: F
     <div className="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center p-4">
       {!previewUrl ? (
         <>
-          <div className="relative w-full max-w-md aspect-square">
+          <div className="relative w-full max-w-md aspect-square overflow-hidden">
             <video
               ref={videoRef}
-              className="w-full h-full object-cover rounded-full border-4 border-pink-400"
+              className="absolute inset-0 w-full h-full object-cover"
               playsInline
               muted
+              autoPlay
             />
-            <div className="absolute inset-0 rounded-full border-8 border-pink-300/60 pointer-events-none shadow-xl"></div>
+            <div className="absolute inset-0 rounded-full border-8 border-pink-400 shadow-xl pointer-events-none"></div>
           </div>
           <button
             onClick={handleCapture}
