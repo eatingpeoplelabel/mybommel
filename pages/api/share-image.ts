@@ -51,6 +51,8 @@ export default async function handler(req, res) {
 
     const [frameBuf] = await Promise.all([
       fs.readFile(framePath),
+      fs.access(bangersFontPath),
+      fs.access(montserratFontPath),
     ])
 
     let rawImageBuffer
@@ -66,7 +68,8 @@ export default async function handler(req, res) {
     const imgBuf = await sharp(Buffer.from(rawImageBuffer)).resize({ width: 512 }).toBuffer()
 
     const frameUri = `data:image/png;base64,${frameBuf.toString('base64')}`
-    const imgUri = imgBuf.length > 0 ? `data:image/png;base64,${imgBuf.toString('base64')}` : ''
+    const useBase64Image = preview !== 'svg'
+    const imgUri = imgBuf.length > 0 ? `data:image/png;base64,${imgBuf.toString('base64')}` : '';
 
     const shiftDownPx = config.canvas.height * config.shiftDown
     const shiftUpPx = config.canvas.height * config.shiftUp
@@ -83,11 +86,14 @@ export default async function handler(req, res) {
       <clipPath id="clip"><circle cx="${config.avatar.x + config.avatar.size/2}" cy="${config.avatar.y + config.avatar.size/2}" r="${config.avatar.size/2}"/></clipPath>
     </defs>
     <circle cx="${config.avatar.x + config.avatar.size/2}" cy="${config.avatar.y + config.avatar.size/2}" r="${config.avatar.size/2 + config.avatar.border}" fill="none" stroke="#fff" stroke-width="${config.avatar.border}"/>
-    <image href="${imageUrl}" x="${config.avatar.x}" y="${config.avatar.y}" width="${config.avatar.size}" height="${config.avatar.size}" clip-path="url(#clip)"/>
+    ${useBase64Image
+      ? `<image href="${imgUri}" x="${config.avatar.x}" y="${config.avatar.y}" width="${config.avatar.size}" height="${config.avatar.size}" clip-path="url(#clip)"/>`
+      : `<image href="${imageUrl}" x="${config.avatar.x}" y="${config.avatar.y}" width="${config.avatar.size}" height="${config.avatar.size}" clip-path="url(#clip)"/>`
+    }
     <rect x="${config.title.x - config.title.width/2}" y="${config.title.y}" width="${config.title.width}" height="${config.title.height}" rx="${config.title.height/2}" fill="#ffffffcc" stroke="#8e24aa" stroke-width="4"/>
-    <text x="${config.title.x}" y="${config.title.y + config.title.height/2 + config.title.fontSize/3}" text-anchor="middle" font-family="Bangers" font-size="${config.title.fontSize}" fill="#8e24aa">I AM AN OFFICIAL BOMMLER</text>
+    <text x="${config.title.x}" y="${config.title.y + config.title.height/2 + config.title.fontSize/3}" text-anchor="middle" font-family="Bangers, Arial, sans-serif" font-size="${config.title.fontSize}" fill="#8e24aa">I AM AN OFFICIAL BOMMLER</text>
     <rect x="${config.badge.x}" y="${config.badge.y}" width="${config.badge.width}" height="${config.badge.height}" rx="${config.badge.height/2}" fill="#8e24aa"/>
-    <text x="${config.badge.x + config.badge.width/2}" y="${config.badge.y + config.badge.height/2 + config.badge.fontSize/3}" text-anchor="middle" font-family="Montserrat" font-size="${config.badge.fontSize}" fill="#fff">No. ${bommel.bommler_number}</text>
+    <text x="${config.badge.x + config.badge.width/2}" y="${config.badge.y + config.badge.height/2 + config.badge.fontSize/3}" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="${config.badge.fontSize}" fill="#fff">No. ${bommel.bommler_number}</text>
     <rect x="${config.attrPanel.x}" y="${config.attrPanel.y}" width="${config.attrPanel.width}" height="${config.attrPanel.height}" rx="10" fill="#ffffffdd"/>
     <line x1="${config.attrPanel.x + config.attrPanel.width/2}" y1="${config.attrPanel.y + 20}" x2="${config.attrPanel.x + config.attrPanel.width/2}" y2="${config.attrPanel.y + config.attrPanel.height - 20}" stroke="#ccc" stroke-width="2" stroke-dasharray="4,4"/>
     <text x="${config.attrPanel.x + 20}" y="${config.attrPanel.y + config.attrPanel.lineHeight}" font-family="Montserrat" font-size="${config.attrPanel.fontSize}" fill="#333">Name: ${bommel.name}</text>
