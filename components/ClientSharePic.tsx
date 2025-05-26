@@ -99,7 +99,7 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
               I AM AN OFFICIAL BOMMLER
             </text>
             <rect x="135" y="750" width="810" height="265" rx="10" fill="#ffffffdd" />
-            <line x1="540" y1="770" x2="540" y2="995" stroke="##ccc" strokeWidth="2" strokeDasharray="4,4" />
+            <line x1="540" y1="770" x2="540" y2="995" stroke="#ccc" strokeWidth="2" strokeDasharray="4,4" />
             <text x="155" y="795" fontSize="30" fill="#333">Name: {bommel.name}</text>
             <text x="155" y="840" fontSize="30" fill="#333">Type: {bommel.type}</text>
             <text x="155" y="885" fontSize="30" fill="#333">Birthday: {bommel.birthday}</text>
