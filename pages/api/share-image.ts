@@ -83,7 +83,7 @@ export default async function handler(req, res) {
       <clipPath id="clip"><circle cx="${config.avatar.x + config.avatar.size/2}" cy="${config.avatar.y + config.avatar.size/2}" r="${config.avatar.size/2}"/></clipPath>
     </defs>
     <circle cx="${config.avatar.x + config.avatar.size/2}" cy="${config.avatar.y + config.avatar.size/2}" r="${config.avatar.size/2 + config.avatar.border}" fill="none" stroke="#fff" stroke-width="${config.avatar.border}"/>
-    <image href="${imgUri}" x="${config.avatar.x}" y="${config.avatar.y}" width="${config.avatar.size}" height="${config.avatar.size}" clip-path="url(#clip)"/>
+    <image href="${imageUrl}" x="${config.avatar.x}" y="${config.avatar.y}" width="${config.avatar.size}" height="${config.avatar.size}" clip-path="url(#clip)"/>
     <rect x="${config.title.x - config.title.width/2}" y="${config.title.y}" width="${config.title.width}" height="${config.title.height}" rx="${config.title.height/2}" fill="#ffffffcc" stroke="#8e24aa" stroke-width="4"/>
     <text x="${config.title.x}" y="${config.title.y + config.title.height/2 + config.title.fontSize/3}" text-anchor="middle" font-family="Bangers" font-size="${config.title.fontSize}" fill="#8e24aa">I AM AN OFFICIAL BOMMLER</text>
     <rect x="${config.badge.x}" y="${config.badge.y}" width="${config.badge.width}" height="${config.badge.height}" rx="${config.badge.height/2}" fill="#8e24aa"/>
