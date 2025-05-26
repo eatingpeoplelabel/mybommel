@@ -5,6 +5,8 @@ import { QUARTETT_BG_BASE64 } from '@/lib/quartettBg'
 
 export default function ClientSharePic({ bommel }: { bommel: any }) {
   const ref = useRef<HTMLDivElement>(null)
+  const imgRef = useRef<HTMLImageElement>(null)
+  const [isReady, setIsReady] = useState(false)
 
   const fuzzDensity = Math.floor(Math.random() * 101)
   const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
@@ -14,8 +16,17 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
     ? '★'.repeat(Number(bommel.fluff_level))
     : '—'
 
+  useEffect(() => {
+    if (!imgRef.current) return
+    if (imgRef.current.complete) {
+      setIsReady(true)
+    } else {
+      imgRef.current.onload = () => setIsReady(true)
+    }
+  }, [bommel.imageUrl])
+
   const handleDownload = async () => {
-    if (!ref.current) return
+    if (!ref.current || !isReady) return
     const canvas = await html2canvas(ref.current, {
       scale: 2,
       useCORS: true,
@@ -30,7 +41,7 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
 
   return (
     <div className="flex flex-col items-center">
-      <div ref={ref} className="w-[360px] aspect-[9/16]">
+      <div ref={ref} className="w-[360px] aspect-[9/16] relative">
         <svg
           width="720"
           height="1280"
@@ -53,6 +64,7 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
               width="500"
               height="500"
               clipPath="url(#clip)"
+              crossOrigin="anonymous"
             />
             <rect x="390" y="425" width="300" height="54" rx="27" fill="#8e24aa" />
             <text
@@ -92,6 +104,15 @@ export default function ClientSharePic({ bommel }: { bommel: any }) {
             </text>
           </g>
         </svg>
+
+        {/* Hidden preload for image readiness */}
+        <img
+          ref={imgRef}
+          src={bommel.imageUrl}
+          alt="preload"
+          className="hidden"
+          crossOrigin="anonymous"
+        />
       </div>
 
       <button
