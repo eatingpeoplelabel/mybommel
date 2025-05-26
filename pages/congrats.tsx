@@ -124,9 +124,15 @@ export default function Congrats() {
           </Link>
 
           <h2 className="text-xl font-bold text-purple-700 mt-10">📸 Your Insta-ready Sharepic:</h2>
-          <Link href={`/sharepic?id=${id}`} target="_blank" className="btn">
-  📸 Open Sharepic
-</Link>
+<p className="text-sm text-gray-600 mb-2 text-center">Straight from the Fluff Forge!</p>
+<a
+  href={`/api/share-image?id=${id}`}
+  download
+  className="mt-2 inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-full shadow-lg"
+>
+  📸 Download Sharepic
+</a>
+
 
 
           <div className="pt-6 text-sm text-center text-purple-800 bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 shadow-inner">
