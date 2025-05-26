@@ -4,33 +4,29 @@ import React, { useEffect, useRef, useState } from 'react'
 export default function MobileCameraCapture({ onCapture }: { onCapture: (file: File) => void }) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [streaming, setStreaming] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [stream, setStream] = useState<MediaStream | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [capturedFile, setCapturedFile] = useState<File | null>(null)
 
   useEffect(() => {
-    const startCamera = async () => {
+    async function startCamera() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        const mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
         if (videoRef.current) {
-          videoRef.current.srcObject = stream
+          videoRef.current.srcObject = mediaStream
           videoRef.current.play()
-          setStreaming(true)
+          setStream(mediaStream)
         }
-      } catch (err) {
-        setError('Unable to access camera')
-        console.error(err)
+      } catch (error) {
+        console.error('Camera access error:', error)
       }
     }
     startCamera()
 
     return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = (videoRef.current.srcObject as MediaStream).getTracks()
-        tracks.forEach(track => track.stop())
-      }
+      stream?.getTracks().forEach((track) => track.stop())
     }
-  }, [])
+  }, [stream])
 
   const handleCapture = () => {
     if (!videoRef.current || !canvasRef.current) return
@@ -42,24 +38,34 @@ export default function MobileCameraCapture({ onCapture }: { onCapture: (file: F
     if (!ctx) return
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-    canvas.toBlob(blob => {
+    canvas.toBlob((blob) => {
       if (blob) {
         const file = new File([blob], `bommel-${Date.now()}.jpg`, { type: 'image/jpeg' })
+        setCapturedFile(file)
         setPreviewUrl(URL.createObjectURL(file))
-        onCapture(file)
       }
     }, 'image/jpeg', 0.9)
   }
 
+  const handleRetake = () => {
+    setCapturedFile(null)
+    setPreviewUrl(null)
+  }
+
+  const handleUsePhoto = () => {
+    if (capturedFile) onCapture(capturedFile)
+  }
+
   return (
     <div className="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center p-4">
-      {error && <p className="text-white text-center mb-4">{error}</p>}
       {!previewUrl ? (
         <>
           <div className="relative w-full max-w-md aspect-square">
             <video
               ref={videoRef}
               className="w-full h-full object-cover rounded-full border-4 border-pink-400"
+              playsInline
+              muted
             />
             <div className="absolute inset-0 rounded-full border-8 border-pink-300/60 pointer-events-none shadow-xl"></div>
           </div>
@@ -75,7 +81,20 @@ export default function MobileCameraCapture({ onCapture }: { onCapture: (file: F
           <div className="w-full max-w-md aspect-square mb-4">
             <img src={previewUrl} alt="Preview" className="w-full h-full object-cover rounded-full border-4 border-pink-400" />
           </div>
-          <p className="text-pink-200">Your Bommel picture was captured! 🎉</p>
+          <div className="flex gap-4">
+            <button
+              onClick={handleRetake}
+              className="bg-gray-200 px-4 py-2 rounded-full text-black font-semibold"
+            >
+              🔄 Retake
+            </button>
+            <button
+              onClick={handleUsePhoto}
+              className="bg-green-500 text-white px-4 py-2 rounded-full font-bold"
+            >
+              ✅ Use this photo
+            </button>
+          </div>
         </>
       )}
       <canvas ref={canvasRef} className="hidden" />
