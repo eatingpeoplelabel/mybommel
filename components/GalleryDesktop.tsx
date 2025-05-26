@@ -1,4 +1,3 @@
-// components/GalleryDesktop.tsx
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -213,7 +212,7 @@ export default function GalleryDesktop() {
               </p>
               <div className="relative aspect-square overflow-hidden rounded-full w-full">
                 <Image
-                  src={encodeURI(b.image_url)}
+                  src={b.image_url}
                   alt={b.name}
                   width={500}
                   height={500}
@@ -264,7 +263,7 @@ export default function GalleryDesktop() {
           <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 px-4">
             <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto text-center space-y-4">
               <Image
-                src={encodeURI(selected.image_url)}
+                src={selected.image_url}
                 alt={selected.name}
                 width={300}
                 height={300}
