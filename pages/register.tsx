@@ -175,26 +175,19 @@ export default function Register() {
                 className="w-full"
                 {...register('image', { required: true })}
               />
-              <button
+               <button
                 type="button"
                 onClick={() => setShowCamera(true)}
                 className="bg-purple-500 text-white px-4 py-2 rounded-full shadow hover:bg-purple-400"
               >
                 📷 Use Camera
               </button>
-              <button
-  type="button"
-  onClick={() => setShowCamera(true)}
-  className="bg-purple-500 text-white px-4 py-2 rounded-full shadow hover:bg-purple-400"
->
-  📷 Use Camera
-</button>
-{photoName && (
-  <p className="text-sm text-green-700 mt-1">
-    📷 Foto hinterlegt: <strong>{photoName}</strong>
-  </p>
-)}
             </div>
+            {photoName && (
+              <p className="text-sm text-green-700 mt-1">
+                📷 Foto hinterlegt: <strong>{photoName}</strong>
+              </p>
+            )}
           </div>
 
           <div className="flex flex-col">
