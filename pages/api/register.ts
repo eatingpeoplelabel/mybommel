@@ -4,7 +4,7 @@ import path from 'path'
 import nodemailer from 'nodemailer'
 
 export const config = {
-  api: { bodyParser: { sizeLimit: '10mb' } },
+  api: { bodyParser: false },
 }
 
 const supabase = createClient(
