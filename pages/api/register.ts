@@ -45,6 +45,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // 🔧 Manuell Body einlesen, da bodyParser: false
+    const buffers = []
+    for await (const chunk of req) {
+      buffers.push(chunk)
+    }
+    const bodyStr = Buffer.concat(buffers).toString()
+    const body = JSON.parse(bodyStr)
+
     const {
       bot_detector_3000,
       image_base64,
@@ -52,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       country,
       postal_code,
       ...rest
-    }: { bot_detector_3000?: string; image_base64?: string; image_name?: string } & BommelData = req.body
+    }: { bot_detector_3000?: string; image_base64?: string; image_name?: string } & BommelData = body
 
     if (bot_detector_3000) {
       return res.status(400).json({ error: 'Spam detected' })
@@ -122,10 +130,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
           tls: { rejectUnauthorized: false, servername: 'kasserver.com' },
         })
-        const confirmUrl =
-          `http://${process.env.NEXT_PUBLIC_HOST}/api/newsletter/confirm?email=${encodeURIComponent(
-            rest.email
-          )}`
+
+        const confirmUrl = `http://${process.env.NEXT_PUBLIC_HOST}/api/newsletter/confirm?email=${encodeURIComponent(rest.email)}`
+
         await transporter.sendMail({
           from: '"Bommel & Bebetta" <no-reply@kasserver.com>',
           to: rest.email,
