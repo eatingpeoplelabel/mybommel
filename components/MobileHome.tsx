@@ -151,7 +151,7 @@ export default function MobileHome() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-        <a href="https://soundcloud.com/bebetta_official" target="_blank" rel="noopener" className="flex-1 text-center">SoundCloud</a>
+        <a href="https://soundcloud.com/bebetta" target="_blank" rel="noopener" className="flex-1 text-center">SoundCloud</a>
         <a href="https://bebetta.de/" target="_blank" rel="noopener" className="flex-1 text-center">Website</a>
         <Link href="/contact" className="flex-1 text-center">Contact</Link>
       </nav>
