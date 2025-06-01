@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { createClient } from '@supabase/supabase-js'
 import { getBommelZodiacEn } from '@/lib/zodiac-en'
-import ClientSharePic from '@/components/ClientSharePic'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -115,9 +114,10 @@ export default function Congrats() {
             </p>
           </div>
 
+          {/* ▶︎ Hier wird das PDF wirklich nur heruntergeladen */}
           <a
             href={`/api/certificate?id=${id}`}
-            download
+            download={`certificate-${bommel?.bommler_number || id}.pdf`}
             className="bg-pink-500 hover:bg-pink-400 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition inline-block"
           >
             📄 Download Certificate
