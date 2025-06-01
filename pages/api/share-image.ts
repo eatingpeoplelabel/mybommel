@@ -122,9 +122,16 @@ export default async function handler(req, res) {
       return res.send(svg)
     }
 
+    const fontPath = path.join(process.cwd(), 'public/fonts/DejaVuSans.ttf')
+
     const resvg = new Resvg(svg, {
-      font: { loadSystemFonts: true }
+      fitTo: { mode: 'width', value: 1080 },
+      font: {
+        loadSystemFonts: false,
+        fontFiles: [fontPath]
+      }
     })
+
     const rawPng = resvg.render().asPng()
 
     const optimized = await sharp(Buffer.from(rawPng))
