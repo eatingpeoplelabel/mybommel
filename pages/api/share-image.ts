@@ -22,7 +22,6 @@ export default async function handler(req, res) {
     }
     console.log("[share-image] ID:", id)
 
-    // 1) Bommel-Daten (inclusive fluff_level)
     const { data: bommel, error } = await supabase
       .from('bommler')
       .select('*')
@@ -35,12 +34,11 @@ export default async function handler(req, res) {
     }
     console.log("[share-image] Bommel-Daten:", bommel)
 
-    // 2) Hintergrundbild aus public/quartett-bg.webp → PNG konvertieren
     const bgPath = path.join(process.cwd(), 'public/quartett-bg.webp')
     let bgBuf: Buffer
     try {
       const rawWebp = await fs.readFile(bgPath)
-      bgBuf = await sharp(rawWebp).png().toBuffer()
+      bgBuf = await sharp(rawWebp).resize(1080, 1920).png().toBuffer()
       console.log("[share-image] Hintergrund als PNG geladen:", bgPath)
     } catch (e) {
       console.error("[share-image] Fehler beim Laden oder Konvertieren des Hintergrunds:", e)
@@ -48,7 +46,6 @@ export default async function handler(req, res) {
     }
     const backgroundDataUri = `data:image/png;base64,${bgBuf.toString('base64')}`
 
-    // 3) Avatar aus Supabase Storage
     const avatarUrl = bommel.image_path
       ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/bommel-images/${bommel.image_path}`
       : `${req.headers.origin}/Bommel1Register.png`
@@ -63,14 +60,12 @@ export default async function handler(req, res) {
     const avatarBuf = await sharp(avatarRaw).resize(500, 500).png().toBuffer()
     const avatarDataUri = `data:image/png;base64,${avatarBuf.toString('base64')}`
 
-    // 4) Zufallswerte
     const zodiac = getBommelZodiacEn(new Date(bommel.birthday))
     const fuzzDensity = Math.floor(Math.random() * 101)
     const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
     const bounceFactor = Math.floor(Math.random() * 10) + 1
     const fluffAttack = Math.floor(Math.random() * 10) + 1
 
-    // 5) fluff_level
     const rawFluff = bommel.fluff_level
     const fluffNum = typeof rawFluff === 'number'
       ? rawFluff
@@ -78,9 +73,8 @@ export default async function handler(req, res) {
     const fluffStars = fluffNum > 0 ? '★'.repeat(fluffNum) : '—'
     console.log("[share-image] fluff_level:", fluffNum, "→ fluffStars:", fluffStars)
 
-    // 6) SVG zusammenbauen
     const svg = `
-<svg width="1080" height="1920" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 1080 1920" width="1080" height="1920" xmlns="http://www.w3.org/2000/svg">
   <style>
     text { font-family: 'DejaVu Sans', sans-serif; }
   </style>
@@ -129,13 +123,11 @@ export default async function handler(req, res) {
     }
 
     const resvg = new Resvg(svg, {
-      fitTo: { mode: 'width', value: 1080 },
       font: { loadSystemFonts: true }
     })
     const rawPng = resvg.render().asPng()
 
     const optimized = await sharp(Buffer.from(rawPng))
-      .resize({ width: 540 })
       .jpeg({ quality: 80 })
       .toBuffer()
 
