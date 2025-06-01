@@ -97,11 +97,12 @@ export default function DesktopHome() {
                       ['/how-to-bommel', 'How‑To‑Bommel'],
                       ['/zodiac', 'Bommel‑Horoscope'],
                       ['/faq', 'FABQ'],
+                      ['https://bebetta.de/shop/', 'Shop'],
                       ['/contact', 'Contact']
                     ].map(([href, label]) => (
                       <li key={href}>
                         <Link href={href} legacyBehavior>
-                          <a className="block px-4 py-2 hover:bg-pink-100 rounded-md transition">{label}</a>
+                          <a className="block px-4 py-2 hover:bg-pink-100 rounded-md transition" target={href.startsWith('http') ? '_blank' : undefined}>{label}</a>
                         </Link>
                       </li>
                     ))}
@@ -128,7 +129,7 @@ export default function DesktopHome() {
               </a>
             </Link>
 
-            {/* Bubble Image replacing text block */}
+            {/* Bubble Image */}
             <a href="https://www.instagram.com/reel/C3IEXVvtB0_/?igsh=MWU4YXRudTE0cmZvcQ==" target="_blank" rel="noopener noreferrer" className="absolute top-[42%] left-[12%] w-[240px] h-[180px] z-40">
               <Image src="/im-a-bommler-bubble.webp" alt="I'm a Bommler" fill className="object-contain hover:scale-105 transition-transform duration-200" />
             </a>
@@ -159,6 +160,17 @@ export default function DesktopHome() {
                 </div>
               </a>
             </Link>
+
+            {/* Roter Bommel rechts */}
+            <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+              <Image
+                src="/Remove background project-3.webp"
+                alt="Große Rote Bommel"
+                width={1600}
+                height={900}
+                className="object-contain"
+              />
+            </div>
 
             {/* Bommel God Button */}
             <button onClick={() => setShowGodModal(true)} className="absolute bottom-[22vh] right-[13vw] z-20 w-72 h-72" aria-label="Enter Bommel God Realm">
