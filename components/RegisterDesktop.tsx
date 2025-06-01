@@ -1,13 +1,11 @@
 // components/RegisterDesktop.tsx
 'use client'
 
-import React, { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
+import { useState } from 'react'
 import { useRouter } from 'next/router'
 import imageCompression from 'browser-image-compression'
 import { supabase } from '@/lib/supabaseClient'
-import MobileCameraCapture from '@/components/MobileCameraCapture'
-import Link from 'next/link'
 
 const countries = [
   "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia",
@@ -61,21 +59,18 @@ export default function RegisterDesktop() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
     setValue,
     trigger,
     watch,
+    formState: { isSubmitting }
   } = useForm<FormData>()
 
   const [previewData, setPreviewData] = useState<FormData | null>(null)
-  const [photoName, setPhotoName] = useState<string | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
-  const [showCamera, setShowCamera] = useState(false)
   const router = useRouter()
 
   const onReview = (data: FormData) => setPreviewData(data)
-  const onCancel = () => setPreviewData(null)
 
   const onConfirm = async () => {
     if (!previewData) return
@@ -125,109 +120,90 @@ export default function RegisterDesktop() {
   }
 
   return (
-    <main className="min-h-screen bg-register bg-cover bg-center px-8 py-12 flex justify-center">
-      <div className="bg-white/70 backdrop-blur-md p-8 rounded-xl shadow-xl w-full max-w-2xl relative">
-        <Link href="/" className="absolute top-4 left-4">
-          <img src="/back-to-home.webp" alt="Back to Home" className="w-20 h-auto" />
-        </Link>
+    <main className="min-h-screen bg-register bg-cover bg-center px-4 py-6 relative">
+      <h1 className="text-4xl font-bold text-center mb-6">🧑‍💻 Register your Bommel</h1>
+      <form onSubmit={handleSubmit(onReview)} className="space-y-4 max-w-2xl mx-auto">
+        <input type="text" {...register('bot_detector_3000')} className="hidden" />
+        <input placeholder="Your Nickname" {...register('nickname', { required: true })} className="w-full" />
+        <input placeholder="Your Bommel's Name" {...register('name', { required: true })} className="w-full" />
 
-        {showCamera && (
-          <MobileCameraCapture
-            onCapture={async (file) => {
-              const fileList: FileList = {
-                0: file,
-                length: 1,
-                item: () => file,
-              } as unknown as FileList
-              setValue('image', fileList)
-              await trigger('image')
-              setPreviewData({ ...watch(), image: fileList })
-              setPhotoName(file.name)
-              setShowCamera(false)
-            }}
-          />
-        )}
+        <label className="font-semibold">Upload a Bommel photo</label>
+        <input type="file" accept="image/*" {...register('image', { required: true })} className="w-full" />
 
-        <h1 className="text-4xl font-extrabold text-center mb-6">🖥️ I'm a Bommler!</h1>
-        <form onSubmit={handleSubmit(onReview)} className="space-y-4">
-          <input type="text" {...register('bot_detector_3000')} className="hidden" />
-          <input className="w-full" placeholder="Your Nickname" {...register('nickname', { required: true })} />
-          <input className="w-full" placeholder="Your Bommel's Name" {...register('name', { required: true })} />
+        <label className="font-semibold">Fluff Level</label>
+        <select {...register('fluffLevel')} className="w-full">
+          {fluffLevels.map((f, i) => <option key={i} value={`${i + 1}`}>{f}</option>)}
+        </select>
 
-          <div className="flex flex-col">
-            <label className="font-semibold">Upload a picture of your Bommel</label>
-            <div className="flex gap-2 mt-2">
-              <input type="file" accept="image/*" className="w-full" {...register('image', { required: true })} />
-              <button
-                type="button"
-                onClick={() => setShowCamera(true)}
-                className="bg-purple-500 text-white px-4 py-2 rounded-full shadow hover:bg-purple-400"
-              >📷 Use Camera</button>
-            </div>
-            {photoName && <p className="text-sm text-green-700 mt-1">📷 Photo: <strong>{photoName}</strong></p>}
-          </div>
+        <label className="font-semibold">Bommel Type</label>
+        <select {...register('type', { required: true })} className="w-full">
+          <option value="">Choose a type</option>
+          {bommelTypes.map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
 
-          <label className="font-semibold">Fluff Level</label>
-          <select className="w-full" {...register('fluffLevel')}>
-            {fluffLevels.map((f, i) => <option key={i} value={`${i + 1}`}>{f}</option>)}
-          </select>
+        <label className="font-semibold">Bommel Birthday</label>
+        <input type="date" {...register('birthday', { required: true })} className="w-full" />
 
-          <label className="font-semibold">Bommel Type</label>
-          <select className="w-full" {...register('type', { required: true })}>
-            <option value="">Choose a type</option>
-            {bommelTypes.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
+        <label className="font-semibold">Email (optional)</label>
+        <input type="email" {...register('email')} placeholder="For giveaways & updates" className="w-full" />
 
-          <label className="font-semibold">Birthday</label>
-          <input type="date" className="w-full" {...register('birthday', { required: true })} />
+        <label className="font-semibold">About your Bommel</label>
+        <textarea {...register('about')} placeholder="Fluffy, magical, loves to dance..." className="w-full" />
 
-          <label className="font-semibold">Email (optional)</label>
-          <input type="email" className="w-full" placeholder="Enter your email" {...register('email')} />
+        <label className="font-semibold">Country</label>
+        <select {...register('country', { required: true })} className="w-full">
+          <option value="">Choose country</option>
+          {countries.map((c) => <option key={c} value={c}>{c}</option>)}
+        </select>
 
-          <label className="font-semibold">About Your Bommel</label>
-          <textarea className="w-full" placeholder="Share your Bommel story..." {...register('about')} />
+        <input placeholder="Postal Code" {...register('postalCode', { required: true })} className="w-full" />
 
-          <label className="font-semibold">Country</label>
-          <select className="w-full" {...register('country', { required: true })}>
-            <option value="">Select country</option>
-            {countries.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-pink-500 text-white py-3 rounded-full font-bold"
+        >Submit</button>
+      </form>
 
-          <input className="w-full" placeholder="Postal Code" {...register('postalCode', { required: true })} />
-
-          <button type="submit" disabled={isSubmitting} className="w-full bg-pink-500 text-white py-3 rounded-full font-bold">
-            Register your Bommel
-          </button>
-        </form>
-
-        {previewData && (
-          <div className="mt-6 bg-white p-4 rounded-xl shadow text-sm">
-            <p className="font-bold mb-2">Preview:</p>
+      {previewData && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4">
+          <div className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-md text-sm">
+            <h2 className="text-lg font-bold mb-2 text-center">Almost done! 🎉 Confirm your Bommel:</h2>
             <ul className="space-y-1">
-              <li><strong>Name:</strong> {previewData.name}</li>
               <li><strong>Nickname:</strong> {previewData.nickname}</li>
-              <li><strong>Fluff:</strong> {previewData.fluffLevel}</li>
+              <li><strong>Name:</strong> {previewData.name}</li>
+              <li><strong>Fluff Level:</strong> {previewData.fluffLevel}</li>
               <li><strong>Type:</strong> {previewData.type}</li>
             </ul>
             {previewData.image && (
-              <img src={URL.createObjectURL(previewData.image[0])} alt="Preview" className="mt-3 w-full max-w-sm rounded shadow" />
+              <img
+                src={URL.createObjectURL(previewData.image[0])}
+                alt="Preview"
+                className="w-full mt-4 rounded-lg border"
+              />
             )}
-            <div className="mt-4 flex gap-4">
-              <button onClick={onCancel} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-full font-semibold">← Back</button>
-              <button onClick={onConfirm} className="px-4 py-2 bg-pink-500 text-white hover:bg-pink-600 rounded-full font-bold">✅ Confirm</button>
+            <div className="mt-4 flex gap-4 justify-center">
+              <button
+                onClick={() => setPreviewData(null)}
+                className="px-4 py-2 bg-gray-300 rounded-full"
+              >← Back</button>
+              <button
+                onClick={onConfirm}
+                className="px-4 py-2 bg-pink-500 text-white font-bold rounded-full"
+              >✅ Confirm</button>
             </div>
-            {uploadError && <p className="text-red-500 mt-2">{uploadError}</p>}
+            {uploadError && <p className="text-red-600 text-sm mt-2">{uploadError}</p>}
           </div>
-        )}
+        </div>
+      )}
 
-        {isUploading && (
-          <div className="fixed inset-0 bg-white z-50 flex items-center justify-center text-center p-8">
-            <p className="text-xl font-medium animate-pulse max-w-md">
-              Please hold on… your Bommel is being gently fluffed and ceremonially knighted. 🧶👑
-            </p>
-          </div>
-        )}
-      </div>
+      {isUploading && (
+        <div className="fixed inset-0 bg-white/90 z-50 flex items-center justify-center">
+          <p className="text-lg font-semibold animate-pulse text-center px-4">
+            Uploading your Bommel... fluffifying in progress! 🧶✨
+          </p>
+        </div>
+      )}
     </main>
   )
 }

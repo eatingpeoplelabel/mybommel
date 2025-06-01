@@ -68,18 +68,11 @@ export default function RegisterMobile() {
 
   const [previewData, setPreviewData] = useState<FormData | null>(null)
   const [photoName, setPhotoName] = useState<string | null>(null)
-  const [showCamera, setShowCamera] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
-  const previewRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
-  const onReview = (data: FormData) => {
-    setPreviewData(data)
-    setTimeout(() => {
-      previewRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, 100)
-  }
+  const onReview = (data: FormData) => setPreviewData(data)
 
   const onConfirm = async () => {
     if (!previewData) return
@@ -129,30 +122,7 @@ export default function RegisterMobile() {
   }
 
   return (
-    <main className="min-h-screen bg-register bg-cover bg-center px-4 py-6">
-      {showCamera && (
-        <MobileCameraCapture
-          onCapture={async (file) => {
-            const fileList: FileList = {
-              0: file,
-              length: 1,
-              item: () => file,
-            } as unknown as FileList
-
-            setValue('image', fileList)
-            await trigger('image')
-
-            setPreviewData({
-              ...watch(),
-              image: fileList,
-            })
-
-            setPhotoName(file.name)
-            setShowCamera(false)
-          }}
-        />
-      )}
-
+    <main className="min-h-screen bg-register bg-cover bg-center px-4 py-6 relative">
       <h1 className="text-3xl font-bold text-center mb-6">📱 Register your Bommel</h1>
       <form onSubmit={handleSubmit(onReview)} className="space-y-4">
         <input type="text" {...register('bot_detector_3000')} className="hidden" />
@@ -161,15 +131,14 @@ export default function RegisterMobile() {
 
         <div className="flex flex-col">
           <label className="font-semibold">Upload a Bommel photo</label>
-          <div className="flex gap-2 mt-2">
-            <input type="file" accept="image/*" {...register('image', { required: true })} className="w-full" />
-            <button
-              type="button"
-              onClick={() => setShowCamera(true)}
-              className="bg-purple-500 text-white px-3 py-2 rounded-full shadow"
-            >📷</button>
-          </div>
-          {photoName && <p className="text-green-600 text-sm mt-1">✅ {photoName}</p>}
+          <input type="file" accept="image/*" {...register('image', { required: true })} className="w-full" />
+          {photoName && previewData?.image && (
+            <img
+              src={URL.createObjectURL(previewData.image[0])}
+              alt="Preview"
+              className="w-24 h-24 mt-2 rounded object-cover border"
+            />
+          )}
         </div>
 
         <label className="font-semibold">Fluff Level</label>
@@ -208,32 +177,34 @@ export default function RegisterMobile() {
       </form>
 
       {previewData && (
-        <div ref={previewRef} className="mt-8 bg-white/70 backdrop-blur-md p-4 rounded-xl shadow">
-          <h2 className="text-lg font-bold mb-2">Preview</h2>
-          <ul className="text-sm space-y-1">
-            <li><strong>Nickname:</strong> {previewData.nickname}</li>
-            <li><strong>Name:</strong> {previewData.name}</li>
-            <li><strong>Fluff Level:</strong> {previewData.fluffLevel}</li>
-            <li><strong>Type:</strong> {previewData.type}</li>
-          </ul>
-          {previewData.image && (
-            <img
-              src={URL.createObjectURL(previewData.image[0])}
-              alt="Preview"
-              className="w-full max-w-xs mt-4 rounded-lg border"
-            />
-          )}
-          <div className="mt-4 flex gap-4">
-            <button
-              onClick={() => setPreviewData(null)}
-              className="px-4 py-2 bg-gray-300 rounded-full"
-            >← Back</button>
-            <button
-              onClick={onConfirm}
-              className="px-4 py-2 bg-pink-500 text-white font-bold rounded-full"
-            >✅ Confirm</button>
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4">
+          <div className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-sm text-sm">
+            <h2 className="text-lg font-bold mb-2 text-center">Almost done! 🎉 Confirm your Bommel:</h2>
+            <ul className="space-y-1">
+              <li><strong>Nickname:</strong> {previewData.nickname}</li>
+              <li><strong>Name:</strong> {previewData.name}</li>
+              <li><strong>Fluff Level:</strong> {previewData.fluffLevel}</li>
+              <li><strong>Type:</strong> {previewData.type}</li>
+            </ul>
+            {previewData.image && (
+              <img
+                src={URL.createObjectURL(previewData.image[0])}
+                alt="Preview"
+                className="w-full mt-4 rounded-lg border"
+              />
+            )}
+            <div className="mt-4 flex gap-4 justify-center">
+              <button
+                onClick={() => setPreviewData(null)}
+                className="px-4 py-2 bg-gray-300 rounded-full"
+              >← Back</button>
+              <button
+                onClick={onConfirm}
+                className="px-4 py-2 bg-pink-500 text-white font-bold rounded-full"
+              >✅ Confirm</button>
+            </div>
+            {uploadError && <p className="text-red-600 text-sm mt-2">{uploadError}</p>}
           </div>
-          {uploadError && <p className="text-red-600 text-sm mt-2">{uploadError}</p>}
         </div>
       )}
 
