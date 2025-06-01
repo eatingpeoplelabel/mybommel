@@ -15,28 +15,25 @@ export default async function handler(req, res) {
   console.log("[share-image] aufgerufen mit query:", req.query)
 
   try {
-    // 1) ID validieren
     const { id, debug } = req.query as { id?: string; debug?: string }
     if (!id) {
       console.error("[share-image] Fehlende ID")
       return res.status(400).send('Missing Bommel ID')
     }
-    console.log("[share-image] ID:", id)
 
-    // 2) Bommel-Daten holen (inklusive fluff_level)
+    // 1) Daten aus Supabase holen (inkl. fluff_level)
     const { data: bommel, error } = await supabase
       .from('bommler')
       .select('*')
       .eq('id', parseInt(id, 10))
       .single()
-
     if (error || !bommel) {
       console.error("[share-image] Bommel nicht gefunden für ID:", id, "Error:", error)
       return res.status(404).send('Bommel not found')
     }
     console.log("[share-image] Bommel-Daten:", bommel)
 
-    // 3) Hintergrundbild aus public/quartett-bg.webp laden
+    // 2) Hintergrundbild aus public/quartett-bg.webp laden
     const bgPath = path.join(process.cwd(), 'public/quartett-bg.webp')
     let bgBuf: Buffer
     try {
@@ -48,11 +45,10 @@ export default async function handler(req, res) {
     }
     const backgroundDataUri = `data:image/webp;base64,${bgBuf.toString('base64')}`
 
-    // 4) Avatar aus Supabase Storage holen
+    // 3) Avatar laden
     const avatarUrl = bommel.image_path
       ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/bommel-images/${bommel.image_path}`
       : `${req.headers.origin}/Bommel1Register.png`
-
     let avatarRaw = Buffer.alloc(0)
     try {
       const r = await fetch(avatarUrl)
@@ -64,14 +60,14 @@ export default async function handler(req, res) {
     const avatarBuf = await sharp(avatarRaw).resize(500, 500).png().toBuffer()
     const avatarDataUri = `data:image/png;base64,${avatarBuf.toString('base64')}`
 
-    // 5) Zufallswerte generieren
+    // 4) Zufallswerte generieren
     const zodiac = getBommelZodiacEn(new Date(bommel.birthday))
     const fuzzDensity = Math.floor(Math.random() * 101)
     const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
     const bounceFactor = Math.floor(Math.random() * 10) + 1
     const fluffAttack = Math.floor(Math.random() * 10) + 1
 
-    // 6) fluff_level auslesen und in Sterne umwandeln
+    // 5) fluff_level in Sterne umwandeln
     const rawFluff = bommel.fluff_level
     const fluffNum = typeof rawFluff === 'number'
       ? rawFluff
@@ -79,18 +75,17 @@ export default async function handler(req, res) {
     const fluffStars = fluffNum > 0 ? '★'.repeat(fluffNum) : '—'
     console.log("[share-image] fluff_level:", fluffNum, "→ fluffStars:", fluffStars)
 
-    // 7) SVG bauen (Nutzung von Systemfont „DejaVu Sans“, da embedding per Base64 oft fehlschlägt)
+    // 6) SVG-Generierung (Systemfont "DejaVu Sans" vorausgesetzt)
     const svg = `
 <svg width="1080" height="1920" xmlns="http://www.w3.org/2000/svg">
   <style>
-    /* Wir vertrauen darauf, dass „DejaVu Sans“ systemweit installiert ist */
     text { font-family: 'DejaVu Sans', sans-serif; }
   </style>
 
   <!-- Hintergrund -->
   <image href="${backgroundDataUri}" width="1080" height="1920"/>
 
-  <!-- Avatar-Bereich mit Kreis-Maske -->
+  <!-- Avatar mit Maske -->
   <g transform="translate(0,288)">
     <defs>
       <clipPath id="clip">
@@ -106,7 +101,7 @@ export default async function handler(req, res) {
       No. ${bommel.bommler_number}
     </text>
 
-    <!-- „I AM AN OFFICIAL BOMMLER“ -->
+    <!-- Titel -->
     <rect x="140" y="570" width="800" height="70" rx="35" fill="#fff8" stroke="#8e24aa" stroke-width="4"/>
     <text x="540" y="620" text-anchor="middle" font-size="52" fill="#8e24aa">
       I AM AN OFFICIAL BOMMLER
@@ -131,7 +126,7 @@ export default async function handler(req, res) {
     <text x="575" y="975" font-size="32" fill="#333">Fluff Attack: ${fluffAttack}</text>
   </g>
 
-  <!-- Footer / Call-to-Action -->
+  <!-- Call-to-Action -->
   <rect x="220" y="1380" width="640" height="140" rx="20" fill="#ff69b4"/>
   <text x="540" y="1430" text-anchor="middle" font-size="36" fill="#fff">
     Ready to fluff the world?
@@ -141,28 +136,28 @@ export default async function handler(req, res) {
   </text>
 </svg>`
 
-    console.log("[share-image] Generiertes SVG:\n", svg)
+    console.log("[share-image] Generiertes SVG zum Debuggen:\n", svg)
 
-    // Debug-Modus: Nur SVG ausliefern
+    // Debug-Modus: Nur SVG zurückgeben
     if (debug === '1') {
       res.setHeader('Content-Type', 'image/svg+xml')
       return res.send(svg)
     }
 
-    console.log("[share-image] Erstelle PNG mit Resvg (loadSystemFonts)…")
+    console.log("[share-image] Erstelle PNG via Resvg mit Systemfonts…")
 
-    // 8) SVG → 1080×1920 PNG (Resvg mit loadSystemFonts = true)
+    // 7) Resvg: SVG → 1080×1920 PNG
     const resvg = new Resvg(svg, {
       fitTo: { mode: 'width', value: 1080 },
       font: { loadSystemFonts: true }
     })
     const rawPng = resvg.render().asPng()
 
-    console.log("[share-image] Rohes PNG gerendert, starte Sharp-Kompression…")
+    console.log("[share-image] Rohes PNG erzeugt, beginne Sharp-Kompression…")
 
-    // 9) Sharp: Halbieren auf 540px Breite, als JPEG mit 80 % Qualität
+    // 8) Sharp: 540px Breite, JPEG 80 % Qualität
     const optimized = await sharp(Buffer.from(rawPng))
-      .resize({ width: 540 })    // skaliert auf 540×960
+      .resize({ width: 540 })
       .jpeg({ quality: 80 })
       .toBuffer()
 
@@ -171,6 +166,7 @@ export default async function handler(req, res) {
     res.setHeader('Content-Type', 'image/jpeg')
     res.setHeader('Content-Disposition', `attachment; filename=bommel-${bommel.bommler_number}.jpg`)
     return res.send(optimized)
+
   } catch (e) {
     console.error("[share-image] Unerwarteter Fehler:", e)
     return res.status(500).send('Server error')
