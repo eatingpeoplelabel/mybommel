@@ -20,9 +20,6 @@ type Bommel = {
   status: string
 }
 
-const blurPlaceholder =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAQlBMVEUAAAD+/v7+/v7///+fn5////+dnZ2jo6Pz8/Pn5+f8/Pzv7+/c3Nz09PTn5+e+vr7l5eXe3t7FxcXU1NTExMSD6dPRAAAADXRSTlMA9Pf3oCCcnJiGhoZVUlKiAAAAHklEQVQI12MQBwcHBwcHBwcHBwcHBwcHBwcHBwYGBgYGADcgD2ZBNHTjAAAAAElFTkSuQmCC"
-
 export default function GalleryDesktop() {
   const [approved, setApproved] = useState<Bommel[]>([])
   const [pending, setPending] = useState<Bommel[]>([])
@@ -221,8 +218,7 @@ export default function GalleryDesktop() {
                   width={200}
                   height={200}
                   loading="lazy"
-                  placeholder="blur"
-                  blurDataURL={blurPlaceholder}
+                  unoptimized
                   className="object-cover w-full h-full transition"
                 />
               </div>
@@ -241,8 +237,7 @@ export default function GalleryDesktop() {
                 width={300}
                 height={300}
                 loading="lazy"
-                placeholder="blur"
-                blurDataURL={blurPlaceholder}
+                unoptimized
                 className="rounded-full mx-auto object-cover aspect-square"
               />
               <h2 className="text-2xl font-bold text-gray-800">{selected.name}</h2>
