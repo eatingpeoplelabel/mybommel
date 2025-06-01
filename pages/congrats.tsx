@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
 import { getBommelZodiacEn } from '@/lib/zodiac-en'
 import ClientSharePic from '@/components/ClientSharePic'
@@ -45,17 +44,6 @@ export default function Congrats() {
     const timer = setTimeout(() => setBommelVisible(true), 2000)
     return () => clearTimeout(timer)
   }, [])
-
-  useEffect(() => {
-    if (id) {
-      const link = document.createElement('a')
-      link.href = `/api/certificate?id=${id}`
-      link.download = `bommel-certificate-${id}.pdf`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    }
-  }, [id])
 
   const handleBallClick = () => {
     audioRef.current?.play().catch(() => {})
@@ -127,12 +115,13 @@ export default function Congrats() {
             </p>
           </div>
 
-          <Link
+          <a
             href={`/api/certificate?id=${id}`}
+            download
             className="bg-pink-500 hover:bg-pink-400 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition inline-block"
           >
-            📄 Download Certificate Again
-          </Link>
+            📄 Download Certificate
+          </a>
 
           <a
             href={`/api/share-image?id=${id}`}
