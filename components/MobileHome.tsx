@@ -56,6 +56,7 @@ export default function MobileHome() {
               <Link href="/how-to-bommel" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">How-To-Bommel</Link>
               <Link href="/zodiac" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Horoscope</Link>
               <Link href="/faq" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">FABQ</Link>
+              <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="font-medium hover:text-purple-700">Shop</a>
               <Link href="/contact" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Contact</Link>
             </nav>
           </div>
@@ -81,6 +82,10 @@ export default function MobileHome() {
         <button onClick={() => router.push("https://www.instagram.com/reel/C3IEXVvtB0_/?igsh=MWU4YXRudTE0cmZvcQ==")} className="w-full py-4 bg-yellow-400 text-white text-lg font-bold rounded-2xl shadow-lg border-2 border-white">
           I am a Bommler - Find Out More
         </button>
+
+        <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="w-full block py-4 text-center bg-green-600 text-white text-lg font-bold rounded-2xl shadow-lg border-2 border-white">
+          Visit the Shop
+        </a>
 
         {/* Bommel God Icon */}
         <button onClick={() => setShowGodModal(true)} className="w-32 h-32 mt-2 relative" aria-label="Enter Bommel God Realm">
@@ -117,7 +122,7 @@ export default function MobileHome() {
                 onClick={() => {
                   if (codeInput.trim().toLowerCase() === 'bommelbommel') {
                     setShowGodModal(false)
-                    router.push('/bommel-god') // <- updated path
+                    router.push('/bommel-god')
                   } else {
                     setErrorMessage('🚫 The gods are displeased. Try again.')
                   }
