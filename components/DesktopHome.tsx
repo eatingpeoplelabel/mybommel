@@ -121,52 +121,12 @@ export default function DesktopHome() {
               />
             </div>
 
-            {/* Bommel Counter */}
-            <Link href="/gallery" legacyBehavior>
-              <a
-                className="absolute z-10 flex flex-col items-center gap-0 cursor-pointer"
-                style={{ top: '7%', left: '88%', transform: 'translate(-50%, 0)' }}
-                aria-label="Zur Bommel‑Gallerie"
-              >
-                <svg width="240" height="132" viewBox="0 0 200 100">
-                  <defs>
-                    <path id="arcPath" d="M20,80 A80,80 0 0,1 180,80" fill="none" />
-                  </defs>
-                  <text dy="8" className="text-white text-lg font-bold">
-                    <textPath href="#arcPath" startOffset="50%" textAnchor="middle">Registered Bommels</textPath>
-                  </text>
-                </svg>
-                <div className="relative w-48 h-48 -mt-24">
-                  <Image src="/A_high-resolution_digital_image_of_a_circular_pom-.webp" alt="Bommel Counter Frame" fill className="object-contain" />
-                  <span className="absolute inset-0 flex items-center justify-center text-5xl font-extrabold text-purple-700">{count}</span>
-                </div>
-              </a>
-            </Link>
-
-            {/* Roter Bommel rechts */}
-            <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-              <Image
-                src="/Remove background project-3.webp"
-                alt="Große Rote Bommel"
-                width={1600}
-                height={900}
-                className="object-contain"
-              />
-            </div>
-
-            {/* Register Button */}
-            <Link href="/register" legacyBehavior>
-              <a className="absolute top-[50%] left-[65%] transform -translate-x-1/2 pointer-events-auto">
-                <Image src="/Adobe Express - file(1).webp" alt="Register Your Bommel" width={300} height={300} className="object-contain" />
-              </a>
-            </Link>
-
-            {/* Instagram CTA */}
-            <a href="https://www.instagram.com/reel/C3IEXVvtB0_/?igsh=MWU4YXRudTE0cmZvcQ==" target="_blank" rel="noopener noreferrer" className="absolute bottom-80 left-20 bg-yellow-100 bg-opacity-80 backdrop-blur-sm rounded-lg p-6 shadow-lg z-30 pointer-events-auto block">
-              <p className="text-2xl text-gray-800 font-medium">I am a Bommler!<br />Find out more here!</p>
+            {/* Bubble Image replacing text block */}
+            <a href="https://www.instagram.com/reel/C3IEXVvtB0_/?igsh=MWU4YXRudTE0cmZvcQ==" target="_blank" rel="noopener noreferrer" className="absolute top-[42%] left-[12%] w-[240px] h-[180px] z-40">
+              <Image src="/im-a-bommler-bubble.webp" alt="I'm a Bommler" fill className="object-contain hover:scale-105 transition-transform duration-200" />
             </a>
 
-            {/* Bebetta Bild unten links */}
+            {/* Bebetta Bild */}
             <div className="absolute bottom-0 left-[8%] z-0 flex items-end pl-4 pointer-events-auto">
               <Image src="/Bebetta by Ina Peters 9.webp" alt="Ina Peters mit bunter Bommel" width={800} height={800} className="object-contain animate-wiggle-slow" />
             </div>
