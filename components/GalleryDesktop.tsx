@@ -20,6 +20,9 @@ type Bommel = {
   status: string
 }
 
+const blurPlaceholder =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAQlBMVEUAAAD+/v7+/v7///+fn5////+dnZ2jo6Pz8/Pn5+f8/Pzv7+/c3Nz09PTn5+e+vr7l5eXe3t7FxcXU1NTExMSD6dPRAAAADXRSTlMA9Pf3oCCcnJiGhoZVUlKiAAAAHklEQVQI12MQBwcHBwcHBwcHBwcHBwcHBwcHBwYGBgYGADcgD2ZBNHTjAAAAAElFTkSuQmCC"
+
 export default function GalleryDesktop() {
   const [approved, setApproved] = useState<Bommel[]>([])
   const [pending, setPending] = useState<Bommel[]>([])
@@ -213,13 +216,13 @@ export default function GalleryDesktop() {
               </p>
               <div className="relative aspect-square overflow-hidden rounded-full w-full">
                 <Image
-                  src={b.image_url}            // Supabase-URL
+                  src={b.image_url}
                   alt={b.name}
-                  width={200}                   // Thumbnail-Größe
+                  width={200}
                   height={200}
-                  loading="lazy"                // Lazy-Loading aktivieren
-                  placeholder="blur"            // Blur-Placeholder
-                  blurDataURL="/fallback-blur.webp" // kleines Blur-Bild in /public
+                  loading="lazy"
+                  placeholder="blur"
+                  blurDataURL={blurPlaceholder}
                   className="object-cover w-full h-full transition"
                 />
               </div>
@@ -233,19 +236,17 @@ export default function GalleryDesktop() {
           <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 px-4">
             <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto text-center space-y-4">
               <Image
-                src={selected.image_url}          // Supabase-URL (bisher kein Full-Size-Unterschied)
+                src={selected.image_url}
                 alt={selected.name}
-                width={300}                        // Modal-Größe
+                width={300}
                 height={300}
                 loading="lazy"
                 placeholder="blur"
-                blurDataURL="/fallback-blur.png"
+                blurDataURL={blurPlaceholder}
                 className="rounded-full mx-auto object-cover aspect-square"
               />
               <h2 className="text-2xl font-bold text-gray-800">{selected.name}</h2>
-              <p className="text-gray-700">
-                Registration No: <strong>{selected.bommler_number}</strong>
-              </p>
+              <p className="text-gray-700">Registration No: <strong>{selected.bommler_number}</strong></p>
               <p className="text-gray-700">Fluff Level: {selected.fluff_level}</p>
               <p className="text-gray-700">Zodiac Sign: {selected.zodiac_sign}</p>
               <p className="text-gray-700">Type: {selected.type}</p>
