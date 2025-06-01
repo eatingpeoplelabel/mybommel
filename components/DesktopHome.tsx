@@ -124,10 +124,11 @@ export default function DesktopHome() {
 
             {/* Register Your Bommel Button */}
             <Link href="/register" legacyBehavior>
-              <a className="absolute top-[50%] left-[65%] transform -translate-x-1/2 pointer-events-auto">
-                <Image src="/Adobe Express - file(1).webp" alt="Register Your Bommel" width={300} height={300} className="object-contain" />
-              </a>
-            </Link>
+  <a className="absolute top-[50%] left-[65%] transform -translate-x-1/2 pointer-events-auto z-50">
+    <Image src="/Adobe Express - file(1).webp" alt="Register Your Bommel" width={300} height={300} className="object-contain" />
+  </a>
+</Link>
+
 
             {/* Bubble Image */}
             <a href="https://www.instagram.com/reel/C3IEXVvtB0_/?igsh=MWU4YXRudTE0cmZvcQ==" target="_blank" rel="noopener noreferrer" className="absolute top-[42%] left-[12%] w-[240px] h-[180px] z-40">
