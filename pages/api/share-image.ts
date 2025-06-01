@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     }
     console.log("[share-image] Bommel-Daten:", bommel)
 
-    // 3) Font-Datei laden (jetzt unter public/fonts)
+    // 3) Font-Datei laden (public/fonts)
     const fontPath = path.join(process.cwd(), 'public/fonts/DejaVuSans.ttf')
     let fontBuf: Buffer
     try {
@@ -47,7 +47,7 @@ export default async function handler(req, res) {
     }
     const fontBase64 = fontBuf.toString('base64')
 
-    // 4) Hintergrundbild laden (bleibt unverändert, z. B. assets/sharepic/quartett-bg.png)
+    // 4) Hintergrundbild laden (assets/sharepic/quartett-bg.png)
     const framePath = path.join(process.cwd(), 'assets/sharepic/quartett-bg.png')
     let frameBuf: Buffer
     try {
@@ -85,16 +85,16 @@ export default async function handler(req, res) {
       ? '★'.repeat(bommel.fluff_level)
       : '—'
 
-    // 7) SVG-String mit eingebetteter DejaVuSans-Font
+    // 7) SVG-String mit eingebetteter DejaVuSans-Font, CSS in CDATA
     const svg = `
 <svg width="1080" height="1920" xmlns="http://www.w3.org/2000/svg">
-  <style>
+  <style><![CDATA[
     @font-face {
       font-family: 'DejaVuSans';
       src: url('data:font/ttf;base64,${fontBase64}') format('truetype');
     }
     text { font-family: 'DejaVuSans', sans-serif; }
-  </style>
+  ]]></style>
   <image href="${frameUri}" width="1080" height="1920"/>
   <g transform="translate(0,288)">
     <defs><clipPath id="clip"><circle cx="540" cy="270" r="250"/></clipPath></defs>
@@ -132,8 +132,11 @@ export default async function handler(req, res) {
 
     console.log("[share-image] SVG gerendert, sende PNG…")
 
-    // 8) SVG zu PNG konvertieren
-    const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: 1080 }, font: { loadSystemFonts: false } })
+    // 8) SVG zu PNG konvertieren (Resvg rendert nun korrekt mit eingebetteter Schrift)
+    const resvg = new Resvg(svg, {
+      fitTo: { mode: 'width', value: 1080 },
+      font: { loadSystemFonts: false }
+    })
     const png = resvg.render().asPng()
 
     res.setHeader('Content-Type', 'image/png')
