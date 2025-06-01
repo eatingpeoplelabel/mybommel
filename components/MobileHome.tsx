@@ -65,14 +65,14 @@ export default function MobileHome() {
       )}
 
       {/* Logo */}
-      <div className="mt-4 mb-2 w-full flex justify-center">
+      <div className="mt-2 mb-1 w-full flex justify-center">
         <Image src="/be-a-bommler.webp" alt="Be A Bommler" width={320} height={80} className="object-contain" />
       </div>
 
-      {/* Bommel Count (moved up) */}
+      {/* Bommel Count */}
       <Link href="/gallery" className="w-full">
-        <div className="mb-2 bg-purple-700 bg-opacity-90 px-4 py-3 rounded-xl text-white font-bold text-center text-lg shadow-xl">
-          Registered Bommels: {count}
+        <div className="bg-gradient-to-r from-yellow-300 via-pink-400 to-purple-600 px-6 py-4 rounded-3xl text-white font-extrabold text-center text-xl shadow-xl tracking-wide">
+          ✨ {count} Registered Bommels ✨
         </div>
       </Link>
 
