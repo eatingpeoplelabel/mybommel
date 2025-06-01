@@ -131,6 +131,28 @@ export default function DesktopHome() {
               <Image src="/Bebetta by Ina Peters 9.webp" alt="Ina Peters mit bunter Bommel" width={800} height={800} className="object-contain animate-wiggle-slow" />
             </div>
 
+            {/* Bommel Counter */}
+            <Link href="/gallery" legacyBehavior>
+              <a
+                className="absolute z-10 flex flex-col items-center gap-0 cursor-pointer"
+                style={{ top: '7%', left: '88%', transform: 'translate(-50%, 0)' }}
+                aria-label="Zur Bommel‑Gallerie"
+              >
+                <svg width="240" height="132" viewBox="0 0 200 100">
+                  <defs>
+                    <path id="arcPath" d="M20,80 A80,80 0 0,1 180,80" fill="none" />
+                  </defs>
+                  <text dy="8" className="text-white text-lg font-bold">
+                    <textPath href="#arcPath" startOffset="50%" textAnchor="middle">Registered Bommels</textPath>
+                  </text>
+                </svg>
+                <div className="relative w-48 h-48 -mt-24">
+                  <Image src="/A_high-resolution_digital_image_of_a_circular_pom-.webp" alt="Bommel Counter Frame" fill className="object-contain" />
+                  <span className="absolute inset-0 flex items-center justify-center text-5xl font-extrabold text-purple-700">{count}</span>
+                </div>
+              </a>
+            </Link>
+
             {/* Bommel God Button */}
             <button onClick={() => setShowGodModal(true)} className="absolute bottom-[22vh] right-[13vw] z-20 w-72 h-72" aria-label="Enter Bommel God Realm">
               <Image src="/bommel-god-icon.webp" alt="Ask the Bommel God" width={280} height={280} className="w-full h-full animate-snitch drop-shadow-[0_0_25px_rgba(255,215,0,0.6)]" />
@@ -163,7 +185,7 @@ export default function DesktopHome() {
           </main>
         </div>
 
-        {/* Footer remains unchanged below */}
+        {/* Footer */}
         <footer className="absolute bottom-0 left-0 w-full bg-indigo-900 bg-opacity-80 text-gray-200 py-1 z-50">
           <div className="mx-auto max-w-5xl flex flex-row items-center justify-start text-lg">
             <p className="whitespace-nowrap pl-4">
