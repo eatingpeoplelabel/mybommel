@@ -12,68 +12,70 @@ const supabase = createClient(
 )
 
 export default async function handler(req, res) {
-  console.log('[share-image] aufgerufen mit query:', req.query)
+  console.log("[share-image] handler aufgerufen, query:", req.query)
 
   try {
     // 1) ID validieren
     const { id, debug } = req.query as { id?: string; debug?: string }
     if (!id) {
-      console.error('[share-image] Fehlende ID')
+      console.error("[share-image] Fehlende ID")
       return res.status(400).send('Missing Bommel ID')
     }
-    console.log('[share-image] ID:', id)
+    console.log("[share-image] ID:", id)
 
-    // 2) Bommel-Daten
+    // 2) Bommel-Daten von Supabase holen
     const { data: bommel, error } = await supabase
       .from('bommler')
       .select('*')
       .eq('id', parseInt(id, 10))
       .single()
     if (error || !bommel) {
-      console.error('[share-image] Bommel nicht gefunden – Error:', error)
+      console.error("[share-image] Bommel nicht gefunden für ID:", id, "Error:", error)
       return res.status(404).send('Bommel not found')
     }
+    console.log("[share-image] Bommel-Daten:", bommel)
 
-    // 3) DejaVuSans.ttf aus public/fonts
+    // 3) DejaVuSans.ttf aus public/fonts laden
     const fontPath = path.join(process.cwd(), 'public/fonts/DejaVuSans.ttf')
     let fontBuf: Buffer
     try {
       fontBuf = await fs.readFile(fontPath)
-      console.log('[share-image] Font geladen:', fontPath)
+      console.log("[share-image] Font geladen:", fontPath)
     } catch (e) {
-      console.error('[share-image] Fehler beim Laden der Font:', e)
-      return res.status(500).send('Font nicht gefunden')
+      console.error("[share-image] Fehler beim Laden der Font:", e)
+      return res.status(500).send('Font not found on server')
     }
     const fontBase64 = fontBuf.toString('base64')
 
-    // 4) Hintergrundbild aus assets/sharepic
-    const framePath = path.join(process.cwd(), 'assets/sharepic/quartett-bg.png')
+    // 4) Hintergrundbild aus public/quartett-bg.webp laden
+    const framePath = path.join(process.cwd(), 'public/quartett-bg.webp')
     let frameBuf: Buffer
     try {
       frameBuf = await fs.readFile(framePath)
-      console.log('[share-image] Hintergrund geladen:', framePath)
+      console.log("[share-image] Hintergrund geladen:", framePath)
     } catch (e) {
-      console.error('[share-image] Fehler beim Laden des Hintergrunds:', e)
+      console.error("[share-image] Fehler beim Laden des Hintergrunds:", e)
       return res.status(500).send('Background image not found')
     }
-    const frameUri = `data:image/png;base64,${frameBuf.toString('base64')}`
+    const frameUri = `data:image/webp;base64,${frameBuf.toString('base64')}`
 
-    // 5) Avatar
+    // 5) Avatar aus Supabase Storage holen
     const imageUrl = bommel.image_path
       ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/bommel-images/${bommel.image_path}`
       : `${req.headers.origin}/Bommel1Register.png`
+
     let rawAvatar = Buffer.alloc(0)
     try {
       const r = await fetch(imageUrl)
       if (r.ok) rawAvatar = Buffer.from(await r.arrayBuffer())
-      console.log('[share-image] Avatar geladen von:', imageUrl)
+      console.log("[share-image] Avatar geladen von:", imageUrl)
     } catch (e) {
-      console.warn('[share-image] Avatar konnte nicht geladen werden, verwende Platzhalter:', e)
+      console.warn("[share-image] Avatar konnte nicht geladen werden, benutze Platzhalter:", e)
     }
     const avatarBuf = await sharp(rawAvatar).resize(500, 500).png().toBuffer()
     const avatarUri = `data:image/png;base64,${avatarBuf.toString('base64')}`
 
-    // 6) Zufallswerte
+    // 6) Weitere zufällige Werte
     const zodiac = getBommelZodiacEn(new Date(bommel.birthday))
     const fuzzDensity = Math.floor(Math.random() * 101)
     const dreaminessEmoji = ['☁️','☁️☁️','☁️☁️☁️','☁️☁️☁️☁️','☁️☁️☁️☁️☁️'][Math.floor(Math.random() * 5)]
@@ -83,14 +85,14 @@ export default async function handler(req, res) {
       ? '★'.repeat(bommel.fluff_level)
       : '—'
 
-    // 7) SVG mit <defs> und Text
+    // 7) SVG-String mit eingebetteter DejaVuSans-Font, ohne xlink-Präfix
     const svg = `
 <svg width="1080" height="1920" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <font id="DejaVuSans">
       <font-face font-family="DejaVuSans" />
       <font-face-src>
-        <font-face-uri xlink:href="data:font/ttf;base64,${fontBase64}" />
+        <font-face-uri href="data:font/ttf;base64,${fontBase64}" />
       </font-face-src>
     </font>
   </defs>
@@ -132,39 +134,39 @@ export default async function handler(req, res) {
   </text>
 </svg>`
 
-    console.log('[share-image] SVG-Inhalt:\n', svg)
+    console.log("[share-image] SVG-Inhalt:\n", svg)
 
-    // Wenn ?debug=1 angehängt, gib das rohes SVG zurück und beende hier
+    // Wenn ?debug=1 angehängt, liefern wir nur das rohe SVG
     if (debug === '1') {
       res.setHeader('Content-Type', 'image/svg+xml')
       return res.send(svg)
     }
 
-    console.log('[share-image] Starte Resvg…')
+    console.log("[share-image] Starte Resvg…")
 
-    // 8) SVG zu PNG (1080×1920) konvertieren
+    // 8) Aus dem SVG ein 1080×1920-PNG erstellen
     const resvg = new Resvg(svg, {
       fitTo: { mode: 'width', value: 1080 },
       font: { loadSystemFonts: false }
     })
     const rawPng = resvg.render().asPng()
 
-    console.log('[share-image] Rohes PNG gerendert, starte Sharp-Kompression…')
+    console.log("[share-image] Rohes PNG gerendert, starte Sharp-Kompression…")
 
-    // 9) Mit Sharp verkleinern und optimieren (z.B. halbe Breite und JPEG)
+    // 9) Mit Sharp halbieren und als JPEG komprimieren
     const optimized = await sharp(Buffer.from(rawPng))
-      .resize({ width: 540 })      // 540×960
-      .jpeg({ quality: 80 })
+      .resize({ width: 540 })      // 540×960 statt 1080×1920
+      .jpeg({ quality: 80 })       // 80 % Qualität → kleinere Datei
       .toBuffer()
 
-    console.log('[share-image] Fertiges Bild erzeugt – sende Response…')
+    console.log("[share-image] Fertiges JPG erzeugt – sende Response…")
 
     res.setHeader('Content-Type', 'image/jpeg')
     res.setHeader('Content-Disposition', `attachment; filename=bommel-${bommel.bommler_number}.jpg`)
     return res.send(optimized)
 
   } catch (e) {
-    console.error('[share-image] Unerwarteter Fehler:', e)
+    console.error("[share-image] Unerwarteter Fehler:", e)
     return res.status(500).send('Server error')
   }
 }
