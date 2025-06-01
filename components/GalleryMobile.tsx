@@ -1,4 +1,4 @@
-// components/GalleryMobile.tsx
+// File: components/GalleryMobile.tsx
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -37,11 +37,10 @@ export default function GalleryMobile() {
       }
 
       const items: Bommel[] = data.map(item => {
-        const parts = item.image_path.split('/')
-        const filename = parts[parts.length - 1]
-        const { data: storageData } = supabase.storage.from('bommel-images').getPublicUrl(filename)
-        const publicUrl = storageData.publicUrl
+        const { data: storageData } = supabase.storage.from('bommel-images').getPublicUrl(item.image_path)
+        const publicUrl = storageData?.publicUrl || '/fallback.webp'
         const zodiac_sign = getBommelZodiacEn(new Date(item.birthday)).name
+
         return {
           id: item.id,
           name: item.name,
@@ -53,7 +52,7 @@ export default function GalleryMobile() {
           image_url: publicUrl,
           about: item.about || '',
           location: item.location,
-          status: item.status,
+          status: item.status?.toLowerCase() || '',
         }
       })
 
@@ -127,6 +126,8 @@ export default function GalleryMobile() {
                   alt={b.name}
                   width={200}
                   height={200}
+                  loading="lazy"
+                  unoptimized
                   className="object-cover w-full h-full"
                 />
               </div>
