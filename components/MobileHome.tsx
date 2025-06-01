@@ -31,7 +31,7 @@ export default function MobileHome() {
       {/* Hamburger Menu */}
       <button
         onClick={() => setShowMenu(prev => !prev)}
-        className="absolute top-2 left-2 p-2 z-50"
+        className="absolute top-2 left-2 p-2 z-50 bg-purple-600 rounded-full shadow"
         aria-label="Toggle menu"
       >
         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -69,6 +69,13 @@ export default function MobileHome() {
         <Image src="/be-a-bommler.webp" alt="Be A Bommler" width={320} height={80} className="object-contain" />
       </div>
 
+      {/* Bommel Count (moved up) */}
+      <Link href="/gallery" className="w-full">
+        <div className="mb-2 bg-purple-700 bg-opacity-90 px-4 py-3 rounded-xl text-white font-bold text-center text-lg shadow-xl">
+          Registered Bommels: {count}
+        </div>
+      </Link>
+
       {/* Main Buttons */}
       <div className="w-full flex flex-col items-center space-y-4">
         <button onClick={() => router.push('/register')} className="w-full py-4 bg-purple-700 text-white text-lg font-bold rounded-2xl shadow-lg border-2 border-white">
@@ -83,19 +90,14 @@ export default function MobileHome() {
           I am a Bommler - Find Out More
         </button>
 
-        <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="w-full block py-4 text-center bg-green-600 text-white text-lg font-bold rounded-2xl shadow-lg border-2 border-white">
+        <button onClick={() => window.open("https://bebetta.de/shop/", "_blank")} className="w-full py-4 bg-green-600 text-white text-lg font-bold rounded-2xl shadow-lg border-2 border-white">
           Visit the Shop
-        </a>
+        </button>
 
         {/* Bommel God Icon */}
         <button onClick={() => setShowGodModal(true)} className="w-32 h-32 mt-2 relative" aria-label="Enter Bommel God Realm">
           <Image src="/bommel-god-icon.webp" alt="Ask the Bommel God" fill className="object-contain" />
         </button>
-
-        {/* Registered count */}
-        <div className="mt-2 bg-purple-700 bg-opacity-80 px-4 py-2 rounded-full shadow inner-glow text-white font-bold">
-          Registered Bommels: {count}
-        </div>
       </div>
 
       {/* Holy Code Modal */}
