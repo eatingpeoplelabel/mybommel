@@ -1,4 +1,4 @@
-// components/GalleryDesktop.tsx
+// File: components/GalleryDesktop.tsx
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -213,11 +213,13 @@ export default function GalleryDesktop() {
               </p>
               <div className="relative aspect-square overflow-hidden rounded-full w-full">
                 <Image
-                  src={b.image_url}
+                  src={b.image_url}            // Supabase-URL
                   alt={b.name}
-                  width={500}
-                  height={500}
-                  unoptimized
+                  width={200}                   // Thumbnail-Größe
+                  height={200}
+                  loading="lazy"                // Lazy-Loading aktivieren
+                  placeholder="blur"            // Blur-Placeholder
+                  blurDataURL="/fallback-blur.webp" // kleines Blur-Bild in /public
                   className="object-cover w-full h-full transition"
                 />
               </div>
@@ -231,15 +233,19 @@ export default function GalleryDesktop() {
           <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 px-4">
             <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto text-center space-y-4">
               <Image
-                src={selected.image_url}
+                src={selected.image_url}          // Supabase-URL (bisher kein Full-Size-Unterschied)
                 alt={selected.name}
-                width={300}
+                width={300}                        // Modal-Größe
                 height={300}
-                unoptimized
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL="/fallback-blur.png"
                 className="rounded-full mx-auto object-cover aspect-square"
               />
               <h2 className="text-2xl font-bold text-gray-800">{selected.name}</h2>
-              <p className="text-gray-700">Registration No: <strong>{selected.bommler_number}</strong></p>
+              <p className="text-gray-700">
+                Registration No: <strong>{selected.bommler_number}</strong>
+              </p>
               <p className="text-gray-700">Fluff Level: {selected.fluff_level}</p>
               <p className="text-gray-700">Zodiac Sign: {selected.zodiac_sign}</p>
               <p className="text-gray-700">Type: {selected.type}</p>
