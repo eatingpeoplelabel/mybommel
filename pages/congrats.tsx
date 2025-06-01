@@ -46,6 +46,17 @@ export default function Congrats() {
     return () => clearTimeout(timer)
   }, [])
 
+  useEffect(() => {
+    if (id) {
+      const link = document.createElement('a')
+      link.href = `/api/certificate?id=${id}`
+      link.download = `bommel-certificate-${id}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
+  }, [id])
+
   const handleBallClick = () => {
     audioRef.current?.play().catch(() => {})
     setShowHoroscope(prev => !prev)
@@ -57,7 +68,7 @@ export default function Congrats() {
 
   const confirmLeave = (e: React.MouseEvent) => {
     const leave = confirm(
-      `✨ WAIT! Before you leave the Fluffdom... ✨\n\n🧶 Have you downloaded your majestic certificate?\n📸 Saved your glorious Insta Story image?\n👁 Memorized the secret code to summon the Bommel God?\n\nLeaving unprepared may result in mild existential fuzziness... 🌀\n\nStill brave enough to continue?`
+      `✨ WAIT! Before you leave the Fluffdom... ✨\n\n🧶 Did you download your majestic certificate?\n📸 Saved your glorious Insta Story image?\n👁 Memorized the secret code to summon the Bommel God?\n\nLeaving unprepared may result in mild existential fuzziness... 🌀\n\nStill brave enough to continue?`
     )
     if (!leave) e.preventDefault()
   }
@@ -76,7 +87,7 @@ export default function Congrats() {
         />
       </a>
 
-      <main className="relative min-h-screen bg-gradient-to-b from-pink-300 via-yellow-200 via-green-300 to-purple-300 flex flex-col items-center justify-start pt-10 px-6 overflow-visible">
+      <main className="relative min-h-screen bg-gradient-to-b from-pink-300 via-yellow-200 via-green-300 to-purple-300 flex flex-col items-center justify-start pt-10 px-6 overflow-x-hidden">
         <audio ref={audioRef} src="/magic-sound.mp3" preload="auto" />
         <audio ref={popAudioRef} src="/plop-sound.mp3" preload="auto" />
 
@@ -107,8 +118,8 @@ export default function Congrats() {
           </div>
 
           <p className="text-lg text-gray-800 font-medium">
-            You are now an official <span className="font-bold">Bommler</span><br />
-            and your official Bommel number is:
+            Welcome to the fluff!<br />
+            Your official Bommel number:
           </p>
           <div className="bg-purple-100 border-2 border-purple-300 rounded-lg p-4">
             <p className="text-4xl font-extrabold text-purple-600 hover:shadow-lg transition-shadow">
@@ -120,23 +131,21 @@ export default function Congrats() {
             href={`/api/certificate?id=${id}`}
             className="bg-pink-500 hover:bg-pink-400 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition inline-block"
           >
-            📄 Download Certificate
+            📄 Download Certificate Again
           </Link>
 
-          <h2 className="mt-10 text-xl font-bold text-purple-700">📸 Your Insta-ready Sharepic:</h2>
-      <a
-        href={`/api/share-image?id=${id}`}
-        download
-        className="mt-4 inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition"
-      >
-        📸 Download Your Sharepic
-      </a>
-
-
+          <a
+            href={`/api/share-image?id=${id}`}
+            download
+            className="mt-4 inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition"
+          >
+            📸 Download Story Image
+          </a>
+          <p className="text-xs text-purple-700 mt-2 italic">💡 Add it to your Instagram Story & tag @bebetta_official!</p>
 
           <div className="pt-6 text-sm text-center text-purple-800 bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 shadow-inner">
             <p className="font-semibold mb-1">🌟 A whisper from beyond the fluff...</p>
-            <p className="text-xs text-gray-600 mb-2 italic">The ancient code to summon the Bommel God:</p>
+            <p className="text-xs text-gray-600 mb-2 italic">Use the ancient code to summon the Bommel God:</p>
             <p className="font-mono text-xl font-bold text-pink-600 tracking-widest bg-pink-100 inline-block px-4 py-2 rounded-lg shadow-sm mb-2">
               bommelbommel
             </p>
@@ -149,7 +158,7 @@ export default function Congrats() {
               >
                 home page
               </a>{' '}
-              if you dare to meet the almighty <span className="text-purple-700 font-bold">Bommel God 👁</span>
+              to meet the almighty <span className="text-purple-700 font-bold">Bommel God 👁</span>
             </p>
           </div>
         </div>
