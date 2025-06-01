@@ -184,9 +184,10 @@ export default function DesktopHome() {
                 <div className="bg-white rounded-xl p-8 max-w-md w-full text-center shadow-2xl relative">
                   <h2 className="text-2xl font-bold mb-2">✨ Summon the Bommel God ✨</h2>
                   <p className="text-sm text-gray-600 italic mb-4">
-                    🌟 A whisper from beyond the fluff...<br />
-                    The ancient code to summon the deity lies hidden in plain yarn.
-                  </p>
+  🌟 A whisper from beyond the fluff...<br />
+  Register your first Bommel to receive the sacred code 🧶<br />
+  Then return here to unlock the divine fluff.
+</p>
                   <input
                     type="password"
                     placeholder="Enter secret code"
