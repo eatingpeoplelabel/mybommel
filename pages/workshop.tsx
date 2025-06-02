@@ -47,15 +47,15 @@ export default function Workshop() {
                 </svg>
               </button>
               <nav className="flex flex-col space-y-3 text-lg">
-                <Link href="/" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Home</Link>
-                <Link href="/register" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Register Your Bommel</Link>
-                <Link href="/gallery" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Gallery</Link>
-                <Link href="/workshop" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel Workshop</Link>
-                <Link href="/how-to-bommel" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">How-To-Bommel</Link>
-                <Link href="/zodiac" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Horoscope</Link>
-                <Link href="/faq" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">FABQ</Link>
+                <Link href="/" className="font-medium hover:text-purple-700">Home</Link>
+                <Link href="/register" className="font-medium hover:text-purple-700">Register Your Bommel</Link>
+                <Link href="/gallery" className="font-medium hover:text-purple-700">Bommel-Gallery</Link>
+                <Link href="/workshop" className="font-medium hover:text-purple-700">Bommel Workshop</Link>
+                <Link href="/how-to-bommel" className="font-medium hover:text-purple-700">How-To-Bommel</Link>
+                <Link href="/zodiac" className="font-medium hover:text-purple-700">Bommel-Horoscope</Link>
+                <Link href="/faq" className="font-medium hover:text-purple-700">FABQ</Link>
                 <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="font-medium hover:text-purple-700">Shop</a>
-                <Link href="/contact" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Contact</Link>
+                <Link href="/contact" className="font-medium hover:text-purple-700">Contact</Link>
               </nav>
             </div>
             <div className="flex-1 bg-black bg-opacity-50" onClick={() => setShowMenu(false)} />
@@ -73,7 +73,12 @@ export default function Workshop() {
           </Link>
         )}
 
-        {/* Mobile: Tap to View PDF Button (prominent, ganz oben) */}
+        {/* Titel – mit mehr Abstand nach oben & Pastell-Verlauf */}
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4 mt-10 text-center bg-gradient-to-br from-yellow-200 via-pink-200 to-purple-300 bg-clip-text text-transparent drop-shadow">
+          Bommel Workshop – The Fluffy Retreat
+        </h1>
+
+        {/* Mobile: Tap to View PDF Button (prominent, direkt unter Titel) */}
         {isMobile && (
           <a
             href="/ThePomPomRetreat.pdf"
@@ -85,12 +90,7 @@ export default function Workshop() {
           </a>
         )}
 
-        {/* Titel – mit mehr Abstand nach oben & Pastell-Verlauf */}
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4 mt-8 text-center bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300 bg-clip-text text-transparent drop-shadow">
-          Bommel Workshop – The Fluffy Retreat
-        </h1>
-
-        {/* Mobile: Back Button unter Headline */}
+        {/* Mobile: Back Button unter Tap here */}
         {isMobile && (
           <Link
             href="/"
