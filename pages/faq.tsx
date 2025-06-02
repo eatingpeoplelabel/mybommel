@@ -1,5 +1,8 @@
+'use client'
+
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 
@@ -7,8 +10,8 @@ export default function FAQ() {
   const router = useRouter()
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
 
-  // Einfache mobile detection via window.innerWidth
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768)
     checkMobile()
@@ -16,9 +19,7 @@ export default function FAQ() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  const handleBack = () => {
-    router.push('/')
-  }
+  const handleBack = () => router.push('/')
 
   const colors = [
     'bg-pink-100',
@@ -64,7 +65,45 @@ export default function FAQ() {
 
       <main className="min-h-screen bg-memphis bg-cover bg-center px-4 pt-6 pb-20 flex flex-col items-center relative">
 
-        {/* Desktop: Back to Home Icon (only if NOT mobile) */}
+        {/* Hamburger Menu for Mobile */}
+        {isMobile && (
+          <button
+            onClick={() => setShowMenu(prev => !prev)}
+            className="absolute top-2 left-2 p-2 z-50 bg-purple-600 rounded-full shadow"
+            aria-label="Toggle menu"
+          >
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        )}
+
+        {/* Menu Drawer */}
+        {isMobile && showMenu && (
+          <div className="fixed inset-0 z-40 flex">
+            <div className="w-3/4 max-w-xs h-full bg-white shadow-2xl p-4 overflow-y-auto border-r-4 border-purple-200">
+              <button onClick={() => setShowMenu(false)} aria-label="Close menu" className="mb-4">
+                <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <nav className="flex flex-col space-y-3 text-lg">
+                <Link href="/" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Home</Link>
+                <Link href="/register" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Register Your Bommel</Link>
+                <Link href="/gallery" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Gallery</Link>
+                <Link href="/workshop" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel Workshop</Link>
+                <Link href="/how-to-bommel" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">How-To-Bommel</Link>
+                <Link href="/zodiac" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Horoscope</Link>
+                <Link href="/faq" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">FABQ</Link>
+                <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="font-medium hover:text-purple-700">Shop</a>
+                <Link href="/contact" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Contact</Link>
+              </nav>
+            </div>
+            <div className="flex-1 bg-black bg-opacity-50" onClick={() => setShowMenu(false)} />
+          </div>
+        )}
+
+        {/* Desktop: Back Icon */}
         {!isMobile && (
           <button onClick={handleBack} className="fixed top-4 left-4 z-50">
             <Image
@@ -85,7 +124,7 @@ export default function FAQ() {
           </h1>
         </div>
 
-        {/* Mobile: Back to Home Button under header */}
+        {/* Mobile: Back Button */}
         {isMobile && (
           <button
             onClick={handleBack}

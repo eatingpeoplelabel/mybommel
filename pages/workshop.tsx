@@ -1,15 +1,15 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 
 export default function Workshop() {
   const [isMobile, setIsMobile] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
@@ -24,7 +24,45 @@ export default function Workshop() {
 
       <main className="relative min-h-screen bg-memphis bg-cover bg-center p-6 sm:p-8 flex flex-col items-center">
 
-        {/* Desktop: Icon oben links */}
+        {/* Hamburger Menu (Mobile only) */}
+        {isMobile && (
+          <button
+            onClick={() => setShowMenu(prev => !prev)}
+            className="absolute top-2 left-2 p-2 z-50 bg-purple-600 rounded-full shadow"
+            aria-label="Toggle menu"
+          >
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        )}
+
+        {/* Menu Drawer */}
+        {isMobile && showMenu && (
+          <div className="fixed inset-0 z-40 flex">
+            <div className="w-3/4 max-w-xs h-full bg-white shadow-2xl p-4 overflow-y-auto border-r-4 border-purple-200">
+              <button onClick={() => setShowMenu(false)} aria-label="Close menu" className="mb-4">
+                <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <nav className="flex flex-col space-y-3 text-lg">
+                <Link href="/" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Home</Link>
+                <Link href="/register" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Register Your Bommel</Link>
+                <Link href="/gallery" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Gallery</Link>
+                <Link href="/workshop" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel Workshop</Link>
+                <Link href="/how-to-bommel" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">How-To-Bommel</Link>
+                <Link href="/zodiac" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Horoscope</Link>
+                <Link href="/faq" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">FABQ</Link>
+                <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="font-medium hover:text-purple-700">Shop</a>
+                <Link href="/contact" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Contact</Link>
+              </nav>
+            </div>
+            <div className="flex-1 bg-black bg-opacity-50" onClick={() => setShowMenu(false)} />
+          </div>
+        )}
+
+        {/* Desktop: Back Icon oben links */}
         {!isMobile && (
           <Link href="/" className="fixed top-4 left-4 z-50">
             <img
@@ -39,7 +77,7 @@ export default function Workshop() {
           Bommel Workshop – The Fluffy Retreat
         </h1>
 
-        {/* Mobile: Back to Home Button unter Headline */}
+        {/* Mobile: Back Button unter Headline */}
         {isMobile && (
           <Link
             href="/"
@@ -49,7 +87,7 @@ export default function Workshop() {
           </Link>
         )}
 
-        {/* Download and Booking Buttons */}
+        {/* Buttons */}
         <div className="mb-6 flex flex-col sm:flex-row justify-center items-center gap-4">
           <a
             href="/ThePomPomRetreat.pdf"
@@ -58,7 +96,6 @@ export default function Workshop() {
           >
             📥 Download Workshop Guide (PDF)
           </a>
-
           <a
             href="mailto:info@bebetta.de?subject=I%20AM%20TOTALLY%20VERBOMMELT%20-%20Booking%20Request%20for%20Bommel%20workshop"
             className="px-6 py-3 bg-green-500 hover:bg-green-400 text-white rounded-full shadow-lg transition text-center"
@@ -67,14 +104,25 @@ export default function Workshop() {
           </a>
         </div>
 
-        {/* Embedded PDF */}
-        <div className="bg-white bg-opacity-90 p-4 sm:p-6 rounded-2xl shadow-lg w-full max-w-5xl h-[70vh] sm:h-[80vh]">
-          <iframe
-            src="/ThePomPomRetreat.pdf#view=FitH&toolbar=1"
-            className="w-full h-full"
-            title="Bommel Workshop Guide"
-          />
-        </div>
+        {/* PDF Section */}
+        {isMobile ? (
+          <a
+            href="/ThePomPomRetreat.pdf"
+            target="_blank"
+            rel="noopener"
+            className="w-full text-center text-sm text-white/80 underline hover:text-white transition"
+          >
+            👉 Tap here to view the Workshop PDF
+          </a>
+        ) : (
+          <div className="bg-white bg-opacity-90 p-4 sm:p-6 rounded-2xl shadow-lg w-full max-w-5xl h-[70vh] sm:h-[80vh]">
+            <iframe
+              src="/ThePomPomRetreat.pdf#view=FitH&toolbar=1"
+              className="w-full h-full"
+              title="Bommel Workshop Guide"
+            />
+          </div>
+        )}
       </main>
     </>
   )
