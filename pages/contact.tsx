@@ -26,7 +26,14 @@ export default function Contact() {
     <>
       <Head>
         <title>Contact – Grand Fluffdom of Bommlers</title>
-        <meta name="description" content="Get in touch with Bommlers Worldwide" />
+        <meta name="description" content="Get in touch with Bommlers Worldwide. Contact Bebetta and the Bommel community for questions, bookings, and more." />
+        <meta name="keywords" content="contact, bommel, pompom, bebett, festival, booking, community" />
+        <meta property="og:title" content="Contact – Grand Fluffdom of Bommlers" />
+        <meta property="og:description" content="Get in touch with Bommlers Worldwide. Contact Bebetta and the Bommel community for questions, bookings, and more." />
+        <meta property="og:image" content="https://mybommel.com/og-contact.jpg" />
+        <meta property="og:url" content="https://mybommel.com/contact" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="canonical" href="https://mybommel.com/contact" />
       </Head>
 
       <main className="relative min-h-screen bg-memphis bg-cover bg-center p-4 sm:p-8 flex flex-col items-center justify-center">

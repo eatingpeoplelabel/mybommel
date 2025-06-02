@@ -11,14 +11,29 @@ export default function MapPage() {
   return (
     <>
       <Head>
-        <title>🌍 Bommel World Map</title>
-        <meta name="description" content="Discover where all Bommels live across Earth (and beyond)!" />
+        <title>🌍 Bommel World Map – Explore Global Bommels</title>
+        <meta
+          name="description"
+          content="Discover where all Bommels live across Earth (and beyond)! Explore the interactive world map showing the global Bommel community."
+        />
+        <meta property="og:title" content="Bommel World Map – Explore Global Bommels" />
+        <meta
+          property="og:description"
+          content="Discover where all Bommels live across Earth (and beyond)! Explore the interactive world map showing the global Bommel community."
+        />
+        <meta property="og:url" content="https://mybommel.com/map" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <link rel="canonical" href="https://mybommel.com/map" />
       </Head>
 
-      <main className="relative min-h-screen bg-register bg-cover bg-center pt-8 pb-8 px-4">
-
+      <main
+        className="relative min-h-screen bg-register bg-cover bg-center pt-8 pb-8 px-4"
+        role="main"
+        aria-label="Bommel World Map page"
+      >
         {/* Back to Home Icon Button */}
-        <Link href="/" className="absolute top-4 left-4 z-50">
+        <Link href="/" aria-label="Back to Home" className="absolute top-4 left-4 z-50">
           <Image
             src="/back-to-home.webp"
             alt="Back to Home"
@@ -29,10 +44,10 @@ export default function MapPage() {
         </Link>
 
         {/* Header */}
-        <header className="flex flex-col items-center mb-8 pt-16">
+        <header className="flex flex-col items-center mb-8 pt-16" role="banner">
           <Image
             src="/bommel-register-header.webp"
-            alt="Bommel World Map"
+            alt="Bommel World Map Header"
             width={400}
             height={100}
             className="drop-shadow-md"
@@ -45,7 +60,10 @@ export default function MapPage() {
           {/* Back to Gallery Button */}
           <div className="mt-4">
             <Link href="/gallery" passHref>
-              <button className="px-6 py-2 bg-purple-600 text-white font-semibold rounded-full shadow hover:bg-purple-700 transition">
+              <button
+                aria-label="Back to Gallery"
+                className="px-6 py-2 bg-purple-600 text-white font-semibold rounded-full shadow hover:bg-purple-700 transition"
+              >
                 🖼️ Back to Gallery
               </button>
             </Link>
@@ -53,7 +71,10 @@ export default function MapPage() {
         </header>
 
         {/* Map Container */}
-        <section className="w-full max-w-6xl mx-auto h-[600px] bg-white/60 backdrop-blur-lg rounded-2xl shadow-xl border border-white/40 overflow-hidden">
+        <section
+          className="w-full max-w-6xl mx-auto h-[600px] bg-white/60 backdrop-blur-lg rounded-2xl shadow-xl border border-white/40 overflow-hidden"
+          aria-label="Interactive Bommel World Map"
+        >
           <WorldMap />
         </section>
       </main>

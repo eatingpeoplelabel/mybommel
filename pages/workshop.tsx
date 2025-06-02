@@ -19,7 +19,14 @@ export default function Workshop() {
     <>
       <Head>
         <title>Bommel Workshop – The Fluffy Retreat</title>
-        <meta name="description" content="Your Pom-Pom Workshop guide" />
+        <meta name="description" content="Join our Pom-Pom Workshop and learn how to create your own magical Bommel. Perfect for festivals and fluffy fun!" />
+        <meta name="keywords" content="bommel, pompom, workshop, craft, festival, fluff, diy, pom pom" />
+        <meta property="og:title" content="Bommel Workshop – The Fluffy Retreat" />
+        <meta property="og:description" content="Join our Pom-Pom Workshop and learn how to create your own magical Bommel. Perfect for festivals and fluffy fun!" />
+        <meta property="og:image" content="https://mybommel.com/og-workshop.jpg" />
+        <meta property="og:url" content="https://mybommel.com/workshop" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="canonical" href="https://mybommel.com/workshop" />
       </Head>
 
       <main className="relative min-h-screen bg-memphis bg-cover bg-center p-6 sm:p-8 flex flex-col items-center pb-24">

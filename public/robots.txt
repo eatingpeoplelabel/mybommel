@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://mybommel.com
+
+# Sitemaps
+Sitemap: https://mybommel.com/sitemap.xml

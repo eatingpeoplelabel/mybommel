@@ -61,10 +61,16 @@ export default function FAQ() {
       <Head>
         <title>FAQ - Grand Fluffdom of Bommlers</title>
         <meta name="description" content="Fun FAQs about your pom-pom life" />
+        <meta name="keywords" content="bommel faq, pompom questions, bommel help, fluffy questions" />
+        <meta property="og:title" content="FAQ - Grand Fluffdom of Bommlers" />
+        <meta property="og:description" content="Answers to all your Bommel-related questions and curiosities." />
+        <meta property="og:image" content="https://mybommel.com/og-faq.jpg" />
+        <meta property="og:url" content="https://mybommel.com/faq" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="canonical" href="https://mybommel.com/faq" />
       </Head>
 
       <main className="min-h-screen bg-memphis bg-cover bg-center px-4 pt-6 pb-20 flex flex-col items-center relative">
-
         {/* Hamburger Menu for Mobile */}
         {isMobile && (
           <button
