@@ -109,10 +109,17 @@ export default function Congrats() {
             Your official Bommel number:
           </p>
           <div className="bg-purple-100 border-2 border-purple-300 rounded-lg p-4">
-            <p className="text-4xl font-extrabold text-purple-600 hover:shadow-lg transition-shadow">
-              {bommel?.bommler_number || `BOM-${id}`}
-            </p>
-          </div>
+  <p className="text-4xl font-extrabold text-purple-600 hover:shadow-lg transition-shadow">
+    {bommel?.bommler_number || `BOM-${id}`}
+  </p>
+</div>
+
+<p className="mt-4 text-sm text-purple-800 bg-pink-100 border border-pink-200 rounded-md px-4 py-3 shadow">
+  🧶 Psst... your Bommel is currently under <span className="italic">fluffview</span>!<br />
+  The secret Bommel Council is lovingly inspecting it 🌸<br />
+  Soon it shall sparkle in the <a href="/gallery" className="underline font-semibold text-purple-600 hover:text-purple-800">Gallery of Glorious Bommels</a>! ✨
+</p>
+
 
           {/* ▶︎ Hier wird das PDF wirklich nur heruntergeladen */}
           <a
