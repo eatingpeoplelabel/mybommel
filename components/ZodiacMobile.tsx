@@ -29,10 +29,10 @@ export default function ZodiacMobile() {
   return (
     <main className="relative min-h-screen bg-zodiac bg-cover bg-center p-6 flex flex-col items-center text-white text-center">
 
-      {/* Hamburger Menu */}
+      {/* Hamburger Button */}
       <button
         onClick={() => setShowMenu(prev => !prev)}
-        className="absolute top-2 left-2 p-2 z-50 bg-purple-600 rounded-full shadow"
+        className="absolute top-2 left-2 p-2 z-50 bg-purple-700 rounded-full shadow"
         aria-label="Toggle menu"
       >
         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -40,42 +40,44 @@ export default function ZodiacMobile() {
         </svg>
       </button>
 
-      {/* Menu Drawer */}
+      {/* Menu Drawer (dark + mystic) */}
       {showMenu && (
         <div className="fixed inset-0 z-40 flex">
-          <div className="w-3/4 max-w-xs h-full bg-white shadow-2xl p-4 overflow-y-auto border-r-4 border-purple-200">
+          <div className="w-3/4 max-w-xs h-full bg-indigo-900 shadow-2xl p-4 overflow-y-auto border-r-4 border-purple-400 text-white">
             <button onClick={() => setShowMenu(false)} aria-label="Close menu" className="mb-4">
-              <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
             <nav className="flex flex-col space-y-3 text-lg">
-              <Link href="/" className="font-medium hover:text-purple-700">Home</Link>
-              <Link href="/register" className="font-medium hover:text-purple-700">Register Your Bommel</Link>
-              <Link href="/gallery" className="font-medium hover:text-purple-700">Bommel-Gallery</Link>
-              <Link href="/workshop" className="font-medium hover:text-purple-700">Bommel Workshop</Link>
-              <Link href="/how-to-bommel" className="font-medium hover:text-purple-700">How-To-Bommel</Link>
-              <Link href="/zodiac" className="font-medium hover:text-purple-700">Bommel-Horoscope</Link>
-              <Link href="/faq" className="font-medium hover:text-purple-700">FABQ</Link>
-              <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="font-medium hover:text-purple-700">Shop</a>
-              <Link href="/contact" className="font-medium hover:text-purple-700">Contact</Link>
+              <Link href="/" className="font-medium hover:text-purple-300">Home</Link>
+              <Link href="/register" className="font-medium hover:text-purple-300">Register Your Bommel</Link>
+              <Link href="/gallery" className="font-medium hover:text-purple-300">Bommel-Gallery</Link>
+              <Link href="/workshop" className="font-medium hover:text-purple-300">Bommel Workshop</Link>
+              <Link href="/how-to-bommel" className="font-medium hover:text-purple-300">How-To-Bommel</Link>
+              <Link href="/zodiac" className="font-medium hover:text-purple-300">Bommel-Horoscope</Link>
+              <Link href="/faq" className="font-medium hover:text-purple-300">FABQ</Link>
+              <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="font-medium hover:text-purple-300">Shop</a>
+              <Link href="/contact" className="font-medium hover:text-purple-300">Contact</Link>
             </nav>
           </div>
-          <div className="flex-1 bg-black bg-opacity-50" onClick={() => setShowMenu(false)} />
+          <div className="flex-1 bg-black bg-opacity-60" onClick={() => setShowMenu(false)} />
         </div>
       )}
 
-      {/* Content */}
+      {/* Title */}
       <h1 className="text-3xl font-bold mt-10 mb-4 bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
         🔮 Bommel Horoscope
       </h1>
 
+      {/* Back Home Button */}
       <Link href="/">
         <button className="mb-6 px-4 py-2 bg-white/20 rounded-full border border-white/30 text-sm hover:bg-white/30">
           ← Back to Home
         </button>
       </Link>
 
+      {/* Input */}
       {!result && (
         <form onSubmit={handleSubmit} className="w-full max-w-sm">
           <p className="mb-4 text-sm text-white/80">
@@ -97,6 +99,7 @@ export default function ZodiacMobile() {
         </form>
       )}
 
+      {/* Result */}
       {result && (
         <div className="mt-8 bg-white/10 p-6 rounded-2xl border border-white/30 backdrop-blur w-full max-w-xs text-white animate-fade-in">
           <h2 className="text-2xl font-bold mb-2">{result.name}</h2>
