@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     let bgBuf: Buffer
     try {
       const rawWebp = await fs.readFile(bgPath)
-      bgBuf = await sharp(rawWebp).png().toBuffer()
+      bgBuf = await sharp(rawWebp).resize(1080, 1920).png().toBuffer()
       console.log("[share-image] Hintergrund als PNG geladen:", bgPath)
     } catch (e) {
       console.error("[share-image] Fehler beim Laden oder Konvertieren des Hintergrunds:", e)
@@ -108,12 +108,15 @@ export default async function handler(req, res) {
     <text x="575" y="1140" font-size="32" fill="#333">Bounce Factor: ${bounceFactor}</text>
     <text x="575" y="1185" font-size="32" fill="#333">Fluff Attack: ${fluffAttack}</text>
   </g>
-  <rect x="220" y="1540" width="640" height="140" rx="20" fill="#ff69b4"/>
-  <text x="540" y="1590" text-anchor="middle" font-size="36" fill="#fff">
+  <rect x="220" y="1450" width="640" height="140" rx="20" fill="#ff69b4"/>
+  <text x="540" y="1500" text-anchor="middle" font-size="36" fill="#fff">
     Ready to fluff the world?
   </text>
-  <text x="540" y="1650" text-anchor="middle" font-size="36" fill="#ffff00">
-    <tspan font-weight="700">mybommel.com</tspan> by Bebetta with Love
+  <text x="540" y="1558" text-anchor="middle" font-size="34" fill="#ffff00">
+    <tspan font-weight="700">mybommel.com</tspan> by Bebetta with ❤️
+  </text>
+  <text x="540" y="1608" text-anchor="middle" font-size="28" fill="#888">
+    Tag @bebetta_official on Instagram!
   </text>
 </svg>`
 
@@ -125,7 +128,7 @@ export default async function handler(req, res) {
     const fontPath = path.join(process.cwd(), 'public/fonts/DejaVuSans.ttf')
 
     const resvg = new Resvg(svg, {
-      fitTo: { mode: 'original' },
+      fitTo: { mode: 'width', value: 1080 },
       font: {
         loadSystemFonts: false,
         fontFiles: [fontPath]
