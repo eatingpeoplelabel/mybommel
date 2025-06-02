@@ -28,7 +28,7 @@ export default function Workshop() {
         {isMobile && (
           <button
             onClick={() => setShowMenu(prev => !prev)}
-            className="absolute top-2 left-2 p-2 z-50 bg-purple-600 rounded-full shadow"
+            className="absolute top-2 left-2 p-2 z-50 bg-pink-600 rounded-full shadow"
             aria-label="Toggle menu"
           >
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -40,22 +40,22 @@ export default function Workshop() {
         {/* Menu Drawer */}
         {isMobile && showMenu && (
           <div className="fixed inset-0 z-40 flex">
-            <div className="w-3/4 max-w-xs h-full bg-white shadow-2xl p-4 overflow-y-auto border-r-4 border-purple-200">
+            <div className="w-3/4 max-w-xs h-full bg-white shadow-2xl p-4 overflow-y-auto border-r-4 border-pink-200">
               <button onClick={() => setShowMenu(false)} aria-label="Close menu" className="mb-4">
                 <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
               <nav className="flex flex-col space-y-3 text-lg">
-                <Link href="/" className="font-medium hover:text-purple-700">Home</Link>
-                <Link href="/register" className="font-medium hover:text-purple-700">Register Your Bommel</Link>
-                <Link href="/gallery" className="font-medium hover:text-purple-700">Bommel-Gallery</Link>
-                <Link href="/workshop" className="font-medium hover:text-purple-700">Bommel Workshop</Link>
-                <Link href="/how-to-bommel" className="font-medium hover:text-purple-700">How-To-Bommel</Link>
-                <Link href="/zodiac" className="font-medium hover:text-purple-700">Bommel-Horoscope</Link>
-                <Link href="/faq" className="font-medium hover:text-purple-700">FABQ</Link>
-                <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="font-medium hover:text-purple-700">Shop</a>
-                <Link href="/contact" className="font-medium hover:text-purple-700">Contact</Link>
+                <Link href="/" className="font-medium hover:text-pink-700">Home</Link>
+                <Link href="/register" className="font-medium hover:text-pink-700">Register Your Bommel</Link>
+                <Link href="/gallery" className="font-medium hover:text-pink-700">Bommel-Gallery</Link>
+                <Link href="/workshop" className="font-medium hover:text-pink-700">Bommel Workshop</Link>
+                <Link href="/how-to-bommel" className="font-medium hover:text-pink-700">How-To-Bommel</Link>
+                <Link href="/zodiac" className="font-medium hover:text-pink-700">Bommel-Horoscope</Link>
+                <Link href="/faq" className="font-medium hover:text-pink-700">FABQ</Link>
+                <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="font-medium hover:text-pink-700">Shop</a>
+                <Link href="/contact" className="font-medium hover:text-pink-700">Contact</Link>
               </nav>
             </div>
             <div className="flex-1 bg-black bg-opacity-50" onClick={() => setShowMenu(false)} />
@@ -73,12 +73,22 @@ export default function Workshop() {
           </Link>
         )}
 
-        {/* Titel – mit mehr Abstand nach oben & Pastell-Verlauf */}
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4 mt-10 text-center bg-gradient-to-br from-yellow-200 via-pink-200 to-purple-300 bg-clip-text text-transparent drop-shadow">
+        {/* Titel – verbesserte Lesbarkeit */}
+        <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 mt-10 text-center text-white drop-shadow-md">
           Bommel Workshop – The Fluffy Retreat
         </h1>
 
-        {/* Mobile: Tap to View PDF Button (prominent, direkt unter Titel) */}
+        {/* Mobile: Back Button direkt unter Titel */}
+        {isMobile && (
+          <Link
+            href="/"
+            className="mb-4 px-4 py-2 bg-white bg-opacity-80 rounded-full text-sm text-purple-700 font-semibold shadow hover:bg-opacity-100 transition"
+          >
+            ⬅ Back to Home
+          </Link>
+        )}
+
+        {/* Mobile: Tap to View PDF Button direkt darunter */}
         {isMobile && (
           <a
             href="/ThePomPomRetreat.pdf"
@@ -88,16 +98,6 @@ export default function Workshop() {
           >
             👉 Tap here to view the Workshop PDF
           </a>
-        )}
-
-        {/* Mobile: Back Button unter Tap here */}
-        {isMobile && (
-          <Link
-            href="/"
-            className="mb-4 px-4 py-2 bg-white bg-opacity-80 rounded-full text-sm text-purple-700 font-semibold shadow hover:bg-opacity-100 transition"
-          >
-            ⬅ Back to Home
-          </Link>
         )}
 
         {/* Buttons */}
