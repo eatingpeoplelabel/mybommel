@@ -73,7 +73,20 @@ export default function Workshop() {
           </Link>
         )}
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 drop-shadow text-center">
+        {/* Mobile: Tap to View PDF Button (prominent, ganz oben) */}
+        {isMobile && (
+          <a
+            href="/ThePomPomRetreat.pdf"
+            target="_blank"
+            rel="noopener"
+            className="mb-4 px-6 py-3 bg-yellow-300 text-purple-800 text-sm font-bold rounded-full shadow-lg hover:bg-yellow-400 transition"
+          >
+            👉 Tap here to view the Workshop PDF
+          </a>
+        )}
+
+        {/* Titel – mit mehr Abstand nach oben & Pastell-Verlauf */}
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4 mt-8 text-center bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300 bg-clip-text text-transparent drop-shadow">
           Bommel Workshop – The Fluffy Retreat
         </h1>
 
@@ -104,17 +117,8 @@ export default function Workshop() {
           </a>
         </div>
 
-        {/* PDF Section */}
-        {isMobile ? (
-          <a
-            href="/ThePomPomRetreat.pdf"
-            target="_blank"
-            rel="noopener"
-            className="w-full text-center text-sm text-white/80 underline hover:text-white transition"
-          >
-            👉 Tap here to view the Workshop PDF
-          </a>
-        ) : (
+        {/* PDF Section – only on desktop */}
+        {!isMobile && (
           <div className="bg-white bg-opacity-90 p-4 sm:p-6 rounded-2xl shadow-lg w-full max-w-5xl h-[70vh] sm:h-[80vh]">
             <iframe
               src="/ThePomPomRetreat.pdf#view=FitH&toolbar=1"

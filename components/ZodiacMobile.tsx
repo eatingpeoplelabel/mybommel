@@ -5,11 +5,9 @@ import { BOMMEL_ZODIAC_EN, getBommelZodiacEn } from '@/lib/zodiac-en'
 import Image from 'next/image'
 import Link from 'next/link'
 
-type ZodiacSign = typeof BOMMEL_ZODIAC_EN[0]
-
 export default function ZodiacMobile() {
   const [birthday, setBirthday] = useState<string>('')
-  const [result, setResult] = useState<ZodiacSign | null>(null)
+  const [result, setResult] = useState<typeof BOMMEL_ZODIAC_EN[0] | null>(null)
   const [showMenu, setShowMenu] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -50,15 +48,15 @@ export default function ZodiacMobile() {
               </svg>
             </button>
             <nav className="flex flex-col space-y-3 text-lg">
-              <Link href="/" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Home</Link>
-              <Link href="/register" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Register Your Bommel</Link>
-              <Link href="/gallery" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Gallery</Link>
-              <Link href="/workshop" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel Workshop</Link>
-              <Link href="/how-to-bommel" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">How-To-Bommel</Link>
-              <Link href="/zodiac" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Horoscope</Link>
-              <Link href="/faq" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">FABQ</Link>
+              <Link href="/" legacyBehavior><a onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Home</a></Link>
+              <Link href="/register" legacyBehavior><a onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Register Your Bommel</a></Link>
+              <Link href="/gallery" legacyBehavior><a onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Gallery</a></Link>
+              <Link href="/workshop" legacyBehavior><a onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel Workshop</a></Link>
+              <Link href="/how-to-bommel" legacyBehavior><a onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">How-To-Bommel</a></Link>
+              <Link href="/zodiac" legacyBehavior><a onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Horoscope</a></Link>
+              <Link href="/faq" legacyBehavior><a onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">FABQ</a></Link>
               <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="font-medium hover:text-purple-700">Shop</a>
-              <Link href="/contact" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Contact</Link>
+              <Link href="/contact" legacyBehavior><a onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Contact</a></Link>
             </nav>
           </div>
           <div className="flex-1 bg-black bg-opacity-50" onClick={() => setShowMenu(false)} />
@@ -66,7 +64,9 @@ export default function ZodiacMobile() {
       )}
 
       {/* Content */}
-      <h1 className="text-3xl font-bold mt-4 mb-4">🔮 Bommel Horoscope</h1>
+      <h1 className="text-3xl font-bold mt-10 mb-6 bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300 bg-clip-text text-transparent drop-shadow">
+        🔮 Bommel Horoscope
+      </h1>
 
       <Link href="/">
         <button className="mb-6 px-4 py-2 bg-white/20 rounded-full border border-white/30 text-sm hover:bg-white/30">
