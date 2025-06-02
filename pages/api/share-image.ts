@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     let bgBuf: Buffer
     try {
       const rawWebp = await fs.readFile(bgPath)
-      bgBuf = await sharp(rawWebp).resize(1080, 1920).png().toBuffer()
+      bgBuf = await sharp(rawWebp).png().toBuffer()
       console.log("[share-image] Hintergrund als PNG geladen:", bgPath)
     } catch (e) {
       console.error("[share-image] Fehler beim Laden oder Konvertieren des Hintergrunds:", e)
@@ -74,45 +74,45 @@ export default async function handler(req, res) {
     console.log("[share-image] fluff_level:", fluffNum, "→ fluffStars:", fluffStars)
 
     const svg = `
-<svg viewBox="0 0 1080 1920" width="1080" height="1920" xmlns="http://www.w3.org/2000/svg">
+<svg width="1080" height="1920" xmlns="http://www.w3.org/2000/svg">
   <style>
     text { font-family: 'DejaVu Sans', sans-serif; }
   </style>
   <image href="${backgroundDataUri}" width="1080" height="1920"/>
-  <g transform="translate(0,288)">
+  <g>
     <defs>
       <clipPath id="clip">
-        <circle cx="540" cy="270" r="250"/>
+        <circle cx="540" cy="558" r="250"/>
       </clipPath>
     </defs>
-    <circle cx="540" cy="270" r="254" fill="none" stroke="#fff" stroke-width="4"/>
-    <image href="${avatarDataUri}" x="290" y="20" width="500" height="500" clip-path="url(#clip)"/>
-    <rect x="390" y="425" width="300" height="54" rx="27" fill="#8e24aa"/>
-    <text x="540" y="460" text-anchor="middle" font-weight="700" font-size="36" fill="#fff">
+    <circle cx="540" cy="558" r="254" fill="none" stroke="#fff" stroke-width="4"/>
+    <image href="${avatarDataUri}" x="290" y="308" width="500" height="500" clip-path="url(#clip)"/>
+    <rect x="390" y="713" width="300" height="54" rx="27" fill="#8e24aa"/>
+    <text x="540" y="748" text-anchor="middle" font-weight="700" font-size="36" fill="#fff">
       No. ${bommel.bommler_number}
     </text>
-    <rect x="140" y="570" width="800" height="70" rx="35" fill="#fff8" stroke="#8e24aa" stroke-width="4"/>
-    <text x="540" y="620" text-anchor="middle" font-size="52" fill="#8e24aa">
+    <rect x="140" y="820" width="800" height="70" rx="35" fill="#fff8" stroke="#8e24aa" stroke-width="4"/>
+    <text x="540" y="870" text-anchor="middle" font-size="52" fill="#8e24aa">
       I AM AN OFFICIAL BOMMLER
     </text>
-    <rect x="135" y="750" width="810" height="265" rx="10" fill="#ffffffdd"/>
-    <line x1="540" y1="770" x2="540" y2="995" stroke="#ccc" stroke-width="2" stroke-dasharray="4,4"/>
-    <text x="155" y="795" font-weight="700" font-size="32" fill="#333">Name: ${bommel.name}</text>
-    <text x="155" y="840" font-size="32" fill="#333">Type: ${bommel.type}</text>
-    <text x="155" y="885" font-size="32" fill="#333">Birthday: ${bommel.birthday}</text>
-    <text x="155" y="930" font-size="32" fill="#333">Zodiac: ${zodiac.name}</text>
-    <text x="155" y="975" font-size="32" fill="#333">Location: ${bommel.location || 'Unknown'}</text>
-    <text x="575" y="795" font-size="32" fill="#333">Fluff Level: ${fluffStars}</text>
-    <text x="575" y="840" font-size="32" fill="#333">Fuzz Density: ${fuzzDensity}%</text>
-    <text x="575" y="885" font-size="32" fill="#333">Dreaminess: ${dreaminessEmoji}</text>
-    <text x="575" y="930" font-size="32" fill="#333">Bounce Factor: ${bounceFactor}</text>
-    <text x="575" y="975" font-size="32" fill="#333">Fluff Attack: ${fluffAttack}</text>
+    <rect x="135" y="960" width="810" height="265" rx="10" fill="#ffffffdd"/>
+    <line x1="540" y1="980" x2="540" y2="1205" stroke="#ccc" stroke-width="2" stroke-dasharray="4,4"/>
+    <text x="155" y="1005" font-weight="700" font-size="32" fill="#333">Name: ${bommel.name}</text>
+    <text x="155" y="1050" font-size="32" fill="#333">Type: ${bommel.type}</text>
+    <text x="155" y="1095" font-size="32" fill="#333">Birthday: ${bommel.birthday}</text>
+    <text x="155" y="1140" font-size="32" fill="#333">Zodiac: ${zodiac.name}</text>
+    <text x="155" y="1185" font-size="32" fill="#333">Location: ${bommel.location || 'Unknown'}</text>
+    <text x="575" y="1005" font-size="32" fill="#333">Fluff Level: ${fluffStars}</text>
+    <text x="575" y="1050" font-size="32" fill="#333">Fuzz Density: ${fuzzDensity}%</text>
+    <text x="575" y="1095" font-size="32" fill="#333">Dreaminess: ${dreaminessEmoji}</text>
+    <text x="575" y="1140" font-size="32" fill="#333">Bounce Factor: ${bounceFactor}</text>
+    <text x="575" y="1185" font-size="32" fill="#333">Fluff Attack: ${fluffAttack}</text>
   </g>
-  <rect x="220" y="1380" width="640" height="140" rx="20" fill="#ff69b4"/>
-  <text x="540" y="1430" text-anchor="middle" font-size="36" fill="#fff">
+  <rect x="220" y="1540" width="640" height="140" rx="20" fill="#ff69b4"/>
+  <text x="540" y="1590" text-anchor="middle" font-size="36" fill="#fff">
     Ready to fluff the world?
   </text>
-  <text x="540" y="1490" text-anchor="middle" font-size="36" fill="#ffff00">
+  <text x="540" y="1650" text-anchor="middle" font-size="36" fill="#ffff00">
     <tspan font-weight="700">mybommel.com</tspan> by Bebetta with Love
   </text>
 </svg>`
@@ -125,7 +125,7 @@ export default async function handler(req, res) {
     const fontPath = path.join(process.cwd(), 'public/fonts/DejaVuSans.ttf')
 
     const resvg = new Resvg(svg, {
-      fitTo: { mode: 'width', value: 1080 },
+      fitTo: { mode: 'original' },
       font: {
         loadSystemFonts: false,
         fontFiles: [fontPath]
