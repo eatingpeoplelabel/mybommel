@@ -108,14 +108,15 @@ export default async function handler(req, res) {
     <text x="575" y="1140" font-size="32" fill="#333">Bounce Factor: ${bounceFactor}</text>
     <text x="575" y="1185" font-size="32" fill="#333">Fluff Attack: ${fluffAttack}</text>
   </g>
-  <rect x="220" y="1450" width="640" height="140" rx="20" fill="#ff69b4"/>
-  <text x="540" y="1500" text-anchor="middle" font-size="36" fill="#fff">
+  <rect x="220" y="1430" width="640" height="140" rx="20" fill="#ff69b4"/>
+  <text x="540" y="1480" text-anchor="middle" font-size="36" fill="#fff">
     Ready to fluff the world?
   </text>
-  <text x="540" y="1558" text-anchor="middle" font-size="34" fill="#ffff00">
+  <text x="540" y="1538" text-anchor="middle" font-size="34" fill="#ffff00">
     <tspan font-weight="700">mybommel.com</tspan> by Bebetta with ❤️
   </text>
-  <text x="540" y="1608" text-anchor="middle" font-size="28" fill="#888">
+  <rect x="290" y="1580" width="500" height="48" rx="24" fill="#eee"/>
+  <text x="540" y="1612" text-anchor="middle" font-size="28" fill="#555">
     Tag @bebetta_official on Instagram!
   </text>
 </svg>`
