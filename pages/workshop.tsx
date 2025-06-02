@@ -22,7 +22,7 @@ export default function Workshop() {
         <meta name="description" content="Your Pom-Pom Workshop guide" />
       </Head>
 
-      <main className="relative min-h-screen bg-memphis bg-cover bg-center p-6 sm:p-8 flex flex-col items-center">
+      <main className="relative min-h-screen bg-memphis bg-cover bg-center p-6 sm:p-8 flex flex-col items-center pb-24">
 
         {/* Hamburger Menu (Mobile only) */}
         {isMobile && (
@@ -40,22 +40,22 @@ export default function Workshop() {
         {/* Menu Drawer */}
         {isMobile && showMenu && (
           <div className="fixed inset-0 z-40 flex">
-            <div className="w-3/4 max-w-xs h-full bg-white shadow-2xl p-4 overflow-y-auto border-r-4 border-pink-200">
+            <div className="w-3/4 max-w-xs h-full bg-pink-900 text-white shadow-2xl p-4 overflow-y-auto border-r-4 border-pink-400">
               <button onClick={() => setShowMenu(false)} aria-label="Close menu" className="mb-4">
-                <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
               <nav className="flex flex-col space-y-3 text-lg">
-                <Link href="/" className="font-medium hover:text-pink-700">Home</Link>
-                <Link href="/register" className="font-medium hover:text-pink-700">Register Your Bommel</Link>
-                <Link href="/gallery" className="font-medium hover:text-pink-700">Bommel-Gallery</Link>
-                <Link href="/workshop" className="font-medium hover:text-pink-700">Bommel Workshop</Link>
-                <Link href="/how-to-bommel" className="font-medium hover:text-pink-700">How-To-Bommel</Link>
-                <Link href="/zodiac" className="font-medium hover:text-pink-700">Bommel-Horoscope</Link>
-                <Link href="/faq" className="font-medium hover:text-pink-700">FABQ</Link>
-                <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="font-medium hover:text-pink-700">Shop</a>
-                <Link href="/contact" className="font-medium hover:text-pink-700">Contact</Link>
+                <Link href="/" className="font-medium hover:text-pink-200">Home</Link>
+                <Link href="/register" className="font-medium hover:text-pink-200">Register Your Bommel</Link>
+                <Link href="/gallery" className="font-medium hover:text-pink-200">Bommel-Gallery</Link>
+                <Link href="/workshop" className="font-medium hover:text-pink-200">Bommel Workshop</Link>
+                <Link href="/how-to-bommel" className="font-medium hover:text-pink-200">How-To-Bommel</Link>
+                <Link href="/zodiac" className="font-medium hover:text-pink-200">Bommel-Horoscope</Link>
+                <Link href="/faq" className="font-medium hover:text-pink-200">FABQ</Link>
+                <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="font-medium hover:text-pink-200">Shop</a>
+                <Link href="/contact" className="font-medium hover:text-pink-200">Contact</Link>
               </nav>
             </div>
             <div className="flex-1 bg-black bg-opacity-50" onClick={() => setShowMenu(false)} />
@@ -73,34 +73,29 @@ export default function Workshop() {
           </Link>
         )}
 
-        {/* Titel – verbesserte Lesbarkeit */}
         <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 mt-10 text-center text-white drop-shadow-md">
           Bommel Workshop – The Fluffy Retreat
         </h1>
 
-        {/* Mobile: Back Button direkt unter Titel */}
         {isMobile && (
-          <Link
-            href="/"
-            className="mb-4 px-4 py-2 bg-white bg-opacity-80 rounded-full text-sm text-purple-700 font-semibold shadow hover:bg-opacity-100 transition"
-          >
-            ⬅ Back to Home
-          </Link>
+          <>
+            <Link
+              href="/"
+              className="mb-4 px-4 py-2 bg-white bg-opacity-80 rounded-full text-sm text-purple-700 font-semibold shadow hover:bg-opacity-100 transition"
+            >
+              ⬅ Back to Home
+            </Link>
+            <a
+              href="/ThePomPomRetreat.pdf"
+              target="_blank"
+              rel="noopener"
+              className="mb-4 px-6 py-3 bg-yellow-300 text-purple-800 text-sm font-bold rounded-full shadow-lg hover:bg-yellow-400 transition"
+            >
+              👉 Tap here to view the Workshop PDF
+            </a>
+          </>
         )}
 
-        {/* Mobile: Tap to View PDF Button direkt darunter */}
-        {isMobile && (
-          <a
-            href="/ThePomPomRetreat.pdf"
-            target="_blank"
-            rel="noopener"
-            className="mb-4 px-6 py-3 bg-yellow-300 text-purple-800 text-sm font-bold rounded-full shadow-lg hover:bg-yellow-400 transition"
-          >
-            👉 Tap here to view the Workshop PDF
-          </a>
-        )}
-
-        {/* Buttons */}
         <div className="mb-6 flex flex-col sm:flex-row justify-center items-center gap-4">
           <a
             href="/ThePomPomRetreat.pdf"
@@ -117,7 +112,6 @@ export default function Workshop() {
           </a>
         </div>
 
-        {/* PDF Section – only on desktop */}
         {!isMobile && (
           <div className="bg-white bg-opacity-90 p-4 sm:p-6 rounded-2xl shadow-lg w-full max-w-5xl h-[70vh] sm:h-[80vh]">
             <iframe
@@ -127,6 +121,14 @@ export default function Workshop() {
             />
           </div>
         )}
+
+        {/* Footer */}
+        <footer className="fixed bottom-0 left-0 w-full bg-pink-800 text-white text-sm py-2 flex justify-around items-center z-40">
+          <Link href="/" className="hover:underline">Home</Link>
+          <a href="https://soundcloud.com/bebetta" target="_blank" rel="noopener" className="hover:underline">SoundCloud</a>
+          <a href="https://bebetta.de/" target="_blank" rel="noopener" className="hover:underline">Website</a>
+          <Link href="/contact" className="hover:underline">Contact</Link>
+        </footer>
       </main>
     </>
   )

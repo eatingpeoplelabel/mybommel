@@ -1,4 +1,3 @@
-// components/RegisterMobile.tsx
 'use client'
 
 import { useForm } from 'react-hook-form'
@@ -7,54 +6,42 @@ import { useRouter } from 'next/router'
 import imageCompression from 'browser-image-compression'
 import { supabase } from '@/lib/supabaseClient'
 import MobileCameraCapture from '@/components/MobileCameraCapture'
+import Link from 'next/link'
 
 const countries = [
-  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia",
-  "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium",
-  "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria",
-  "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad",
-  "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Côte d’Ivoire", "Croatia", "Cuba", "Cyprus",
-  "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
-  "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia",
-  "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada",
-  "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India",
-  "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan",
-  "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia",
-  "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali",
-  "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco",
-  "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands",
-  "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman",
-  "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal",
-  "Qatar", "Republic of the Congo", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia",
-  "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia",
-  "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands",
-  "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname",
-  "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo",
-  "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine",
-  "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu",
-  "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe", "Bommelhausen"
-]
+    "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia",
+    "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium",
+    "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria",
+    "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad",
+    "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Côte d’Ivoire", "Croatia", "Cuba", "Cyprus",
+    "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
+    "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia",
+    "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada",
+    "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India",
+    "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan",
+    "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia",
+    "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali",
+    "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco",
+    "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands",
+    "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman",
+    "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal",
+    "Qatar", "Republic of the Congo", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia",
+    "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia",
+    "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands",
+    "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname",
+    "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo",
+    "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine",
+    "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu",
+    "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe", "Bommelhausen"
+  ]
+  ;
 
 const bommelTypes = [
   "Fluffinator", "Disco Bommel", "Snuggle Puff", "Turbo Bommel", "Cuddle Cloud",
   "Hyper Fluff", "Mega Bommel", "Quantum Puff", "Rainbow Snuggler", "Galactic Bommel", "Zen Puff"
-]
+];
 
-const fluffLevels = [ "🌟", "🌟🌟", "🌟🌟🌟", "🌟🌟🌟🌟", "🌟🌟🌟🌟🌟" ]
-
-type FormData = {
-  nickname: string
-  name: string
-  image: FileList
-  fluffLevel: string
-  type: string
-  birthday: string
-  email?: string
-  about?: string
-  country: string
-  postalCode: string
-  bot_detector_3000?: string
-}
+const fluffLevels = ["🌟", "🌟🌟", "🌟🌟🌟", "🌟🌟🌟🌟", "🌟🌟🌟🌟🌟"];
 
 export default function RegisterMobile() {
   const {
@@ -64,15 +51,16 @@ export default function RegisterMobile() {
     trigger,
     watch,
     formState: { isSubmitting }
-  } = useForm<FormData>()
+  } = useForm()
 
-  const [previewData, setPreviewData] = useState<FormData | null>(null)
-  const [photoName, setPhotoName] = useState<string | null>(null)
-  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [previewData, setPreviewData] = useState(null)
+  const [photoName, setPhotoName] = useState(null)
+  const [uploadError, setUploadError] = useState(null)
   const [isUploading, setIsUploading] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
   const router = useRouter()
 
-  const onReview = (data: FormData) => setPreviewData(data)
+  const onReview = (data) => setPreviewData(data)
 
   const onConfirm = async () => {
     if (!previewData) return
@@ -114,7 +102,7 @@ export default function RegisterMobile() {
       if (!res.ok) throw new Error('Upload failed')
       const { id } = await res.json()
       router.push(`/congrats?id=${id}`)
-    } catch (err: any) {
+    } catch (err) {
       setUploadError(err.message || 'Something went wrong.')
       setPreviewData(null)
       setIsUploading(false)
@@ -123,7 +111,42 @@ export default function RegisterMobile() {
 
   return (
     <main className="min-h-screen bg-register bg-cover bg-center px-4 py-6 relative">
+      <button
+        onClick={() => setShowMenu(prev => !prev)}
+        className="absolute top-2 left-2 p-2 z-50 bg-purple-700 rounded-full shadow"
+        aria-label="Toggle menu"
+      >
+        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {showMenu && (
+        <div className="fixed inset-0 z-40 flex">
+          <div className="w-3/4 max-w-xs h-full bg-indigo-900 shadow-2xl p-4 overflow-y-auto border-r-4 border-purple-400 text-white">
+            <button onClick={() => setShowMenu(false)} aria-label="Close menu" className="mb-4">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <nav className="flex flex-col space-y-3 text-lg">
+              <Link href="/" className="font-medium hover:text-purple-300">Home</Link>
+              <Link href="/register" className="font-medium hover:text-purple-300">Register Your Bommel</Link>
+              <Link href="/gallery" className="font-medium hover:text-purple-300">Bommel-Gallery</Link>
+              <Link href="/workshop" className="font-medium hover:text-purple-300">Bommel Workshop</Link>
+              <Link href="/how-to-bommel" className="font-medium hover:text-purple-300">How-To-Bommel</Link>
+              <Link href="/zodiac" className="font-medium hover:text-purple-300">Bommel-Horoscope</Link>
+              <Link href="/faq" className="font-medium hover:text-purple-300">FABQ</Link>
+              <a href="https://bebetta.de/shop/" target="_blank" rel="noopener" className="font-medium hover:text-purple-300">Shop</a>
+              <Link href="/contact" className="font-medium hover:text-purple-300">Contact</Link>
+            </nav>
+          </div>
+          <div className="flex-1 bg-black bg-opacity-60" onClick={() => setShowMenu(false)} />
+        </div>
+      )}
+
       <h1 className="text-3xl font-bold text-center mb-6">📱 Register your Bommel</h1>
+
       <form onSubmit={handleSubmit(onReview)} className="space-y-4">
         <input type="text" {...register('bot_detector_3000')} className="hidden" />
         <input placeholder="Your Nickname" {...register('nickname', { required: true })} className="w-full" />
@@ -132,13 +155,6 @@ export default function RegisterMobile() {
         <div className="flex flex-col">
           <label className="font-semibold">Upload a Bommel photo</label>
           <input type="file" accept="image/*" {...register('image', { required: true })} className="w-full" />
-          {photoName && previewData?.image && (
-            <img
-              src={URL.createObjectURL(previewData.image[0])}
-              alt="Preview"
-              className="w-24 h-24 mt-2 rounded object-cover border"
-            />
-          )}
         </div>
 
         <label className="font-semibold">Fluff Level</label>
