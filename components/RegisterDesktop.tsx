@@ -122,14 +122,14 @@ export default function RegisterDesktop() {
 
   return (
     <main className="min-h-screen bg-register bg-cover bg-center px-4 py-6 relative">
-      {/* Back to Home Button */}
-      <div className="absolute top-4 left-4 z-10">
-        <Link href="/">
-          <a className="text-white bg-black/50 hover:bg-black/70 px-3 py-1 rounded-full text-sm">
-            ← Back to Home
-          </a>
-        </Link>
-      </div>
+      {/* Desktop: Back-To-Home Button (identisch zum Workshop) */}
+      <Link href="/" className="fixed top-4 left-4 z-50">
+        <img
+          src="/back-to-home.webp"
+          alt="Back to Home"
+          className="w-24 h-auto cursor-pointer"
+        />
+      </Link>
 
       <h1 className="text-4xl font-bold text-center mb-6">🧑‍💻 Register your Bommel</h1>
       <form onSubmit={handleSubmit(onReview)} className="space-y-4 max-w-2xl mx-auto">
