@@ -4,6 +4,7 @@
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import imageCompression from 'browser-image-compression'
 import { supabase } from '@/lib/supabaseClient'
 
@@ -121,48 +122,101 @@ export default function RegisterDesktop() {
 
   return (
     <main className="min-h-screen bg-register bg-cover bg-center px-4 py-6 relative">
+      {/* Back to Home Button */}
+      <div className="absolute top-4 left-4 z-10">
+        <Link href="/">
+          <a className="text-white bg-black/50 hover:bg-black/70 px-3 py-1 rounded-full text-sm">
+            ← Back to Home
+          </a>
+        </Link>
+      </div>
+
       <h1 className="text-4xl font-bold text-center mb-6">🧑‍💻 Register your Bommel</h1>
       <form onSubmit={handleSubmit(onReview)} className="space-y-4 max-w-2xl mx-auto">
         <input type="text" {...register('bot_detector_3000')} className="hidden" />
-        <input placeholder="Your Nickname" {...register('nickname', { required: true })} className="w-full" />
-        <input placeholder="Your Bommel's Name" {...register('name', { required: true })} className="w-full" />
+        <input
+          placeholder="Your Nickname"
+          {...register('nickname', { required: true })}
+          className="w-full px-3 py-2 border rounded"
+        />
+        <input
+          placeholder="Your Bommel's Name"
+          {...register('name', { required: true })}
+          className="w-full px-3 py-2 border rounded"
+        />
 
         <label className="font-semibold">Upload a Bommel photo</label>
-        <input type="file" accept="image/*" {...register('image', { required: true })} className="w-full" />
+        <input
+          type="file"
+          accept="image/*"
+          {...register('image', { required: true })}
+          className="w-full"
+        />
 
         <label className="font-semibold">Fluff Level</label>
-        <select {...register('fluffLevel')} className="w-full">
-          {fluffLevels.map((f, i) => <option key={i} value={`${i + 1}`}>{f}</option>)}
+        <select {...register('fluffLevel')} className="w-full px-3 py-2 border rounded">
+          {fluffLevels.map((f, i) => (
+            <option key={i} value={`${i + 1}`}>
+              {f}
+            </option>
+          ))}
         </select>
 
         <label className="font-semibold">Bommel Type</label>
-        <select {...register('type', { required: true })} className="w-full">
+        <select {...register('type', { required: true })} className="w-full px-3 py-2 border rounded">
           <option value="">Choose a type</option>
-          {bommelTypes.map((t) => <option key={t} value={t}>{t}</option>)}
+          {bommelTypes.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
         </select>
 
         <label className="font-semibold">Bommel Birthday</label>
-        <input type="date" {...register('birthday', { required: true })} className="w-full" />
+        <input
+          type="date"
+          {...register('birthday', { required: true })}
+          className="w-full px-3 py-2 border rounded"
+        />
 
         <label className="font-semibold">Email (optional)</label>
-        <input type="email" {...register('email')} placeholder="For giveaways & updates" className="w-full" />
+        <input
+          type="email"
+          {...register('email')}
+          placeholder="For giveaways & updates"
+          className="w-full px-3 py-2 border rounded"
+        />
 
         <label className="font-semibold">About your Bommel</label>
-        <textarea {...register('about')} placeholder="Fluffy, magical, loves to dance..." className="w-full" />
+        <textarea
+          {...register('about')}
+          placeholder="Fluffy, magical, loves to dance..."
+          className="w-full px-3 py-2 border rounded"
+        />
 
         <label className="font-semibold">Country</label>
-        <select {...register('country', { required: true })} className="w-full">
+        <select {...register('country', { required: true })} className="w-full px-3 py-2 border rounded">
           <option value="">Choose country</option>
-          {countries.map((c) => <option key={c} value={c}>{c}</option>)}
+          {countries.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
         </select>
 
-        <input placeholder="Postal Code" {...register('postalCode', { required: true })} className="w-full" />
+        <input
+          placeholder="Postal Code"
+          {...register('postalCode', { required: true })}
+          className="w-full px-3 py-2 border rounded"
+        />
 
         <button
           type="submit"
           disabled={isSubmitting}
           className="w-full bg-pink-500 text-white py-3 rounded-full font-bold"
-        >Submit</button>
+        >
+          Submit
+        </button>
       </form>
 
       {previewData && (
@@ -170,10 +224,18 @@ export default function RegisterDesktop() {
           <div className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-md text-sm">
             <h2 className="text-lg font-bold mb-2 text-center">Almost done! 🎉 Confirm your Bommel:</h2>
             <ul className="space-y-1">
-              <li><strong>Nickname:</strong> {previewData.nickname}</li>
-              <li><strong>Name:</strong> {previewData.name}</li>
-              <li><strong>Fluff Level:</strong> {previewData.fluffLevel}</li>
-              <li><strong>Type:</strong> {previewData.type}</li>
+              <li>
+                <strong>Nickname:</strong> {previewData.nickname}
+              </li>
+              <li>
+                <strong>Name:</strong> {previewData.name}
+              </li>
+              <li>
+                <strong>Fluff Level:</strong> {previewData.fluffLevel}
+              </li>
+              <li>
+                <strong>Type:</strong> {previewData.type}
+              </li>
             </ul>
             {previewData.image && (
               <img
@@ -186,11 +248,15 @@ export default function RegisterDesktop() {
               <button
                 onClick={() => setPreviewData(null)}
                 className="px-4 py-2 bg-gray-300 rounded-full"
-              >← Back</button>
+              >
+                ← Back
+              </button>
               <button
                 onClick={onConfirm}
                 className="px-4 py-2 bg-pink-500 text-white font-bold rounded-full"
-              >✅ Confirm</button>
+              >
+                ✅ Confirm
+              </button>
             </div>
             {uploadError && <p className="text-red-600 text-sm mt-2">{uploadError}</p>}
           </div>
