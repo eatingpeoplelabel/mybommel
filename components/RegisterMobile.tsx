@@ -1,11 +1,10 @@
 'use client'
 
 import { useForm } from 'react-hook-form'
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/router'
-import imageCompression from 'browser-image-compression'
 import { supabase } from '@/lib/supabaseClient'
-import MobileCameraCapture from '@/components/MobileCameraCapture'
+import { cropAndResizeImageToAspect } from '@/lib/cropAndResizeImageToAspect'
 import Link from 'next/link'
 
 const countries = [
@@ -34,27 +33,23 @@ const countries = [
     "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu",
     "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe", "Bommelhausen"
   ]
-  ;
-
-const bommelTypes = [
-  "Fluffinator", "Disco Bommel", "Snuggle Puff", "Turbo Bommel", "Cuddle Cloud",
-  "Hyper Fluff", "Mega Bommel", "Quantum Puff", "Rainbow Snuggler", "Galactic Bommel", "Zen Puff"
-];
-
-const fluffLevels = ["🌟", "🌟🌟", "🌟🌟🌟", "🌟🌟🌟🌟", "🌟🌟🌟🌟🌟"];
+  
+  const bommelTypes = [
+    "Fluffinator", "Disco Bommel", "Snuggle Puff", "Turbo Bommel", "Cuddle Cloud",
+    "Hyper Fluff", "Mega Bommel", "Quantum Puff", "Rainbow Snuggler", "Galactic Bommel", "Zen Puff"
+  ]
+  
+const fluffLevels = ["🌟", "🌟🌟", "🌟🌟🌟", "🌟🌟🌟🌟", "🌟🌟🌟🌟🌟"]
 
 export default function RegisterMobile() {
   const {
     register,
     handleSubmit,
     setValue,
-    trigger,
-    watch,
     formState: { isSubmitting }
   } = useForm()
 
   const [previewData, setPreviewData] = useState(null)
-  const [photoName, setPhotoName] = useState(null)
   const [uploadError, setUploadError] = useState(null)
   const [isUploading, setIsUploading] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
@@ -69,19 +64,15 @@ export default function RegisterMobile() {
       setUploadError(null)
 
       const file = previewData.image[0]
-      const compressedFile = await imageCompression(file, {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 1000,
-        useWebWorker: true,
-      })
+      const resizedFile = await cropAndResizeImageToAspect(file, 4 / 5, 1000)
 
-      const fileExt = compressedFile.name.split('.').pop()
+      const fileExt = resizedFile.name.split('.').pop()
       const fileName = `${previewData.name}-${Date.now()}.${fileExt}`
       const filePath = `bommel-images/${fileName}`
 
       const { error: uploadError } = await supabase.storage
         .from('bommel-images')
-        .upload(filePath, compressedFile, {
+        .upload(filePath, resizedFile, {
           cacheControl: '3600',
           upsert: false,
         })
@@ -111,6 +102,7 @@ export default function RegisterMobile() {
 
   return (
     <main className="min-h-screen bg-register bg-cover bg-center px-4 py-6 relative">
+      {/* Hamburger Menü */}
       <button
         onClick={() => setShowMenu(prev => !prev)}
         className="absolute top-2 left-2 p-2 z-50 bg-purple-700 rounded-full shadow"
@@ -203,11 +195,13 @@ export default function RegisterMobile() {
               <li><strong>Type:</strong> {previewData.type}</li>
             </ul>
             {previewData.image && (
-              <img
-                src={URL.createObjectURL(previewData.image[0])}
-                alt="Preview"
-                className="w-full mt-4 rounded-lg border"
-              />
+              <div className="mt-4 rounded-lg border overflow-hidden w-full aspect-[4/5] bg-gray-100">
+                <img
+                  src={URL.createObjectURL(previewData.image[0])}
+                  alt="Preview"
+                  className="w-full h-full object-cover"
+                />
+              </div>
             )}
             <div className="mt-4 flex gap-4 justify-center">
               <button
