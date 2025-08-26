@@ -1,3 +1,4 @@
+// File: components/WorldMap.tsx
 import React, { useEffect, useState } from 'react'
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps'
 import { supabase } from '../lib/supabaseClient'
@@ -10,12 +11,52 @@ const getOffset = (index: number): [number, number] => {
   return [Math.cos(angle) * distance, Math.sin(angle) * distance]
 }
 
+// Hilfsfunktion: [lon, lat] zurückgeben oder null
+function normalizeCoords(input: any): [number, number] | null {
+  if (!input) return null
+
+  // A) Array [a,b] (kann [lon,lat] oder [lat,lon] sein)
+  if (Array.isArray(input) && input.length === 2) {
+    const a = typeof input[0] === 'string' ? parseFloat(input[0]) : input[0]
+    const b = typeof input[1] === 'string' ? parseFloat(input[1]) : input[1]
+    if (Number.isFinite(a) && Number.isFinite(b)) {
+      // Heuristik: wenn erstes wie lat (-90..90) aussieht und zweites > 90, drehen
+      const looksLikeLatFirst = Math.abs(a) <= 90 && Math.abs(b) <= 180 && Math.abs(b) > 90
+      return looksLikeLatFirst ? [b as number, a as number] : [a as number, b as number]
+    }
+  }
+
+  // B) Objekt {lat,lng}/{latitude,longitude}/{lon,lat}/x,y
+  if (typeof input === 'object') {
+    const lat = input.lat ?? input.latitude ?? input.y ?? input.Lat ?? input.Latitude
+    const lon = input.lon ?? input.lng ?? input.longitude ?? input.x ?? input.Lon ?? input.Longitude
+    const latN = typeof lat === 'string' ? parseFloat(lat) : lat
+    const lonN = typeof lon === 'string' ? parseFloat(lon) : lon
+    if (Number.isFinite(latN) && Number.isFinite(lonN)) {
+      return [lonN as number, latN as number]
+    }
+  }
+
+  // C) String "lon,lat" oder "(lon,lat)"
+  if (typeof input === 'string') {
+    const cleaned = input.replace(/[()\[\]]/g, '').trim()
+    const parts = cleaned.split(/[,; ]+/).map(v => parseFloat(v)).filter(Number.isFinite)
+    if (parts.length >= 2) {
+      const a = parts[0], b = parts[1]
+      const looksLikeLatFirst = Math.abs(a) <= 90 && Math.abs(b) <= 180 && Math.abs(b) > 90
+      return looksLikeLatFirst ? [b, a] : [a, b]
+    }
+  }
+
+  return null
+}
+
 type Bommel = {
   id: number
   name: string
   bommler_number: string
   location: string
-  coords: [number, number]
+  coords: [number, number] // [lon, lat]
   fluff_level?: number
   type?: string
   birthday?: string
@@ -42,17 +83,29 @@ export default function WorldMap() {
         return
       }
 
-      const mapped = (data as any[])
-        .filter(b => Array.isArray(b.coords) && b.coords.length === 2)
-        .map(b => ({
-          ...b,
-          coords: b.coords.map((c: string | number) =>
-            typeof c === 'string' ? parseFloat(c) : c
-          ) as [number, number],
-          markerColor: getRandomColor()
-        }))
+      const mapped = (data as any[]).map(row => {
+        const norm = normalizeCoords(row.coords)
+        return norm
+          ? ({
+              id: row.id,
+              name: row.name,
+              bommler_number: row.bommler_number,
+              location: row.location,
+              coords: norm as [number, number], // [lon, lat]
+              fluff_level: row.fluff_level,
+              type: row.type,
+              birthday: row.birthday,
+              about: row.about,
+              image_path: row.image_path,
+              markerColor: getRandomColor(),
+            } as Bommel)
+          : null
+      }).filter(Boolean) as Bommel[]
 
-      console.log("Bommels geladen:", mapped)
+      const dropped = (data?.length ?? 0) - mapped.length
+      if (dropped > 0) {
+        console.warn(`WorldMap: ${dropped} Einträge ohne verwertbare coords verworfen.`)
+      }
 
       setBommels(mapped)
 
@@ -81,9 +134,7 @@ export default function WorldMap() {
     setCenter([0, 20]); setZoom(1); setSelectedLoc(null)
   }
 
-  const handleMoveEnd = (position: { zoom: number }) => {
-    setZoom(position.zoom)
-  }
+  const handleMoveEnd = (position: { zoom: number }) => setZoom(position.zoom)
 
   // Group bommels by identical coordinate key
   const grouped = bommels.reduce((acc, b) => {
@@ -101,7 +152,7 @@ export default function WorldMap() {
         <button onClick={handleZoomOut} className="w-8 h-8 bg-white bg-opacity-80 rounded-full shadow-md flex items-center justify-center hover:bg-opacity-100">–</button>
         <select onChange={handleSelect} className="mt-2 p-1 bg-white bg-opacity-80 rounded shadow-md">
           <option value="">Select Country</option>
-          {[...new Set(bommels.map(b => b.location))].sort().map(loc => (
+          {[...new Set(bommels.map(b => b.location).filter(Boolean))].sort().map(loc => (
             <option key={loc} value={loc}>{loc}</option>
           ))}
         </select>
@@ -121,15 +172,12 @@ export default function WorldMap() {
             ))}
           </Geographies>
 
-          {Object.entries(grouped).flatMap(([key, group], i) =>
+          {Object.entries(grouped).flatMap(([key, group]) =>
             group.map((b, j) => {
               const offset = getOffset(j)
-              const coords: [number, number] = [
-                b.coords[0] + offset[0],
-                b.coords[1] + offset[1]
-              ]
+              const coords: [number, number] = [b.coords[0] + offset[0], b.coords[1] + offset[1]]
               return (
-                <Marker key={b.id} coordinates={coords}>
+                <Marker key={`${key}-${j}-${b.id}`} coordinates={coords}>
                   <g onClick={() => setSelectedBommel(b)} style={{ cursor: 'pointer' }}>
                     <circle r={Math.max(0.5, 4 / zoom)} fill={b.markerColor} />
                   </g>
@@ -166,12 +214,10 @@ export default function WorldMap() {
             />
             <h2 className="text-xl font-bold text-gray-800">{selectedBommel.name}</h2>
             <p className="text-gray-700 text-sm">Registration No: <strong>{selectedBommel.bommler_number}</strong></p>
-            <p className="text-gray-700 text-sm">Fluff Level: {selectedBommel.fluff_level}</p>
-            <p className="text-gray-700 text-sm">Type: {selectedBommel.type}</p>
-            <p className="text-gray-700 text-sm">Birthday: {selectedBommel.birthday}</p>
-            {selectedBommel.about && (
-              <p className="text-gray-700 text-sm">About: {selectedBommel.about}</p>
-            )}
+            {selectedBommel.fluff_level != null && <p className="text-gray-700 text-sm">Fluff Level: {selectedBommel.fluff_level}</p>}
+            {selectedBommel.type && <p className="text-gray-700 text-sm">Type: {selectedBommel.type}</p>}
+            {selectedBommel.birthday && <p className="text-gray-700 text-sm">Birthday: {selectedBommel.birthday}</p>}
+            {selectedBommel.about && <p className="text-gray-700 text-sm">About: {selectedBommel.about}</p>}
             <p className="text-gray-700 text-sm">Location: {selectedBommel.location}</p>
             <button onClick={() => setSelectedBommel(null)} className="mt-3 px-5 py-2 bg-purple-500 hover:bg-purple-400 text-white rounded-full text-sm transition">
               Close
