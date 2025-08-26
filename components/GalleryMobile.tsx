@@ -94,7 +94,7 @@ export default function GalleryMobile() {
 
         {/* Worldmap Quick-Link (Top Right) */}
         <Link
-          href="/worldmap"
+          href="/WorldMap.tsx"
           className="absolute top-2 right-2 p-2 z-50 bg-white/90 rounded-full shadow hover:bg-white"
           aria-label="Open world map"
         >
