@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -23,9 +23,16 @@ type Bommel = {
 
 export default function GalleryMobile() {
   const [approved, setApproved] = useState<Bommel[]>([])
-  const [pending, setPending] = useState<Bommel[]>([]) // aktuell ungenutzt, für später belassen
+  const [pending, setPending] = useState<Bommel[]>([])
   const [selected, setSelected] = useState<Bommel | null>(null)
   const [showMenu, setShowMenu] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
+
+  // Filter-State (wie Desktop)
+  const [filterType, setFilterType] = useState('')
+  const [filterZodiac, setFilterZodiac] = useState('')
+  const [filterFluff, setFilterFluff] = useState('')
+  const [filterLocation, setFilterLocation] = useState('')
 
   useEffect(() => {
     async function fetchBommels() {
@@ -73,14 +80,53 @@ export default function GalleryMobile() {
     fetchBommels()
   }, [])
 
+  // Unique Options (aus approved)
+  const uniqueTypes = useMemo(
+    () => Array.from(new Set(approved.map(b => b.type))).filter(Boolean).sort(),
+    [approved]
+  )
+  const uniqueZodiacs = useMemo(
+    () => Array.from(new Set(approved.map(b => b.zodiac_sign))).filter(Boolean).sort(),
+    [approved]
+  )
+  const uniqueFluffLevels = useMemo(
+    () => Array.from(new Set(approved.map(b => b.fluff_level))).filter(v => v !== undefined && v !== null).sort((a, b) => a - b),
+    [approved]
+  )
+  const uniqueLocations = useMemo(
+    () => Array.from(new Set(approved.map(b => b.location))).filter(Boolean).sort(),
+    [approved]
+  )
+
+  // Gefilterte Liste
+  const filteredApproved = useMemo(
+    () =>
+      approved.filter(b =>
+        (filterType === '' || b.type === filterType) &&
+        (filterZodiac === '' || b.zodiac_sign === filterZodiac) &&
+        (filterFluff === '' || b.fluff_level.toString() === filterFluff) &&
+        (filterLocation === '' || b.location === filterLocation)
+      ),
+    [approved, filterType, filterZodiac, filterFluff, filterLocation]
+  )
+
+  const hasActiveFilter = filterType || filterZodiac || filterFluff || filterLocation
+
+  const resetFilters = () => {
+    setFilterType('')
+    setFilterZodiac('')
+    setFilterFluff('')
+    setFilterLocation('')
+  }
+
   return (
     <>
       <Head>
         <title>Bommel-Register Gallery</title>
-        <meta name="description" content="View all registered Bommels in the Grand Fluffdom" />
+        <meta name="description" content="View and filter all registered Bommels in the Grand Fluffdom" />
       </Head>
 
-      <main className="relative flex flex-col items-center p-4 pb-20 space-y-6 bg-memphis bg-cover min-h-screen">
+      <main className="relative flex flex-col items-center p-4 pb-24 space-y-4 bg-memphis bg-cover min-h-screen">
         {/* Hamburger Menu */}
         <button
           onClick={() => setShowMenu(prev => !prev)}
@@ -94,7 +140,7 @@ export default function GalleryMobile() {
 
         {/* Worldmap Quick-Link (Top Right) */}
         <Link
-          href="/WorldMap.tsx"
+          href="/worldmap"
           className="absolute top-2 right-2 p-2 z-50 bg-white/90 rounded-full shadow hover:bg-white"
           aria-label="Open world map"
         >
@@ -117,7 +163,6 @@ export default function GalleryMobile() {
                 <Link href="/" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Home</Link>
                 <Link href="/register" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Register Your Bommel</Link>
                 <Link href="/gallery" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Gallery</Link>
-                {/* NEW: Worldmap entry */}
                 <Link href="/worldmap" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Worldmap</Link>
                 <Link href="/workshop" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel Workshop</Link>
                 <Link href="/how-to-bommel" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">How-To-Bommel</Link>
@@ -132,7 +177,7 @@ export default function GalleryMobile() {
         )}
 
         {/* Header */}
-        <div className="w-full max-w-xs">
+        <div className="w-full max-w-xs mt-8">
           <Image
             src="/bommel-register-header.webp"
             alt="Bommel Register"
@@ -144,13 +189,125 @@ export default function GalleryMobile() {
           />
         </div>
 
-        <p className="mt-2 mb-4 px-4 py-1 text-center text-sm font-medium text-purple-700 bg-white/50 border border-purple-200 rounded-xl shadow-md backdrop-blur">
-          View all registered Bommels in the Grand Fluffdom
-        </p>
+        {/* Filter Toggle / Pills */}
+        <div className="w-full max-w-sm">
+          <div className="flex items-center justify-between gap-2">
+            <p className="px-3 py-1 text-xs font-medium text-purple-700 bg-white/60 border border-purple-200 rounded-xl shadow-md backdrop-blur">
+              View all registered Bommels in the Grand Fluffdom
+            </p>
+            <button
+              onClick={() => setShowFilters(v => !v)}
+              className="px-3 py-2 text-sm rounded-xl bg-white shadow border border-purple-200"
+              aria-expanded={showFilters}
+              aria-controls="filters"
+            >
+              {showFilters ? 'Hide Filters' : 'Show Filters'}
+            </button>
+          </div>
+
+          {/* Active filter pills */}
+          {hasActiveFilter && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {filterType && <span className="px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">{filterType}</span>}
+              {filterZodiac && <span className="px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">{filterZodiac}</span>}
+              {filterFluff && <span className="px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">Fluff {filterFluff}</span>}
+              {filterLocation && <span className="px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">{filterLocation}</span>}
+              <button
+                onClick={resetFilters}
+                className="ml-auto px-2 py-1 text-xs bg-white border border-purple-200 rounded-full shadow hover:bg-purple-50"
+              >
+                Reset
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Filters Sheet */}
+        {showFilters && (
+          <div id="filters" className="w-full max-w-sm bg-white/80 border border-purple-200 rounded-xl shadow p-3 space-y-3">
+            <div>
+              <label className="block text-xs font-medium text-purple-700 mb-1">Type</label>
+              <select
+                value={filterType}
+                onChange={e => setFilterType(e.target.value)}
+                className="w-full px-3 py-2 rounded-md border border-purple-300 bg-white text-sm"
+              >
+                <option value="">All</option>
+                {uniqueTypes.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-purple-700 mb-1">Zodiac</label>
+                <select
+                  value={filterZodiac}
+                  onChange={e => setFilterZodiac(e.target.value)}
+                  className="w-full px-3 py-2 rounded-md border border-purple-300 bg-white text-sm"
+                >
+                  <option value="">All</option>
+                  {uniqueZodiacs.map(z => (
+                    <option key={z} value={z}>{z}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-purple-700 mb-1">Fluff Level</label>
+                <select
+                  value={filterFluff}
+                  onChange={e => setFilterFluff(e.target.value)}
+                  className="w-full px-3 py-2 rounded-md border border-purple-300 bg-white text-sm"
+                >
+                  <option value="">All</option>
+                  {uniqueFluffLevels.map(level => (
+                    <option key={level} value={String(level)}>{level}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="col-span-2">
+                <label className="block text-xs font-medium text-purple-700 mb-1">Location</label>
+                <select
+                  value={filterLocation}
+                  onChange={e => setFilterLocation(e.target.value)}
+                  className="w-full px-3 py-2 rounded-md border border-purple-300 bg-white text-sm"
+                >
+                  <option value="">All</option>
+                  {uniqueLocations.map(loc => (
+                    <option key={loc} value={loc}>{loc}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowFilters(false)}
+                className="flex-1 px-3 py-2 rounded-md bg-purple-600 text-white text-sm shadow hover:bg-purple-500"
+              >
+                Apply
+              </button>
+              <button
+                onClick={resetFilters}
+                className="px-3 py-2 rounded-md bg-white border border-purple-300 text-sm hover:bg-purple-50"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Keine Ergebnisse Hinweis */}
+        {filteredApproved.length === 0 && (
+          <p className="text-center text-red-500 mt-4">❌ No matching Bommels found. Try adjusting your filters!</p>
+        )}
 
         {/* Grid */}
-        <div className="grid grid-cols-2 gap-3 w-full">
-          {approved.map(b => (
+        <div className="grid grid-cols-2 gap-3 w-full max-w-sm">
+          {filteredApproved.map(b => (
             <div
               key={b.id}
               className="bg-white/80 rounded-xl p-2 shadow hover:scale-105 transition text-center cursor-pointer"
@@ -171,12 +328,14 @@ export default function GalleryMobile() {
                 />
               </div>
               <p className="mt-2 text-sm font-semibold text-gray-800">{b.name}</p>
+              <p className="text-[11px] text-gray-500">{b.type} • {b.zodiac_sign} • Fluff {b.fluff_level}</p>
+              {b.location && <p className="text-[11px] text-gray-500">{b.location}</p>}
             </div>
           ))}
         </div>
       </main>
 
-      {/* Details Modal (Mobile) */}
+      {/* Details Modal */}
       {selected && (
         <div
           className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60] px-4"
@@ -195,9 +354,7 @@ export default function GalleryMobile() {
               loading="lazy"
             />
             <h2 className="text-2xl font-bold text-gray-800">{selected.name}</h2>
-            <p className="text-gray-700">
-              Registration No: <strong>{selected.bommler_number}</strong>
-            </p>
+            <p className="text-gray-700">Registration No: <strong>{selected.bommler_number}</strong></p>
             <p className="text-gray-700">Fluff Level: {selected.fluff_level}</p>
             <p className="text-gray-700">Zodiac Sign: {selected.zodiac_sign}</p>
             <p className="text-gray-700">Type: {selected.type}</p>
@@ -205,7 +362,6 @@ export default function GalleryMobile() {
             {selected.about && <p className="text-gray-700">About: {selected.about}</p>}
             <p className="text-gray-700">Location: {selected.location}</p>
 
-            {/* Optional: Jump to Worldmap with focus */}
             <Link
               href={`/worldmap?focusId=${encodeURIComponent(String(selected.id))}`}
               className="mt-2 inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full transition"
@@ -233,8 +389,6 @@ export default function GalleryMobile() {
         <a href="https://soundcloud.com/bebetta" target="_blank" rel="noopener" className="flex-1 text-center">SoundCloud</a>
         <a href="https://bebetta.de/" target="_blank" rel="noopener" className="flex-1 text-center">Website</a>
         <Link href="/contact" className="flex-1 text-center">Contact</Link>
-
-        {/* NEW: Footer Worldmap tab */}
         <Link href="/worldmap" className="flex-1 flex flex-col items-center justify-center gap-0.5">
           <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
             <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
