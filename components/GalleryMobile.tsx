@@ -23,7 +23,7 @@ type Bommel = {
 
 export default function GalleryMobile() {
   const [approved, setApproved] = useState<Bommel[]>([])
-  const [pending, setPending] = useState<Bommel[]>([]) // aktuell ungenutzt, aber belassen falls du’s später brauchst
+  const [pending, setPending] = useState<Bommel[]>([]) // aktuell ungenutzt, für später belassen
   const [selected, setSelected] = useState<Bommel | null>(null)
   const [showMenu, setShowMenu] = useState(false)
 
@@ -38,7 +38,7 @@ export default function GalleryMobile() {
         return
       }
 
-      const items: Bommel[] = data.map(item => {
+      const items: Bommel[] = data.map((item: any) => {
         const { data: storageData } = supabase.storage.from('bommel-images').getPublicUrl(item.image_path)
         const publicUrl = storageData?.publicUrl || '/fallback.webp'
         const zodiac_sign = getBommelZodiacEn(new Date(item.birthday)).name
@@ -54,7 +54,7 @@ export default function GalleryMobile() {
           image_url: publicUrl,
           about: item.about || '',
           location: item.location,
-          status: item.status?.toLowerCase() || '',
+          status: (item.status || '').toLowerCase(),
         }
       })
 
@@ -92,6 +92,18 @@ export default function GalleryMobile() {
           </svg>
         </button>
 
+        {/* Worldmap Quick-Link (Top Right) */}
+        <Link
+          href="/worldmap"
+          className="absolute top-2 right-2 p-2 z-50 bg-white/90 rounded-full shadow hover:bg-white"
+          aria-label="Open world map"
+        >
+          <svg className="w-7 h-7 text-purple-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+            <path d="M2.05 12h19.9M12 2.05a15.1 15.1 0 0 1 0 19.9M12 2.05a15.1 15.1 0 0 0 0 19.9" />
+          </svg>
+        </Link>
+
         {/* Menu Drawer */}
         {showMenu && (
           <div className="fixed inset-0 z-40 flex">
@@ -105,6 +117,8 @@ export default function GalleryMobile() {
                 <Link href="/" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Home</Link>
                 <Link href="/register" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Register Your Bommel</Link>
                 <Link href="/gallery" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Gallery</Link>
+                {/* NEW: Worldmap entry */}
+                <Link href="/worldmap" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Worldmap</Link>
                 <Link href="/workshop" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel Workshop</Link>
                 <Link href="/how-to-bommel" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">How-To-Bommel</Link>
                 <Link href="/zodiac" onClick={() => setShowMenu(false)} className="font-medium hover:text-purple-700">Bommel-Horoscope</Link>
@@ -130,7 +144,7 @@ export default function GalleryMobile() {
           />
         </div>
 
-        <p className="mt-2 mb-4 px-4 py-1 text-center text-sm font-medium text-purple-700 bg-white bg-opacity-50 border border-purple-200 rounded-xl shadow-md backdrop-blur">
+        <p className="mt-2 mb-4 px-4 py-1 text-center text-sm font-medium text-purple-700 bg-white/50 border border-purple-200 rounded-xl shadow-md backdrop-blur">
           View all registered Bommels in the Grand Fluffdom
         </p>
 
@@ -139,10 +153,10 @@ export default function GalleryMobile() {
           {approved.map(b => (
             <div
               key={b.id}
-              className="bg-white bg-opacity-80 rounded-xl p-2 shadow hover:scale-105 transition text-center cursor-pointer"
+              className="bg-white/80 rounded-xl p-2 shadow hover:scale-105 transition text-center cursor-pointer"
               onClick={() => setSelected(b)}
             >
-              <p className="text-xs font-medium text-purple-600 bg-white bg-opacity-50 rounded-full px-2 py-1 mb-2">
+              <p className="text-xs font-medium text-purple-600 bg-white/60 rounded-full px-2 py-1 mb-2">
                 #{b.bommler_number}
               </p>
               <div className="aspect-square overflow-hidden rounded-full w-full">
@@ -165,7 +179,7 @@ export default function GalleryMobile() {
       {/* Details Modal (Mobile) */}
       {selected && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[60] px-4"
+          className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60] px-4"
           onClick={() => setSelected(null)}
           role="dialog"
           aria-modal="true"
@@ -191,9 +205,17 @@ export default function GalleryMobile() {
             {selected.about && <p className="text-gray-700">About: {selected.about}</p>}
             <p className="text-gray-700">Location: {selected.location}</p>
 
+            {/* Optional: Jump to Worldmap with focus */}
+            <Link
+              href={`/worldmap?focusId=${encodeURIComponent(String(selected.id))}`}
+              className="mt-2 inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full transition"
+            >
+              View on Worldmap
+            </Link>
+
             <button
               onClick={() => setSelected(null)}
-              className="mt-4 px-6 py-2 bg-purple-500 hover:bg-purple-400 text-white rounded-full transition"
+              className="mt-2 px-6 py-2 bg-purple-500 hover:bg-purple-400 text-white rounded-full transition"
             >
               Close
             </button>
@@ -211,6 +233,15 @@ export default function GalleryMobile() {
         <a href="https://soundcloud.com/bebetta" target="_blank" rel="noopener" className="flex-1 text-center">SoundCloud</a>
         <a href="https://bebetta.de/" target="_blank" rel="noopener" className="flex-1 text-center">Website</a>
         <Link href="/contact" className="flex-1 text-center">Contact</Link>
+
+        {/* NEW: Footer Worldmap tab */}
+        <Link href="/worldmap" className="flex-1 flex flex-col items-center justify-center gap-0.5">
+          <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+            <path d="M2.05 12h19.9M12 2.05a15.1 15.1 0 0 1 0 19.9M12 2.05a15.1 15.1 0 0 0 0 19.9" />
+          </svg>
+          <span className="text-xs">Worldmap</span>
+        </Link>
       </nav>
     </>
   )
