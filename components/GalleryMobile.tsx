@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { supabase } from '../lib/supabaseClient'
 import { getBommelZodiacEn } from '../lib/zodiac-en'
 
@@ -23,9 +22,8 @@ type Bommel = {
 }
 
 export default function GalleryMobile() {
-  const router = useRouter()
   const [approved, setApproved] = useState<Bommel[]>([])
-  const [pending, setPending] = useState<Bommel[]>([])
+  const [pending, setPending] = useState<Bommel[]>([]) // aktuell ungenutzt, aber belassen falls du’s später brauchst
   const [selected, setSelected] = useState<Bommel | null>(null)
   const [showMenu, setShowMenu] = useState(false)
 
@@ -82,8 +80,7 @@ export default function GalleryMobile() {
         <meta name="description" content="View all registered Bommels in the Grand Fluffdom" />
       </Head>
 
-      <main className="relative flex flex-col items-center p-4 space-y-6 bg-memphis bg-cover min-h-screen">
-
+      <main className="relative flex flex-col items-center p-4 pb-20 space-y-6 bg-memphis bg-cover min-h-screen">
         {/* Hamburger Menu */}
         <button
           onClick={() => setShowMenu(prev => !prev)}
@@ -142,7 +139,7 @@ export default function GalleryMobile() {
           {approved.map(b => (
             <div
               key={b.id}
-              className="bg-white bg-opacity-80 rounded-xl p-2 shadow hover:scale-105 transition text-center"
+              className="bg-white bg-opacity-80 rounded-xl p-2 shadow hover:scale-105 transition text-center cursor-pointer"
               onClick={() => setSelected(b)}
             >
               <p className="text-xs font-medium text-purple-600 bg-white bg-opacity-50 rounded-full px-2 py-1 mb-2">
@@ -164,6 +161,45 @@ export default function GalleryMobile() {
           ))}
         </div>
       </main>
+
+      {/* Details Modal (Mobile) */}
+      {selected && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[60] px-4"
+          onClick={() => setSelected(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto text-center space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selected.image_url}
+              alt={selected.name}
+              className="rounded-full mx-auto object-cover aspect-square w-60 h-60"
+              loading="lazy"
+            />
+            <h2 className="text-2xl font-bold text-gray-800">{selected.name}</h2>
+            <p className="text-gray-700">
+              Registration No: <strong>{selected.bommler_number}</strong>
+            </p>
+            <p className="text-gray-700">Fluff Level: {selected.fluff_level}</p>
+            <p className="text-gray-700">Zodiac Sign: {selected.zodiac_sign}</p>
+            <p className="text-gray-700">Type: {selected.type}</p>
+            <p className="text-gray-700">Birthday: {selected.birthday}</p>
+            {selected.about && <p className="text-gray-700">About: {selected.about}</p>}
+            <p className="text-gray-700">Location: {selected.location}</p>
+
+            <button
+              onClick={() => setSelected(null)}
+              className="mt-4 px-6 py-2 bg-purple-500 hover:bg-purple-400 text-white rounded-full transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Mobile Footer */}
       <nav className="fixed bottom-0 left-0 w-full bg-indigo-900 py-2 flex justify-around items-center text-white text-sm space-x-4 z-40">
